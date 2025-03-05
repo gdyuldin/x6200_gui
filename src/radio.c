@@ -30,7 +30,7 @@
 #include <math.h>
 
 #define FLOW_RESTART_TIMEOUT 300
-#define IDLE_TIMEOUT        (3 * 1000)
+#define IDLE_TIMEOUT (3 * 1000)
 #define POWER_KEY_LONG_TIME 2000
 
 static radio_state_change_t notify_tx;
@@ -438,6 +438,7 @@ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb) {
     subject_add_observer_and_call(cfg.vol.val, on_change_uint8, x6100_control_rxvol_set);
     subject_add_observer_and_call(cfg.sql.val, on_change_uint8, x6100_control_sql_set);
     subject_add_observer_and_call(cfg.pwr.val, on_change_float, x6100_control_txpwr_set);
+    subject_add_observer_and_call(cfg.fft_dec.val, on_change_uint8, x6100_control_fft_dec_set);
     subject_add_observer_and_call(cfg.key_tone.val, on_change_uint16, x6100_control_key_tone_set);
     subject_add_observer_and_call(cfg.atu_enabled.val, on_change_uint8, x6100_control_atu_set);
     subject_add_observer_and_call(cfg_cur.atu->network, on_atu_network_change, NULL);

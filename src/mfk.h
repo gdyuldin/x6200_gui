@@ -18,7 +18,7 @@ extern "C" {
 typedef enum {
     MFK_MIN_LEVEL = 0,
     MFK_MAX_LEVEL,
-    MFK_SPECTRUM_FACTOR,
+    MFK_FFT_DECIM,
     MFK_SPECTRUM_BETA,
     MFK_PEAK_HOLD,
     MFK_PEAK_SPEED,

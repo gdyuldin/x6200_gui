@@ -1100,8 +1100,8 @@ lv_obj_t * main_screen() {
     subject_add_delayed_observer(freq_lock, update_freq_boundaries, NULL);
     // update boundaries on TX with split
     subject_add_delayed_observer(cfg_cur.fg_freq, update_freq_boundaries, NULL);
-    subject_add_delayed_observer(cfg_cur.zoom, update_freq_boundaries, NULL);
-    update_freq_boundaries(cfg_cur.zoom, NULL);
+    subject_add_delayed_observer(cfg_cur.fft_width, update_freq_boundaries, NULL);
+    update_freq_boundaries(cfg_cur.fft_width, NULL);
 
     subject_add_delayed_observer(cfg_cur.bg_freq, on_fg_freq_change, NULL);
     on_fg_freq_change(cfg_cur.bg_freq, NULL);
@@ -1168,14 +1168,8 @@ static void update_freq_boundaries(Subject *subj, void *user_data) {
     int32_t  f = subject_get_int(freq_fg_subj);
 
     uint16_t    mhz, khz, hz;
-    uint32_t    half_width = 50000;
+    uint32_t    half_width = subject_get_int(cfg_cur.fft_width) / 2;
     uint32_t    color = subject_get_int(freq_lock) ? 0xBBBBBB : 0xFFFFFF;
-
-    int32_t zoom = subject_get_int(cfg_cur.zoom);
-
-    if (params.waterfall_zoom.x) {
-        half_width /= zoom;
-    }
 
     split_freq(f - half_width, &mhz, &khz, &hz);
     lv_label_set_text_fmt(freq[0], "#%03X %i.%03i", color, mhz, khz);

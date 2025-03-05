@@ -44,7 +44,6 @@ static int16_t visor_height = 100;
 
 static float   spectrum_buf[SPECTRUM_SIZE];
 static peak_t  spectrum_peak[SPECTRUM_SIZE];
-static uint8_t zoom_factor = 1;
 
 static bool spectrum_tx = false;
 
@@ -64,7 +63,7 @@ static int16_t freq_mod;
 
 static pthread_mutex_t data_mux;
 
-static void on_zoom_changed(Subject *subj, void *user_data);
+static void on_fft_width_changed(Subject *subj, void *user_data);
 static void on_real_filter_from_change(Subject *subj, void *user_data);
 static void on_real_filter_to_change(Subject *subj, void *user_data);
 static void on_cur_mode_change(Subject *subj, void *user_data);
@@ -110,7 +109,7 @@ static void spectrum_draw_cb(lv_event_t *e) {
     lv_coord_t w = lv_obj_get_width(obj);
     lv_coord_t h = lv_obj_get_height(obj);
 
-    x1 += lo_offset * zoom_factor * w / width_hz;
+    x1 += lo_offset * w / width_hz;
 
     lv_point_t main_a, main_b;
     lv_point_t peak_a, peak_b;
@@ -167,7 +166,7 @@ static void spectrum_draw_cb(lv_event_t *e) {
     rect_dsc.bg_color = bg_color;
     rect_dsc.bg_opa   = LV_OPA_50;
 
-    int32_t w_hz = width_hz / zoom_factor;
+    int32_t w_hz = width_hz;
 
     int16_t sign_from = (filter_from > 0) ? 1 : -1;
     int16_t sign_to   = (filter_to > 0) ? 1 : -1;
@@ -275,7 +274,7 @@ lv_obj_t *spectrum_init(lv_obj_t *parent) {
     lv_obj_add_event_cb(obj, tx_cb, EVENT_RADIO_TX, NULL);
     lv_obj_add_event_cb(obj, rx_cb, EVENT_RADIO_RX, NULL);
 
-    subject_add_observer_and_call(cfg_cur.zoom, on_zoom_changed, NULL);
+    subject_add_observer_and_call(cfg_cur.fft_width, on_fft_width_changed, NULL);
     subject_add_observer_and_call(cfg_cur.filter.real.from, on_real_filter_from_change, NULL);
     subject_add_observer_and_call(cfg_cur.filter.real.to, on_real_filter_to_change, NULL);
     subject_add_observer_and_call(cfg_cur.mode, on_cur_mode_change, NULL);
@@ -364,8 +363,8 @@ void spectrum_clear() {
     }
 }
 
-static void on_zoom_changed(Subject *subj, void *user_data) {
-    zoom_factor = (uint8_t)subject_get_int(subj);
+static void on_fft_width_changed(Subject *subj, void *user_data) {
+    width_hz = subject_get_int(subj);
     spectrum_clear();
 }
 
@@ -406,7 +405,7 @@ void on_cur_freq_change(Subject *subj, void *user_data) {
         cur_freq = new_freq;
         uint64_t time = get_time();
 
-        uint16_t div     = width_hz / SPECTRUM_SIZE / zoom_factor;
+        uint16_t div     = width_hz / SPECTRUM_SIZE;
         int32_t  delta   = (df + div / 2) / div;
         freq_mod = df - delta * div;
 

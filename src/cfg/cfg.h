@@ -7,12 +7,16 @@
 #include <pthread.h>
 #include <sqlite3.h>
 
+#define FFT_FULL_WIDTH 384000
+
 
 /* configuration structs. Should contain same types (for correct initialization) */
 typedef struct {
     cfg_item_t vol;
     cfg_item_t sql;
     cfg_item_t pwr;
+
+    cfg_item_t fft_dec;
 
     cfg_item_t key_tone;
     cfg_item_t band_id;
@@ -86,6 +90,8 @@ typedef struct {
     Subject       *zoom;
     atu_network_t *atu;
     cfg_band_t    *band;
+
+    Subject *fft_width;
 } cfg_cur_t;
 
 extern cfg_cur_t cfg_cur;

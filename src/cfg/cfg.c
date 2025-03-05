@@ -127,6 +127,13 @@ static void on_key_tone_change(Subject *subj, void *user_data) {
 }
 
 /**
+ * Changing fft width
+ */
+static void update_fft_width(Subject *subj, void *user_data) {
+    subject_set_int(cfg_cur.fft_width, FFT_FULL_WIDTH / (1 << subject_get_int(subj)));
+}
+
+/**
  * Init cfg items
  */
 void init_items(cfg_item_t *cfg_arr, uint32_t count, int (*load)(struct cfg_item_t *item),
@@ -219,9 +226,11 @@ static int init_params_cfg(sqlite3 *db) {
     cfg_params_init(db);
 
     /* Fill configuration */
-    cfg.vol         = (cfg_item_t){.val = subject_create_int(20), .db_name = "vol"};
-    cfg.sql         = (cfg_item_t){.val = subject_create_int(0), .db_name = "sql"};
-    cfg.pwr         = (cfg_item_t){.val = subject_create_float(5.0f), .db_scale=0.1f, .db_name = "pwr"};
+    cfg.vol = (cfg_item_t){.val = subject_create_int(20), .db_name = "vol"};
+    cfg.sql = (cfg_item_t){.val = subject_create_int(0), .db_name = "sql"};
+    cfg.pwr = (cfg_item_t){.val = subject_create_float(5.0f), .db_scale = 0.1f, .db_name = "pwr"};
+
+    cfg.fft_dec = (cfg_item_t){.val = subject_create_int(1), .db_name = "fft_dec"};
 
     cfg.key_tone    = (cfg_item_t){.val = subject_create_int(700), .db_name = "key_tone"};
     cfg.band_id     = (cfg_item_t){.val = subject_create_int(5), .db_name = "band"};
@@ -268,9 +277,12 @@ static int init_params_cfg(sqlite3 *db) {
     // FT8
     cfg.ft8_hold_freq = (cfg_item_t){.val=subject_create_int(true), .db_name="ft8_hold_freq"};
 
+
+    cfg_cur.fft_width = subject_create_int(FFT_FULL_WIDTH);
     /* Bind callbacks */
     // subject_add_observer(cfg.band_id.val, on_band_id_change, NULL);
     subject_add_observer(cfg.key_tone.val, on_key_tone_change, NULL);
+    subject_add_observer(cfg.fft_dec.val, update_fft_width, NULL);
 
     /* Load values from table */
     cfg_item_t *cfg_arr  = (cfg_item_t *)&cfg;

@@ -54,16 +54,15 @@ static int32_t          lo_offset = 0;
 static uint8_t          refresh_period = 1;
 static uint8_t          refresh_counter = 0;
 
-static uint8_t          zoom = 1;
 
 static void refresh_waterfall( void * arg);
 static void draw_middle_line();
 static void redraw_cb(lv_event_t * e);
-static void on_zoom_changed(Subject *subj, void *user_data);
 static void on_fg_freq_change(Subject *subj, void *user_data);
 static void on_lo_offset_change(Subject *subj, void *user_data);
 static void on_grid_min_change(Subject *subj, void *user_data);
 static void on_grid_max_change(Subject *subj, void *user_data);
+static void on_fft_width_changed(Subject *subj, void *user_data);
 
 
 lv_obj_t * waterfall_init(lv_obj_t * parent) {
@@ -82,12 +81,13 @@ lv_obj_t * waterfall_init(lv_obj_t * parent) {
     lv_style_set_line_opa(&middle_line_style, LV_OPA_60);
     lv_style_set_blend_mode(&middle_line_style, LV_BLEND_MODE_ADDITIVE);
 
-    subject_add_delayed_observer(cfg_cur.zoom, on_zoom_changed, NULL);
-    on_zoom_changed(cfg_cur.zoom, NULL);
+    subject_add_delayed_observer(cfg_cur.fft_width, on_fft_width_changed, NULL);
+    on_fft_width_changed(cfg_cur.fft_width, NULL);
 
     subject_add_observer_and_call(cfg_cur.lo_offset, on_lo_offset_change, NULL);
     subject_add_observer_and_call(cfg_cur.band->grid.min.val, on_grid_min_change, NULL);
     subject_add_observer_and_call(cfg_cur.band->grid.max.val, on_grid_max_change, NULL);
+    subject_add_observer_and_call(cfg_cur.fft_width, on_fft_width_changed, NULL);
 
     return obj;
 }
@@ -264,10 +264,10 @@ static void refresh_waterfall( void * arg) {
     }
 }
 
-static void on_zoom_changed(Subject *subj, void *user_data) {
-    zoom = subject_get_int(subj);
-    lv_style_set_line_width(&middle_line_style, zoom / 2 + 2);
-}
+// static void on_fft_width_changed(Subject *subj, void *user_data) {
+//     zoom = subject_get_int(subj);
+//     lv_style_set_line_width(&middle_line_style, zoom / 2 + 2);
+// }
 
 static void on_fg_freq_change(Subject *subj, void *user_data) {
     radio_center_freq = subject_get_int(subj);
@@ -285,4 +285,8 @@ static void on_grid_max_change(Subject *subj, void *user_data) {
     if (!params.waterfall_auto_max.x) {
         grid_max = subject_get_int(subj);
     }
+}
+
+static void on_fft_width_changed(Subject *subj, void *user_data) {
+    width_hz = subject_get_int(subj);
 }

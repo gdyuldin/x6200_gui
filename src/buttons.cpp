@@ -183,7 +183,7 @@ static button_item_t btn_voice_vol   = make_btn("Voice\nVolume", VOL_VOICE_VOLUM
 
 static button_item_t btn_spectrum_min_level = make_btn("Min\nLevel", MFK_MIN_LEVEL);
 static button_item_t btn_spectrum_max_level = make_btn("Max\nLevel", MFK_MAX_LEVEL);
-static button_item_t btn_zoom               = make_btn("Spectrum\nZoom", MFK_SPECTRUM_FACTOR);
+static button_item_t btn_zoom               = make_btn("FFT\nWidth", MFK_FFT_DECIM);
 static button_item_t btn_spectrum_beta      = make_btn("Spectrum\nBeta", MFK_SPECTRUM_BETA);
 
 /* MFK page 2 */

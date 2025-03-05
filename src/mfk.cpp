@@ -77,21 +77,23 @@ void mfk_update(int16_t diff, bool voice) {
             }
             break;
 
-        case MFK_SPECTRUM_FACTOR:
-            i = subject_get_int(cfg_cur.zoom);
+        case MFK_FFT_DECIM:
+            i = subject_get_int(cfg.fft_dec.val);
             if (diff != 0) {
-                i = limit(i + diff, 1, 8);
-                subject_set_int(cfg_cur.zoom, i);
+                i = limit(i + diff, 0, 3);
+                subject_set_int(cfg.fft_dec.val, i);
             }
-            msg_update_text_fmt("#%3X Spectrum zoom: x%i", color, i);
+            {
+                uint16_t fft_width_khz = subject_get_int(cfg_cur.fft_width) / 1000;
+                msg_update_text_fmt("#%3X FFT width: %u kHz", color, fft_width_khz);
 
-            if (diff) {
-                voice_say_int("Spectrum zoom", i);
-            } else if (voice) {
-                voice_say_text_fmt("Spectrum zoom");
+                if (diff) {
+                    voice_say_int("FFT width", fft_width_khz);
+                } else if (voice) {
+                    voice_say_text_fmt("FFT width");
+                }
             }
             break;
-
 
         case MFK_SPECTRUM_BETA:
             if (diff != 0) {
