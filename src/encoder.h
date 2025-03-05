@@ -15,9 +15,10 @@
 typedef struct {
     int             fd;
     bool            pressed;
-    
+    bool            inverted;
+
     lv_indev_drv_t  indev_drv;
     lv_indev_t      *indev;
 } encoder_t;
 
-encoder_t * encoder_init(char *dev_name);
+encoder_t * encoder_init(char *dev_name, bool invert);

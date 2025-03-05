@@ -79,10 +79,10 @@ int main(void) {
     keypad_init("/dev/input/event0");
     keypad_init("/dev/input/event4");
 
-    rotary_init("/dev/input/event1");
+    rotary_init("/dev/input/event1", true);
 
-    vol = rotary_init("/dev/input/event2");
-    mfk = encoder_init("/dev/input/event3");
+    vol = rotary_init("/dev/input/event2", false);
+    mfk = encoder_init("/dev/input/event3", true);
 
     vol->left[VOL_EDIT] = KEY_VOL_LEFT_EDIT;
     vol->right[VOL_EDIT] = KEY_VOL_RIGHT_EDIT;
