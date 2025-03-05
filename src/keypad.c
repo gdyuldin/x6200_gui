@@ -62,19 +62,19 @@ static void keypad_input_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
                     event.key = KEYPAD_GEN;
                     break;
 
-                case BTN_TRIGGER_HAPPY7:
+                case BTN_TRIGGER_HAPPY2:
                     event.key = KEYPAD_APP;
                     break;
 
-                case BTN_TRIGGER_HAPPY2:
+                case BTN_TRIGGER_HAPPY3:
                     event.key = KEYPAD_KEY;
                     break;
 
-                case BTN_TRIGGER_HAPPY8:
+                case BTN_TRIGGER_HAPPY7:
                     event.key = KEYPAD_MSG;
                     break;
 
-                case BTN_TRIGGER_HAPPY3:
+                case BTN_TRIGGER_HAPPY8:
                     event.key = KEYPAD_DFN;
                     break;
 
@@ -102,11 +102,8 @@ static void keypad_input_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
                     event.key = KEYPAD_F5;
                     break;
 
-                case BTN_TRIGGER_HAPPY25:
-                    event.key = KEYPAD_LOCK;
-                    break;
 
-                /* Top side */
+                    /* Top side */
 
                 case BTN_TRIGGER_HAPPY4:
                     event.key = KEYPAD_PTT;
@@ -137,22 +134,10 @@ static void keypad_input_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
                     break;
 
                 case BTN_TRIGGER_HAPPY17:
-                    event.key = KEYPAD_PRE;
-                    break;
-
-                case BTN_TRIGGER_HAPPY18:
                     event.key = KEYPAD_ATU;
                     break;
 
-                case BTN_TRIGGER_HAPPY22:
-                    event.key = KEYPAD_VM;
-                    break;
-
-                case BTN_TRIGGER_HAPPY23:
-                    event.key = KEYPAD_AGC;
-                    break;
-
-                case BTN_TRIGGER_HAPPY24:
+                case BTN_TRIGGER_HAPPY18:
                     event.key = KEYPAD_FST;
                     break;
 

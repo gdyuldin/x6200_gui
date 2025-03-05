@@ -11,6 +11,7 @@
 #include "cw.h"
 #include "voice.h"
 #include "cfg/cfg.h"
+#include "dsp.h"
 
 #include <vector>
 
@@ -20,7 +21,6 @@ extern "C" {
     #include "spectrum.h"
     #include "waterfall.h"
     #include "msg.h"
-    #include "dsp.h"
     #include "radio.h"
     #include "rtty.h"
     #include "info.h"

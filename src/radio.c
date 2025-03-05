@@ -18,6 +18,7 @@
 #include "dialog_swrscan.h"
 #include "cw.h"
 #include "pubsub_ids.h"
+#include "events.h"
 
 #include <aether_radio/x6100_control/low/flow.h>
 #include <aether_radio/x6100_control/low/gpio.h>
@@ -26,11 +27,11 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <string.h>
-
-
+#include <math.h>
 
 #define FLOW_RESTART_TIMEOUT 300
 #define IDLE_TIMEOUT        (3 * 1000)
+#define POWER_KEY_LONG_TIME 2000
 
 static radio_state_change_t notify_tx;
 static radio_state_change_t notify_rx;
@@ -84,7 +85,36 @@ static void recover_processing_audio_inputs() {
     radio_unlock();
 }
 
+
+static void process_power_key(bool val, uint64_t now) {
+    static event_keypad_t event = { .key = KEYPAD_POWER, .state = KEYPAD_RELEASE };
+    static bool prev_val;
+    static uint64_t power_press_time;
+
+    if (val != prev_val) {
+        if (val) {
+            event.state = KEYPAD_PRESS;
+            power_press_time = now;
+        } else if (event.state == KEYPAD_PRESS) {
+            event.state = KEYPAD_RELEASE;
+        } else {
+            event.state = KEYPAD_LONG_RELEASE;
+        }
+        event_keypad_t *ev = malloc(sizeof(event_keypad_t));
+        *ev = event;
+        event_send(NULL, EVENT_KEYPAD, (void*) ev);
+    }
+    if ((event.state == KEYPAD_PRESS) && (now - power_press_time > POWER_KEY_LONG_TIME)) {
+        event.state = KEYPAD_LONG;
+        event_keypad_t *ev = malloc(sizeof(event_keypad_t));
+        *ev = event;
+        event_send(NULL, EVENT_KEYPAD, (void*) ev);
+    }
+    prev_val = val;
+}
+
 bool radio_tick() {
+
     if (now_time < prev_time) {
         prev_time = now_time;
     }
@@ -94,14 +124,30 @@ bool radio_tick() {
     if (x6100_flow_read(pack)) {
         prev_time = now_time;
 
+        // printf("power_key=%d resync=%d flag12=%d flag13=%d flag15=%d, hkey=%d, vext=%d charding=%d\n",
+        //     pack->flag.power_key, pack->flag.resync, pack->flag.flag12, pack->flag.flag13, pack->flag.flag15,
+        //     pack->hkey, pack->flag.vext, pack->flag.charging);
+
         static uint8_t delay = 0;
 
         if (delay++ > 10) {
             delay = 0;
             clock_update_power(pack->vext * 0.1f, pack->vbat*0.1f, pack->batcap, pack->flag.charging);
         }
-        cfloat *samples = (cfloat*)((char *)pack + offsetof(x6100_flow_t, samples));
-        dsp_samples(samples, RADIO_SAMPLES, pack->flag.tx);
+        float *samples = (float*)((char *)pack + offsetof(x6100_flow_t, samples));
+        dsp_samples(samples, RADIO_SAMPLES, pack->flag.tx, -(int16_t)pack->dbm);
+
+        process_power_key(pack->flag.power_key, now_time);
+        // char *a = (char *)&pack->flag;
+        // printf("%08x\n", pack->flag);
+        // meter_update(-(int16_t)pack->dbm, 0.8f);
+        // // printf("meter: %i\n", -(int16_t)pack->dbm);
+        // for (size_t i = 0; i < RADIO_SAMPLES; i++) {
+        //     samples[i] = 20 * log10f(samples[i]);
+        // }
+        // // printf("spectrum: %f\n", samples[0]);
+        // waterfall_data(samples, RADIO_SAMPLES, pack->flag.tx);
+        // spectrum_data(samples, RADIO_SAMPLES, pack->flag.tx);
 
         switch (state) {
             case RADIO_RX:
@@ -317,8 +363,9 @@ static void on_low_filter_change(Subject *subj, void *user_data) {
         default:
             radio_lock();
             LV_LOG_USER("Radio set filter_low=%i", low);
-            x6100_control_cmd(x6100_filter1_low, low);
-            x6100_control_cmd(x6100_filter2_low, low);
+            // x6100_control_cmd(x6100_filter1_low, low);
+            // x6100_control_cmd(x6100_filter2_low, low);
+            x6100_control_rx_filter_set_low(low);
             radio_unlock();
             break;
     }
@@ -332,16 +379,18 @@ static void on_high_filter_change(Subject *subj, void *user_data) {
         case x6100_mode_nfm:
             LV_LOG_USER("Radio set filter_low=%i", -high);
             LV_LOG_USER("Radio set filter_high=%i", high);
-            x6100_control_cmd(x6100_filter1_low, -high);
-            x6100_control_cmd(x6100_filter2_low, -high);
-            x6100_control_cmd(x6100_filter1_high, high);
-            x6100_control_cmd(x6100_filter2_high, high);
+            x6100_control_rx_filter_set(-high, high);
+            // x6100_control_cmd(x6100_filter1_low, -high);
+            // x6100_control_cmd(x6100_filter2_low, -high);
+            // x6100_control_cmd(x6100_filter1_high, high);
+            // x6100_control_cmd(x6100_filter2_high, high);
             break;
 
-        default:
+            default:
             LV_LOG_USER("Radio set filter_high=%i", high);
-            x6100_control_cmd(x6100_filter1_high, high);
-            x6100_control_cmd(x6100_filter2_high, high);
+            x6100_control_rx_filter_set_high(high);
+            // x6100_control_cmd(x6100_filter1_high, high);
+            // x6100_control_cmd(x6100_filter2_high, high);
             break;
     }
     radio_unlock();
@@ -438,11 +487,12 @@ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb) {
     x6100_control_vox_delay_set(params.vox_delay);
     x6100_control_vox_gain_set(params.vox_gain);
 
-    x6100_control_cmd(x6100_rit, params.rit);
-    x6100_control_cmd(x6100_xit, params.xit);
+    x6100_control_rit_set(params.rit);
+    x6100_control_xit_set(params.xit);
+
     x6100_control_linein_set(params.line_in);
     x6100_control_lineout_set(params.line_out);
-    x6100_control_cmd(x6100_monilevel, params.moni);
+    x6100_control_monitor_level_set(params.moni);
 
     prev_time = get_time();
     idle_time = prev_time;
@@ -508,7 +558,7 @@ uint16_t radio_change_moni(int16_t df) {
         params_lock();
         params.moni = new_val;
         params_unlock(&params.dirty.moni);
-        WITH_RADIO_LOCK(x6100_control_cmd(x6100_monilevel, params.moni));
+        WITH_RADIO_LOCK(x6100_control_monitor_level_set(params.moni));
         lv_msg_send(MSG_PARAM_CHANGED, NULL);
     }
 
@@ -679,7 +729,7 @@ int16_t radio_change_rit(int16_t d) {
         params.rit = new_val;
         params_unlock(&params.dirty.rit);
         lv_msg_send(MSG_PARAM_CHANGED, NULL);
-        WITH_RADIO_LOCK(x6100_control_cmd(x6100_rit, params.rit));
+        WITH_RADIO_LOCK(x6100_control_rit_set(params.rit));
     }
 
     return params.rit;
@@ -696,7 +746,7 @@ int16_t radio_change_xit(int16_t d) {
         params.xit = new_val;
         params_unlock(&params.dirty.xit);
         lv_msg_send(MSG_PARAM_CHANGED, NULL);
-        WITH_RADIO_LOCK(x6100_control_cmd(x6100_xit, params.xit));
+        WITH_RADIO_LOCK(x6100_control_xit_set(params.xit));
     }
 
     return params.xit;

@@ -64,6 +64,9 @@ void event_obj_check() {
         pthread_mutex_unlock(&queue_mux);
 
         if (item) {
+            if (!item->obj) {
+                item->obj = lv_scr_act();
+            }
             if (item->event_code == LV_EVENT_REFRESH) {
                 lv_obj_invalidate(item->obj);
             } else {

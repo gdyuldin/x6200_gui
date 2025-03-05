@@ -42,7 +42,6 @@ static float            grid_min = DEFAULT_MIN;
 static float            grid_max = DEFAULT_MAX;
 
 static lv_img_dsc_t     *frame;
-static uint8_t          delay = 0;
 
 static int32_t          *freq_offsets;
 static uint16_t         last_row_id;
@@ -98,11 +97,6 @@ static void scroll_down() {
 }
 
 void waterfall_data(float *data_buf, uint16_t size, bool tx) {
-    if (delay)
-    {
-        delay--;
-        return;
-    }
     scroll_down();
 
     float min, max;
@@ -238,25 +232,8 @@ static void redraw_cb(lv_event_t * e) {
     int32_t src_x_offset;
     uint16_t src_y, src_x0, dst_y, dst_x;
 
-    uint8_t current_zoom = 1;
-    if (params.waterfall_zoom.x) {
-        current_zoom = zoom;
-    }
-
     lv_color_t black = lv_color_black();
     lv_color_t px_color;
-
-    // Closest left id for screen pixel
-    uint16_t x0_arr[WIDTH];
-    // Actual point offset, multiplied by 8
-    uint8_t x0_dist[WIDTH];
-    for (uint16_t i = 0; i < WIDTH; i++) {
-        // Position on screen, center x is 0
-        float rel_screen_position = (((float) i + 0.5) / WIDTH) - 0.5f;
-        float src_px = ((rel_screen_position / current_zoom) + 0.5f) * WATERFALL_NFFT + 0.5f;
-        x0_arr[i] = src_px;
-        x0_dist[i] = (src_px - x0_arr[i]) * 8;
-    }
 
     for (src_y = 0; src_y < height; src_y++) {
         dst_y = ((height - src_y + last_row_id) % height);
@@ -265,13 +242,12 @@ static void redraw_cb(lv_event_t * e) {
             memset((lv_color_t *)frame->data + dst_y * WIDTH, 0, WIDTH * PX_BYTES);
         } else {
             for (dst_x = 0; dst_x < WIDTH; dst_x++) {
-                src_x0 = x0_arr[dst_x] - src_x_offset;
+                src_x0 = dst_x - src_x_offset;
                 if ((src_x0 < 0) || (src_x0 >= WATERFALL_NFFT - 1)) {
                     px_color = black;
                 } else {
-                    uint8_t * y0_p = waterfall_cache + (src_y * WATERFALL_NFFT + src_x0);
-                    uint8_t y = *y0_p + ((x0_dist[dst_x] * (*(y0_p+1) - *y0_p)) >> 3);
-                    px_color = (lv_color_t)wf_palette[y];
+                    uint8_t * y_p = waterfall_cache + (src_y * WATERFALL_NFFT + src_x0);
+                    px_color = (lv_color_t)wf_palette[*y_p];
                 }
                 *((lv_color_t*)frame->data + (dst_y * WIDTH + dst_x)) = px_color;
             }
@@ -294,7 +270,6 @@ static void on_zoom_changed(Subject *subj, void *user_data) {
 }
 
 static void on_fg_freq_change(Subject *subj, void *user_data) {
-    delay = 2;
     radio_center_freq = subject_get_int(subj);
 }
 
