@@ -230,7 +230,7 @@ static int init_params_cfg(sqlite3 *db) {
     cfg.sql = (cfg_item_t){.val = subject_create_int(0), .db_name = "sql"};
     cfg.pwr = (cfg_item_t){.val = subject_create_float(5.0f), .db_scale = 0.1f, .db_name = "pwr"};
 
-    cfg.fft_dec = (cfg_item_t){.val = subject_create_int(1), .db_name = "fft_dec"};
+    cfg.fft_dec = (cfg_item_t){.val = subject_create_int(0), .db_name = "fft_dec"};
 
     cfg.key_tone    = (cfg_item_t){.val = subject_create_int(700), .db_name = "key_tone"};
     cfg.band_id     = (cfg_item_t){.val = subject_create_int(5), .db_name = "band"};
@@ -282,7 +282,7 @@ static int init_params_cfg(sqlite3 *db) {
     /* Bind callbacks */
     // subject_add_observer(cfg.band_id.val, on_band_id_change, NULL);
     subject_add_observer(cfg.key_tone.val, on_key_tone_change, NULL);
-    subject_add_observer(cfg.fft_dec.val, update_fft_width, NULL);
+    subject_add_observer_and_call(cfg.fft_dec.val, update_fft_width, NULL);
 
     /* Load values from table */
     cfg_item_t *cfg_arr  = (cfg_item_t *)&cfg;

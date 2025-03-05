@@ -36,7 +36,7 @@ static lv_obj_t         *middle_line;
 static lv_point_t       middle_line_points[] = { {0, 0}, {0, 0} };
 
 static lv_coord_t       height;
-static int32_t          width_hz = 100000;
+static int32_t         width_hz = 100000;
 
 static float            grid_min = DEFAULT_MIN;
 static float            grid_max = DEFAULT_MAX;
@@ -81,14 +81,10 @@ lv_obj_t * waterfall_init(lv_obj_t * parent) {
     lv_style_set_line_opa(&middle_line_style, LV_OPA_60);
     lv_style_set_blend_mode(&middle_line_style, LV_BLEND_MODE_ADDITIVE);
 
-    subject_add_delayed_observer(cfg_cur.fft_width, on_fft_width_changed, NULL);
-    on_fft_width_changed(cfg_cur.fft_width, NULL);
-
     subject_add_observer_and_call(cfg_cur.lo_offset, on_lo_offset_change, NULL);
     subject_add_observer_and_call(cfg_cur.band->grid.min.val, on_grid_min_change, NULL);
     subject_add_observer_and_call(cfg_cur.band->grid.max.val, on_grid_max_change, NULL);
     subject_add_observer_and_call(cfg_cur.fft_width, on_fft_width_changed, NULL);
-
     return obj;
 }
 
@@ -234,7 +230,6 @@ static void redraw_cb(lv_event_t * e) {
 
     lv_color_t black = lv_color_black();
     lv_color_t px_color;
-
     for (src_y = 0; src_y < height; src_y++) {
         dst_y = ((height - src_y + last_row_id) % height);
         src_x_offset = (freq_offsets[src_y] - wf_center_freq) * WATERFALL_NFFT / width_hz;
