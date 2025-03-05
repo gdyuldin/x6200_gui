@@ -24,11 +24,7 @@ static void encoder_input_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
 
     while (read(encoder->fd, &in, sizeof(struct input_event)) > 0) {
         if (in.type == EV_REL) {
-            if (encoder->inverted) {
-                diff -= in.value;
-            } else {
-                diff += in.value;
-            }
+            diff += in.value;
             send = true;
         }
     }
@@ -41,7 +37,7 @@ static void encoder_input_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
     data->state = encoder->pressed ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
 }
 
-encoder_t * encoder_init(char *dev_name, bool invert) {
+encoder_t * encoder_init(char *dev_name) {
     int fd = open(dev_name, O_RDWR | O_NOCTTY | O_NDELAY);
 
     if (fd == -1) {
@@ -64,7 +60,6 @@ encoder_t * encoder_init(char *dev_name, bool invert) {
     encoder->indev_drv.user_data = encoder;
 
     encoder->indev = lv_indev_drv_register(&encoder->indev_drv);
-    encoder->inverted = invert;
 
     lv_indev_set_group(encoder->indev, keyboard_group);
 

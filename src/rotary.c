@@ -28,11 +28,7 @@ static void rotary_input_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
     if (remain_diff == 0) {
         while (read(rotary->fd, &in, sizeof(struct input_event)) > 0) {
             if (in.type == EV_REL) {
-                if (rotary->inverted) {
-                    diff -= in.value;
-                } else {
-                    diff += in.value;
-                }
+                diff += in.value;
                 send = true;
             }
         }
@@ -70,7 +66,7 @@ static void rotary_input_read(lv_indev_drv_t *drv, lv_indev_data_t *data) {
 
 }
 
-rotary_t * rotary_init(char *dev_name, bool invert) {
+rotary_t * rotary_init(char *dev_name) {
     int fd = open(dev_name, O_RDWR | O_NOCTTY | O_NDELAY);
 
     if (fd == -1) {
@@ -93,7 +89,6 @@ rotary_t * rotary_init(char *dev_name, bool invert) {
     rotary->indev_drv.user_data = rotary;
 
     rotary->indev = lv_indev_drv_register(&rotary->indev_drv);
-    rotary->inverted = invert;
 
     lv_indev_set_group(rotary->indev, keyboard_group);
 
