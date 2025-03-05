@@ -138,16 +138,6 @@ bool radio_tick() {
         dsp_samples(samples, RADIO_SAMPLES, pack->flag.tx, -(int16_t)pack->dbm);
 
         process_power_key(pack->flag.power_key, now_time);
-        // char *a = (char *)&pack->flag;
-        // printf("%08x\n", pack->flag);
-        // meter_update(-(int16_t)pack->dbm, 0.8f);
-        // // printf("meter: %i\n", -(int16_t)pack->dbm);
-        // for (size_t i = 0; i < RADIO_SAMPLES; i++) {
-        //     samples[i] = 20 * log10f(samples[i]);
-        // }
-        // // printf("spectrum: %f\n", samples[0]);
-        // waterfall_data(samples, RADIO_SAMPLES, pack->flag.tx);
-        // spectrum_data(samples, RADIO_SAMPLES, pack->flag.tx);
 
         switch (state) {
             case RADIO_RX:

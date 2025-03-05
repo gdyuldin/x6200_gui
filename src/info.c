@@ -125,8 +125,16 @@ const char* info_params_mode_label_get() {
             str = "AM";
             break;
 
+        case x6100_mode_sam:
+            str = "SAM";
+            break;
+
         case x6100_mode_nfm:
             str = "NFM";
+            break;
+
+        case x6100_mode_wfm:
+            str = "WFM";
             break;
 
         default:

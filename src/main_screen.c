@@ -243,9 +243,15 @@ static x6100_mode_t get_next_mode_am_fm(bool long_press) {
     x6100_mode_t    mode = subject_get_int(cfg_cur.mode);
     switch (mode) {
         case x6100_mode_am:
+            mode = x6100_mode_sam;
+            break;
+        case x6100_mode_sam:
             mode = x6100_mode_nfm;
             break;
         case x6100_mode_nfm:
+            mode = x6100_mode_wfm;
+            break;
+        case x6100_mode_wfm:
         default:
             mode = x6100_mode_am;
             break;
@@ -321,7 +327,9 @@ static void change_mode(keypad_key_t key, keypad_state_t state) {
     } mode_text_t;
 
     mode_text_t modes_text[] = {
+        {.mode=x6100_mode_wfm, .msg="W F M modulation"},
         {.mode=x6100_mode_nfm, .msg="N F M modulation"},
+        {.mode=x6100_mode_sam, .msg="S A M modulation"},
         {.mode=x6100_mode_am, .msg="A M modulation"},
         {.mode=x6100_mode_cwr, .msg="CWR modulation"},
         {.mode=x6100_mode_cw, .msg="CW modulation"},
