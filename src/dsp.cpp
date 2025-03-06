@@ -124,14 +124,10 @@ static cfloat  *audio;
 
 static bool ready = false;
 
-static int32_t filter_from = 0;
-static int32_t filter_to   = 3000;
 static x6100_mode_t cur_mode;
 
 static void dsp_update_min_max(float *data_buf, uint16_t size);
 static void on_zoom_change(Subject *subj, void *user_data);
-static void on_real_filter_from_change(Subject *subj, void *user_data);
-static void on_real_filter_to_change(Subject *subj, void *user_data);
 static void on_cur_freq_change(Subject *subj, void *user_data);
 
 
@@ -147,8 +143,6 @@ void dsp_init() {
     audio_hilb = firhilbf_create(7, 60.0f);
 
     // subject_add_observer_and_call(cfg_cur.zoom, on_zoom_change, NULL);
-    subject_add_observer_and_call(cfg_cur.filter.real.from, on_real_filter_from_change, NULL);
-    subject_add_observer_and_call(cfg_cur.filter.real.to, on_real_filter_to_change, NULL);
 
     cfg_cur.fg_freq->subscribe(on_cur_freq_change);
     ready = true;
@@ -201,14 +195,6 @@ void dsp_samples(float *buf_samples, uint16_t size, bool tx, int16_t dbm) {
 
 static void on_zoom_change(Subject *subj, void *user_data) {
 
-}
-
-static void on_real_filter_from_change(Subject *subj, void *user_data) {
-    filter_from = subject_get_int(subj);
-}
-
-static void on_real_filter_to_change(Subject *subj, void *user_data) {
-    filter_to = subject_get_int(subj);
 }
 
 static void on_cur_freq_change(Subject *subj, void *user_data) {

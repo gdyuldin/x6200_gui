@@ -50,7 +50,6 @@ static bool spectrum_tx = false;
 static int32_t filter_from = 0;
 static int32_t filter_to   = 3000;
 static x6100_mode_t cur_mode;
-static int32_t lo_offset;
 
 static int32_t dnf_enabled = false;
 static int32_t dnf_center;
@@ -67,7 +66,6 @@ static void on_fft_width_changed(Subject *subj, void *user_data);
 static void on_real_filter_from_change(Subject *subj, void *user_data);
 static void on_real_filter_to_change(Subject *subj, void *user_data);
 static void on_cur_mode_change(Subject *subj, void *user_data);
-static void on_lo_offset_change(Subject *subj, void *user_data);
 static void on_grid_min_change(Subject *subj, void *user_data);
 static void on_grid_max_change(Subject *subj, void *user_data);
 static void on_int32_val_change(Subject *subj, void *user_data);
@@ -79,9 +77,6 @@ static void spectrum_draw_cb(lv_event_t *e) {
     lv_draw_line_dsc_t main_line_dsc;
     lv_draw_line_dsc_t peak_line_dsc;
 
-    if (!spectrum_buf) {
-        return;
-    }
     float min, max;
     if (spectrum_tx) {
         min = DEFAULT_MIN;
@@ -108,8 +103,6 @@ static void spectrum_draw_cb(lv_event_t *e) {
 
     lv_coord_t w = lv_obj_get_width(obj);
     lv_coord_t h = lv_obj_get_height(obj);
-
-    x1 += lo_offset * w / width_hz;
 
     lv_point_t main_a, main_b;
     lv_point_t peak_a, peak_b;
@@ -278,7 +271,6 @@ lv_obj_t *spectrum_init(lv_obj_t *parent) {
     subject_add_observer_and_call(cfg_cur.filter.real.from, on_real_filter_from_change, NULL);
     subject_add_observer_and_call(cfg_cur.filter.real.to, on_real_filter_to_change, NULL);
     subject_add_observer_and_call(cfg_cur.mode, on_cur_mode_change, NULL);
-    subject_add_observer_and_call(cfg_cur.lo_offset, on_lo_offset_change, NULL);
     subject_add_observer_and_call(cfg_cur.band->grid.min.val, on_grid_min_change, NULL);
     subject_add_observer_and_call(cfg_cur.band->grid.max.val, on_grid_max_change, NULL);
 
@@ -380,9 +372,6 @@ static void on_cur_mode_change(Subject *subj, void *user_data) {
     cur_mode = (x6100_mode_t)subject_get_int(subj);
 }
 
-static void on_lo_offset_change(Subject *subj, void *user_data) {
-    lo_offset = subject_get_int(subj);
-}
 static void on_grid_min_change(Subject *subj, void *user_data) {
     if (!params.spectrum_auto_min.x) {
         grid_min = subject_get_int(subj);

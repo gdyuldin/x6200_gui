@@ -346,15 +346,17 @@ static void on_atu_network_change(Subject *subj, void *user_data) {
 static void on_low_filter_change(Subject *subj, void *user_data) {
     int32_t low = subject_get_int(subj);
     switch (subject_get_int(cfg_cur.mode)) {
+        case x6100_mode_cw:
+        case x6100_mode_cwr:
         case x6100_mode_am:
+        case x6100_mode_sam:
         case x6100_mode_nfm:
+        case x6100_mode_wfm:
             break;
 
         default:
-            radio_lock();
             LV_LOG_USER("Radio set filter_low=%i", low);
-            // x6100_control_cmd(x6100_filter1_low, low);
-            // x6100_control_cmd(x6100_filter2_low, low);
+            radio_lock();
             x6100_control_rx_filter_set_low(low);
             radio_unlock();
             break;
@@ -365,22 +367,20 @@ static void on_high_filter_change(Subject *subj, void *user_data) {
     int32_t high = subject_get_int(subj);
     radio_lock();
     switch (subject_get_int(cfg_cur.mode)) {
+        case x6100_mode_cw:
+        case x6100_mode_cwr:
         case x6100_mode_am:
+        case x6100_mode_sam:
         case x6100_mode_nfm:
+        case x6100_mode_wfm:
             LV_LOG_USER("Radio set filter_low=%i", -high);
             LV_LOG_USER("Radio set filter_high=%i", high);
             x6100_control_rx_filter_set(-high, high);
-            // x6100_control_cmd(x6100_filter1_low, -high);
-            // x6100_control_cmd(x6100_filter2_low, -high);
-            // x6100_control_cmd(x6100_filter1_high, high);
-            // x6100_control_cmd(x6100_filter2_high, high);
             break;
 
             default:
             LV_LOG_USER("Radio set filter_high=%i", high);
             x6100_control_rx_filter_set_high(high);
-            // x6100_control_cmd(x6100_filter1_high, high);
-            // x6100_control_cmd(x6100_filter2_high, high);
             break;
     }
     radio_unlock();

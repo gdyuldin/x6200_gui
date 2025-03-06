@@ -110,15 +110,16 @@ void vol_update(int16_t diff, bool voice) {
             break;
 
         case VOL_FILTER_BW:;
-            uint32_t bw = subject_get_int(cfg_cur.filter.bw);
+            x = subject_get_int(cfg_cur.filter.bw);
             if (diff) {
-                bw = align_int(bw + diff * 20, 20);
-                subject_set_int(cfg_cur.filter.bw, bw);
+                x = align_int(x + diff * 20, 20);
+                x = LV_MAX(x, 20);
+                subject_set_int(cfg_cur.filter.bw, x);
             }
-            msg_update_text_fmt("#%3X Filter bw: %i Hz", color, bw);
+            msg_update_text_fmt("#%3X Filter bw: %d Hz", color, x);
 
             if (diff) {
-                voice_delay_say_text_fmt("%i", bw);
+                voice_delay_say_text_fmt("%i", x);
             } else if (voice) {
                 voice_say_text_fmt("Bandwidth filter limit");
             }

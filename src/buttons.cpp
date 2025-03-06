@@ -788,12 +788,12 @@ static char * tx_power_label_getter() {
 
 static char * filter_low_label_getter() {
     static char buf[22];
-    sprintf(buf, "Filter low:\n%zu Hz", subject_get_int(cfg_cur.filter.low));
+    sprintf(buf, "Filter low:\n%d Hz", subject_get_int(cfg_cur.filter.low));
     return buf;
 }
 static char * filter_high_label_getter() {
     static char buf[22];
-    sprintf(buf, "Filter high:\n%zu Hz", subject_get_int(cfg_cur.filter.high));
+    sprintf(buf, "Filter high:\n%d Hz", subject_get_int(cfg_cur.filter.high));
     return buf;
 }
 

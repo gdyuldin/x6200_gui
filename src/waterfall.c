@@ -49,7 +49,6 @@ static uint8_t          *waterfall_cache;
 
 static int32_t          radio_center_freq = 0;
 static int32_t          wf_center_freq = 0;
-static int32_t          lo_offset = 0;
 
 static uint8_t          refresh_period = 1;
 static uint8_t          refresh_counter = 0;
@@ -59,7 +58,6 @@ static void refresh_waterfall( void * arg);
 static void draw_middle_line();
 static void redraw_cb(lv_event_t * e);
 static void on_fg_freq_change(Subject *subj, void *user_data);
-static void on_lo_offset_change(Subject *subj, void *user_data);
 static void on_grid_min_change(Subject *subj, void *user_data);
 static void on_grid_max_change(Subject *subj, void *user_data);
 static void on_fft_width_changed(Subject *subj, void *user_data);
@@ -81,7 +79,6 @@ lv_obj_t * waterfall_init(lv_obj_t * parent) {
     lv_style_set_line_opa(&middle_line_style, LV_OPA_60);
     lv_style_set_blend_mode(&middle_line_style, LV_BLEND_MODE_ADDITIVE);
 
-    subject_add_observer_and_call(cfg_cur.lo_offset, on_lo_offset_change, NULL);
     subject_add_observer_and_call(cfg_cur.band->grid.min.val, on_grid_min_change, NULL);
     subject_add_observer_and_call(cfg_cur.band->grid.max.val, on_grid_max_change, NULL);
     subject_add_observer_and_call(cfg_cur.fft_width, on_fft_width_changed, NULL);
@@ -104,7 +101,7 @@ void waterfall_data(float *data_buf, uint16_t size, bool tx) {
         max = grid_max;
     }
 
-    freq_offsets[last_row_id] = radio_center_freq + lo_offset;
+    freq_offsets[last_row_id] = radio_center_freq;
 
     for (uint16_t x = 0; x < size; x++) {
         float       v = (data_buf[x] - min) / (max - min);
@@ -268,9 +265,6 @@ static void on_fg_freq_change(Subject *subj, void *user_data) {
     radio_center_freq = subject_get_int(subj);
 }
 
-static void on_lo_offset_change(Subject *subj, void *user_data) {
-    lo_offset = subject_get_int(subj);
-}
 static void on_grid_min_change(Subject *subj, void *user_data) {
     if (!params.waterfall_auto_min.x) {
         grid_min = subject_get_int(subj);

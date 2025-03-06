@@ -110,20 +110,20 @@ static void on_item_change(Subject *subj, void *user_data) {
  * Changing of key tone
  */
 static void on_key_tone_change(Subject *subj, void *user_data) {
-    int32_t key_tone = subject_get_int(subj);
-    if (cfg_cur.mode == NULL) {
-        LV_LOG_USER("Skip update filters, cfg_cur.mode is not initialized");
-        return;
-    }
-    x6100_mode_t db_mode = xmode_2_db(subject_get_int(cfg_cur.mode));
-    if (db_mode == x6100_mode_cw) {
-        int32_t high, low, bw;
-        bw   = subject_get_int(cfg_cur.filter.bw);
-        low  = key_tone - bw / 2;
-        high = low + bw;
-        subject_set_int(cfg_cur.filter.high, high);
-        subject_set_int(cfg_cur.filter.low, low);
-    }
+    // int32_t key_tone = subject_get_int(subj);
+    // if (cfg_cur.mode == NULL) {
+    //     LV_LOG_USER("Skip update filters, cfg_cur.mode is not initialized");
+    //     return;
+    // }
+    // x6100_mode_t db_mode = xmode_2_db(subject_get_int(cfg_cur.mode));
+    // if (db_mode == x6100_mode_cw) {
+    //     int32_t high, low, bw;
+    //     bw   = subject_get_int(cfg_cur.filter.bw);
+    //     low  = key_tone - bw / 2;
+    //     high = low + bw;
+    //     subject_set_int(cfg_cur.filter.high, high);
+    //     subject_set_int(cfg_cur.filter.low, low);
+    // }
 }
 
 /**
