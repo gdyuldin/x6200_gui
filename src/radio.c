@@ -30,7 +30,7 @@
 #include <math.h>
 
 #define FLOW_RESTART_TIMEOUT 300
-#define IDLE_TIMEOUT (3 * 1000)
+#define IDLE_TIMEOUT (1000)
 #define POWER_KEY_LONG_TIME 2000
 
 static radio_state_change_t notify_tx;
@@ -220,7 +220,7 @@ static void * radio_thread(void *arg) {
 
         int32_t idle = now_time - idle_time;
 
-        if (idle > IDLE_TIMEOUT && state == RADIO_RX) {
+        if (idle > IDLE_TIMEOUT) {
             WITH_RADIO_LOCK(x6100_control_idle());
 
             idle_time = now_time;
@@ -429,8 +429,8 @@ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb) {
     subject_add_observer_and_call(cfg_cur.band->split.val, on_change_uint8, x6100_control_split_set);
     subject_add_observer_and_call(cfg_cur.band->rfg.val, on_change_uint8, x6100_control_rfg_set);
 
-    subject_add_observer(cfg_cur.agc, update_agc_time, NULL);
-    subject_add_observer_and_call(cfg_cur.mode, update_agc_time, NULL);
+    // subject_add_observer(cfg_cur.agc, update_agc_time, NULL);
+    // subject_add_observer_and_call(cfg_cur.mode, update_agc_time, NULL);
 
     subject_add_observer_and_call(cfg_cur.filter.low, on_low_filter_change, NULL);
     subject_add_observer_and_call(cfg_cur.filter.high, on_high_filter_change, NULL);
