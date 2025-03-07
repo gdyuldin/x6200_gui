@@ -89,7 +89,7 @@ template <size_t input_size, size_t output_size> class AveragedPSD {
         }
 
         for (size_t i = 0; i < averaged.size(); i++) {
-            averaged[i] = 20.0f * log10f(averaged[i]);
+            averaged[i] = 20.0f * log10f(averaged[i] + 1e-9f);
         }
 
         reset();
@@ -123,6 +123,7 @@ static firhilbf audio_hilb;
 static cfloat  *audio;
 
 static bool ready = false;
+static bool last_tx = false;
 
 static x6100_mode_t cur_mode;
 
@@ -162,6 +163,12 @@ static void update_s_meter(int16_t peak_db) {
 void dsp_samples(float *buf_samples, uint16_t size, bool tx, int16_t dbm) {
     uint64_t      now = get_time();
 
+    if (last_tx != tx) {
+        last_tx = tx;
+        spectrum_avg_psd.reset();
+        waterfall_avg_psd.reset();
+    }
+
     spectrum_avg_psd.add_samples(buf_samples);
     if (psd_delay) {
         psd_delay--;
@@ -188,7 +195,9 @@ void dsp_samples(float *buf_samples, uint16_t size, bool tx, int16_t dbm) {
             update_s_meter(dbm);
 
             // update min/max
-            dsp_update_min_max(waterfall_avg_data->data(), waterfall_avg_data->size());
+            if (!tx) {
+                dsp_update_min_max(waterfall_avg_data->data(), waterfall_avg_data->size());
+            }
         }
     }
 }
