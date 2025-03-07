@@ -24,8 +24,8 @@
 #include <stdio.h>
 
 #define PX_BYTES    sizeof(lv_color_t)
-#define DEFAULT_MIN S4
-#define DEFAULT_MAX S9_20
+#define DEFAULT_MIN S7
+#define DEFAULT_MAX S9_40
 #define WIDTH 800
 
 static lv_obj_t         *obj;
