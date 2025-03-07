@@ -50,11 +50,17 @@ template <size_t input_size, size_t output_size> class AveragedPSD {
     std::mutex mutex;
 
     void lerp_averaged() {
-        float a, b;
-        for (size_t i = 0; i < output_size; i++) {
-            a = psd[positions[i]];
-            b = psd[positions[i] + 1];
-            averaged[i] = a + (b - a) * offsets[i];
+        if (output_size == input_size) {
+            for (size_t i = 0; i < output_size; i++) {
+                averaged[i] = psd[i];
+            }
+        } else {
+            float a, b;
+            for (size_t i = 0; i < output_size; i++) {
+                a = psd[positions[i]];
+                b = psd[positions[i] + 1];
+                averaged[i] = a + (b - a) * offsets[i];
+            }
         }
     }
 
@@ -98,7 +104,7 @@ template <size_t input_size, size_t output_size> class AveragedPSD {
 };
 
 static AveragedPSD<RADIO_SAMPLES, SPECTRUM_NFFT> spectrum_avg_psd;
-static AveragedPSD<RADIO_SAMPLES, WATERFALL_NFFT> waterfall_avg_psd;
+static AveragedPSD<RADIO_SAMPLES, RADIO_SAMPLES> waterfall_avg_psd;
 
 static uint8_t       spectrum_factor = 1;
 

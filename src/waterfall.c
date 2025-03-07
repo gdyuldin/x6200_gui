@@ -28,6 +28,12 @@
 #define DEFAULT_MAX S9_40
 #define WIDTH 800
 
+typedef struct {
+    uint8_t data[512];
+    uint32_t width_hz;
+    int32_t center_freq;
+} waterfall_cache_row_t;
+
 static lv_obj_t         *obj;
 static lv_obj_t         *img;
 
@@ -43,9 +49,9 @@ static float            grid_max = DEFAULT_MAX;
 
 static lv_img_dsc_t     *frame;
 
-static int32_t          *freq_offsets;
-static uint16_t         last_row_id;
-static uint8_t          *waterfall_cache;
+// static int32_t          *freq_offsets;
+static uint16_t               last_row_id;
+static waterfall_cache_row_t *waterfall_cache;
 
 static int32_t          radio_center_freq = 0;
 static int32_t          wf_center_freq = 0;
@@ -101,7 +107,8 @@ void waterfall_data(float *data_buf, uint16_t size, bool tx) {
         max = grid_max;
     }
 
-    freq_offsets[last_row_id] = radio_center_freq;
+    waterfall_cache[last_row_id].center_freq = radio_center_freq;
+    waterfall_cache[last_row_id].width_hz = tx ? 48000 : width_hz;
 
     for (uint16_t x = 0; x < size; x++) {
         float       v = (data_buf[x] - min) / (max - min);
@@ -113,7 +120,7 @@ void waterfall_data(float *data_buf, uint16_t size, bool tx) {
         }
 
         uint8_t id = v * 255;
-        waterfall_cache[last_row_id * size + x] = id;
+        waterfall_cache[last_row_id].data[x] = id;
     }
     scheduler_put_noargs(refresh_waterfall);
 }
@@ -145,13 +152,14 @@ void waterfall_set_height(lv_coord_t h) {
     lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
     lv_img_set_src(img, frame);
 
-    freq_offsets = malloc(height * sizeof(*freq_offsets));
-    for (size_t i = 0; i < height; i++) {
-        freq_offsets[i] = radio_center_freq;
-    }
     last_row_id = 0;
-    waterfall_cache = malloc(WATERFALL_NFFT * height);
-    memset(waterfall_cache, 0, WATERFALL_NFFT * height);
+
+    waterfall_cache = calloc(sizeof(waterfall_cache[0]), height);
+    memset(waterfall_cache, 0, sizeof(waterfall_cache[0]) * height);
+    for (size_t i = 0; i < height; i++) {
+        waterfall_cache[i].center_freq = radio_center_freq;
+        waterfall_cache[i].width_hz = width_hz;
+    }
 
     lv_obj_add_event_cb(img, do_scroll_cb, LV_EVENT_DRAW_POST_END, NULL);
 
@@ -223,23 +231,34 @@ void waterfall_refresh_period_set(uint8_t k) {
 
 static void redraw_cb(lv_event_t * e) {
     int32_t src_x_offset;
-    uint16_t src_y, src_x0, dst_y, dst_x;
+    int16_t src_y, src_x0, dst_y, dst_x;
 
     lv_color_t black = lv_color_black();
     lv_color_t px_color;
     for (src_y = 0; src_y < height; src_y++) {
         dst_y = ((height - src_y + last_row_id) % height);
-        src_x_offset = (freq_offsets[src_y] - wf_center_freq) * WATERFALL_NFFT / width_hz;
-        if ((src_x_offset > WATERFALL_NFFT) || (src_x_offset < -WATERFALL_NFFT)) {
+
+        int32_t left_freq = waterfall_cache[src_y].center_freq - waterfall_cache[src_y].width_hz / 2;
+        int32_t right_freq = left_freq + waterfall_cache[src_y].width_hz;
+
+        left_freq -= wf_center_freq;
+        right_freq -= wf_center_freq;
+
+        // hz to px
+        left_freq = left_freq * WIDTH / width_hz + WIDTH / 2;
+        right_freq = right_freq * WIDTH / width_hz + WIDTH / 2;
+        uint16_t src_w = right_freq - left_freq;
+
+        if ((right_freq < 0) || (left_freq > WIDTH)) {
             memset((lv_color_t *)frame->data + dst_y * WIDTH, 0, WIDTH * PX_BYTES);
         } else {
             for (dst_x = 0; dst_x < WIDTH; dst_x++) {
-                src_x0 = dst_x - src_x_offset;
-                if ((src_x0 < 0) || (src_x0 >= WATERFALL_NFFT - 1)) {
+                uint16_t src_x = (dst_x - left_freq) * WATERFALL_NFFT / src_w;
+                if ((src_x < 0) || (src_x >= WATERFALL_NFFT - 1)) {
                     px_color = black;
                 } else {
-                    uint8_t * y_p = waterfall_cache + (src_y * WATERFALL_NFFT + src_x0);
-                    px_color = (lv_color_t)wf_palette[*y_p];
+                    uint8_t y_p = waterfall_cache[src_y].data[src_x];
+                    px_color = (lv_color_t)wf_palette[y_p];
                 }
                 *((lv_color_t*)frame->data + (dst_y * WIDTH + dst_x)) = px_color;
             }

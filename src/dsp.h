@@ -28,7 +28,7 @@ extern "C" {
 }
 #endif
 
-#define WATERFALL_NFFT  800
+#define WATERFALL_NFFT  512
 #define SPECTRUM_NFFT   800
 
 #ifdef __cplusplus

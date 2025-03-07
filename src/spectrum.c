@@ -78,9 +78,11 @@ static void spectrum_draw_cb(lv_event_t *e) {
     lv_draw_line_dsc_t peak_line_dsc;
 
     float min, max;
+    uint8_t tx_scale_factor;
     if (spectrum_tx) {
         min = DEFAULT_MIN;
         max = DEFAULT_MAX;
+        tx_scale_factor = width_hz / 48000;
     } else {
         min = grid_min;
         max = grid_max;
@@ -116,14 +118,35 @@ static void spectrum_draw_cb(lv_event_t *e) {
     peak_b.y = y1 + h;
 
     for (uint16_t i = 0; i < SPECTRUM_SIZE; i++) {
-        float    v = (spectrum_buf[i] - min) / (max - min);
+        float v;
+        if (spectrum_tx) {
+            int16_t sp_ind = ((int16_t)i - SPECTRUM_SIZE / 2) * tx_scale_factor + SPECTRUM_SIZE / 2;
+            if ((sp_ind < 0) || (sp_ind > (SPECTRUM_SIZE - 1))) {
+                v = S_MIN;
+            } else {
+                v = spectrum_buf[sp_ind];
+            }
+        } else {
+            v = spectrum_buf[i];
+        }
+        v = LV_MAX(v - min, 0) / (max - min);
         uint16_t x = i * w / SPECTRUM_SIZE;
 
         /* Peak */
 
         if (params.spectrum_peak && !spectrum_tx) {
-            float v_peak = (spectrum_peak[i].val - min) / (max - min);
-
+            float v_peak;
+            if (spectrum_tx) {
+                int16_t sp_ind = ((int16_t)i - SPECTRUM_SIZE / 2) * tx_scale_factor + SPECTRUM_SIZE / 2;
+                if ((sp_ind < 0) || (sp_ind > (SPECTRUM_SIZE - 1))) {
+                    v_peak = S_MIN;
+                } else {
+                    v_peak = spectrum_peak[sp_ind].val;
+                }
+            } else {
+                v_peak = spectrum_peak[i].val;
+            }
+            v_peak = LV_MAX(v_peak - min, 0) / (max - min);
             peak_a.x = x1 + x;
             peak_a.y = y1 + (1.0f - v_peak) * h;
 
