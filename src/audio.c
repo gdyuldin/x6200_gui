@@ -64,7 +64,7 @@ static void mixer_setup() {
     // capture audio from radio
     res = system("amixer sset 'Mic1',0 0,0 cap");
     // mic boost
-    res = system("amixer sset 'Mic1 Boost',0 1");
+    res = system("amixer sset 'Mic1 Boost',0 0");
     // disable capturing from mixer
     res = system("amixer sset 'Mixer',0 nocap");
     res = system("amixer sset 'ADC Gain',0 3");
