@@ -256,7 +256,6 @@ void tx_info_update(float p, float s, float a) {
     // Use EMA for smoothing values
     const float beta = 0.9f;
 
-    a = 10.f - a;
     s = LV_MIN(max_swr, s);
 
     switch (cur_mode) {
