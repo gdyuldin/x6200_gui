@@ -580,9 +580,9 @@ bool radio_start_swrscan() {
         return false;
     }
 
-    subject_set_int(cfg_cur.mode, x6100_mode_am);
+    subject_set_int(cfg_cur.mode, x6100_mode_lsb);
     radio_lock();
-    x6100_control_txpwr_set(5.0f);
+    x6100_control_txpwr_set(3.0f);
     x6100_control_swrscan_set(true);
     radio_unlock();
     state = RADIO_SWRSCAN;

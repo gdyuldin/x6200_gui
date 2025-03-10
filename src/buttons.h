@@ -76,6 +76,7 @@ void            buttons_load_page(buttons_page_t *page);
 void            buttons_unload_page();
 void            button_next_page_cb(button_item_t *item);
 void            button_prev_page_cb(button_item_t *item);
+void            button_update_label(button_item_t *item, char *label);
 void            buttons_press(uint8_t n, bool hold);
 void            buttons_load_page_group(buttons_group_t group);
 buttons_page_t *buttons_get_cur_page();

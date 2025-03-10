@@ -318,11 +318,13 @@ static void key_cb(lv_event_t * e) {
 
 void dialog_swrscan_run_cb(button_item_t *item) {
     if (run) {
+        button_update_label(item, "Run");
         run = false;
         radio_stop_swrscan();
         radio_set_freq(freq_center);
         mem_load(MEM_BACKUP_ID);
     } else {
+        button_update_label(item, "Stop");
         mem_save(MEM_BACKUP_ID);
         do_init();
         radio_set_freq(freq_start);

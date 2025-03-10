@@ -651,6 +651,13 @@ void button_prev_page_cb(button_item_t *item) {
     buttons_load_page(item->prev);
 }
 
+void button_update_label(button_item_t *item, char *label) {
+    if (item->type == BTN_TEXT) {
+        item->label = label;
+        lv_label_set_text(item->label_obj, item->label);
+    }
+}
+
 static void button_app_page_cb(button_item_t *item) {
     main_screen_start_app((press_action_t)item->data);
 }
@@ -1018,3 +1025,4 @@ static void label_update_cb(Subject *subj, void *user_data) {
         LV_LOG_WARN("Can't update label: it's NULL");
     }
 }
+
