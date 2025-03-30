@@ -88,6 +88,7 @@ lv_style_t  freq_style;
 lv_style_t  freq_main_style;
 lv_style_t  waterfall_style;
 lv_style_t  btn_style;
+lv_style_t  btn_active_style;
 lv_style_t  msg_style;
 lv_style_t  msg_tiny_style;
 lv_style_t  clock_style;
@@ -161,6 +162,10 @@ void styles_init(themes_t theme) {
     lv_style_set_border_width(&btn_style, 0);
     lv_style_set_radius(&btn_style, 0);
     lv_style_set_bg_opa(&btn_style, LV_OPA_0);
+
+    lv_style_init(&btn_active_style);
+    lv_style_set_bg_img_recolor(&btn_active_style, lv_color_hex(0x00FF00));
+    lv_style_set_bg_img_recolor_opa(&btn_active_style, LV_OPA_20);
 
     /* Message style */
     lv_style_init(&msg_style);
