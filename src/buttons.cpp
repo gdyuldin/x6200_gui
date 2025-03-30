@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -878,7 +878,7 @@ static char * xit_label_getter() {
 }
 
 static char * agc_label_getter() {
-    const char * agc_str = cfg_mode_agc_label((x6100_agc_t)subject_get_int(cfg_cur.agc));
+    const char * agc_str = cfg_mode_agc_label((x6200_agc_t)subject_get_int(cfg_cur.agc));
     static char buf[22];
     sprintf(buf, "AGC:\n%s", agc_str);
     return buf;
@@ -928,13 +928,13 @@ static char * key_tone_label_getter() {
 
 static char * key_mode_label_getter() {
     static char buf[22];
-    sprintf(buf, "Mode:\n%s", params_key_mode_str_get((x6100_key_mode_t)subject_get_int(cfg.key_mode.val)));
+    sprintf(buf, "Mode:\n%s", params_key_mode_str_get((x6200_key_mode_t)subject_get_int(cfg.key_mode.val)));
     return buf;
 }
 
 static char * iambic_mode_label_getter() {
     static char buf[22];
-    sprintf(buf, "Iambic:\n%s mode", params_iambic_mode_str_ger((x6100_iambic_mode_t)subject_get_int(cfg.iambic_mode.val)));
+    sprintf(buf, "Iambic:\n%s mode", params_iambic_mode_str_ger((x6200_iambic_mode_t)subject_get_int(cfg.iambic_mode.val)));
     return buf;
 }
 

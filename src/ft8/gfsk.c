@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Based on gcFT8 de F4HTB
  *

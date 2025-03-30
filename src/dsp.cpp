@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -131,7 +131,7 @@ static cfloat  *audio;
 static bool ready = false;
 static bool last_tx = false;
 
-static x6100_mode_t cur_mode;
+static x6200_mode_t cur_mode;
 
 static void dsp_update_min_max(float *data_buf, uint16_t size);
 static void on_zoom_change(Subject *subj, void *user_data);
@@ -248,7 +248,7 @@ void dsp_put_audio_samples(size_t nsamples, int16_t *samples) {
 
     if (rtty_get_state() == RTTY_RX) {
         rtty_put_audio_samples(nsamples, audio);
-    } else if (cur_mode == x6100_mode_cw || cur_mode == x6100_mode_cwr) {
+    } else if (cur_mode == x6200_mode_cw || cur_mode == x6200_mode_cwr) {
         cw_put_audio_samples(nsamples, audio);
     } else {
         dialog_audio_samples(nsamples, audio);

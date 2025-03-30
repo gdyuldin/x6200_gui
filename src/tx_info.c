@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -36,7 +36,7 @@ static uint8_t msg_id;
 
 static uint64_t prev_ui_update = 0;
 
-static x6100_mode_t cur_mode;
+static x6200_mode_t cur_mode;
 
 static lv_obj_t     *obj;
 static lv_obj_t     *alc_label;
@@ -259,8 +259,8 @@ void tx_info_update(float p, float s, float a) {
     s = LV_MIN(max_swr, s);
 
     switch (cur_mode) {
-        case x6100_mode_lsb_dig:
-        case x6100_mode_usb_dig:
+        case x6200_mode_lsb_dig:
+        case x6200_mode_usb_dig:
             pwr  = p;
             alc  = a;
             vswr = s;

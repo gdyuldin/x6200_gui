@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -56,7 +56,7 @@ static bool           rx_letter     = true;
 static bool         ready = false;
 static rtty_state_t state = RTTY_OFF;
 
-static x6100_mode_t cur_mode;
+static x6200_mode_t cur_mode;
 
 static const char rtty_letters[32] = {'\0', 'E', '\n', 'A', ' ', 'S', 'I', 'U', '\0', 'D', 'R',
                                       'J',  'N', 'F',  'C', 'K', 'T', 'Z', 'L', 'W',  'H', 'Y',
@@ -260,8 +260,8 @@ void rtty_put_audio_samples(unsigned int n, cfloat *samples) {
         float pwr1 = 10.0f * log10f(fskdem_get_symbol_energy(demod, 1, 1));
         float pwr  = pwr0 - pwr1;
 
-        if (((cur_mode == x6100_mode_usb || cur_mode == x6100_mode_usb_dig) && !params.rtty_reverse) ||
-            ((cur_mode == x6100_mode_lsb || cur_mode == x6100_mode_lsb_dig) && params.rtty_reverse)) {
+        if (((cur_mode == x6200_mode_usb || cur_mode == x6200_mode_usb_dig) && !params.rtty_reverse) ||
+            ((cur_mode == x6200_mode_lsb || cur_mode == x6200_mode_lsb_dig) && params.rtty_reverse)) {
             pwr = -pwr;
         }
 

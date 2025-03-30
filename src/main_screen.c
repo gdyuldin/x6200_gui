@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -245,73 +245,73 @@ void main_screen_action(press_action_t action) {
     }
 }
 
-static x6100_mode_t get_next_mode_am_fm(bool long_press) {
-    x6100_mode_t    mode = subject_get_int(cfg_cur.mode);
+static x6200_mode_t get_next_mode_am_fm(bool long_press) {
+    x6200_mode_t    mode = subject_get_int(cfg_cur.mode);
     switch (mode) {
-        case x6100_mode_am:
-            mode = x6100_mode_sam;
+        case x6200_mode_am:
+            mode = x6200_mode_sam;
             break;
-        case x6100_mode_sam:
-            mode = x6100_mode_nfm;
+        case x6200_mode_sam:
+            mode = x6200_mode_nfm;
             break;
-        case x6100_mode_nfm:
-            mode = x6100_mode_wfm;
+        case x6200_mode_nfm:
+            mode = x6200_mode_wfm;
             break;
-        case x6100_mode_wfm:
+        case x6200_mode_wfm:
         default:
-            mode = x6100_mode_am;
+            mode = x6200_mode_am;
             break;
     }
     return mode;
 }
 
-static x6100_mode_t get_next_mode_cw(bool long_press) {
-    x6100_mode_t    mode = subject_get_int(cfg_cur.mode);
+static x6200_mode_t get_next_mode_cw(bool long_press) {
+    x6200_mode_t    mode = subject_get_int(cfg_cur.mode);
     switch (mode) {
-        case x6100_mode_cw:
-            mode = x6100_mode_cwr;
+        case x6200_mode_cw:
+            mode = x6200_mode_cwr;
             break;
-        case x6100_mode_cwr:
+        case x6200_mode_cwr:
         default:
-            mode = x6100_mode_cw;
+            mode = x6200_mode_cw;
             break;
     }
     return mode;
 }
 
-static x6100_mode_t get_next_mode_ssb(bool long_press) {
-    x6100_mode_t    mode = subject_get_int(cfg_cur.mode);
+static x6200_mode_t get_next_mode_ssb(bool long_press) {
+    x6200_mode_t    mode = subject_get_int(cfg_cur.mode);
     switch (mode) {
-        case x6100_mode_lsb_dig:
+        case x6200_mode_lsb_dig:
             if (long_press) {
-                mode = x6100_mode_lsb;
+                mode = x6200_mode_lsb;
             } else {
-                mode = x6100_mode_usb_dig;
+                mode = x6200_mode_usb_dig;
             }
             break;
-        case x6100_mode_usb_dig:
+        case x6200_mode_usb_dig:
             if (long_press) {
-                mode = x6100_mode_usb;
+                mode = x6200_mode_usb;
             } else {
-                mode = x6100_mode_lsb_dig;
+                mode = x6200_mode_lsb_dig;
             }
             break;
-        case x6100_mode_lsb:
+        case x6200_mode_lsb:
             if (long_press) {
-                mode = x6100_mode_lsb_dig;
+                mode = x6200_mode_lsb_dig;
             } else {
-                mode = x6100_mode_usb;
+                mode = x6200_mode_usb;
             }
             break;
-        case x6100_mode_usb:
+        case x6200_mode_usb:
             if (long_press) {
-                mode = x6100_mode_usb_dig;
+                mode = x6200_mode_usb_dig;
             } else {
-                mode = x6100_mode_lsb;
+                mode = x6200_mode_lsb;
             }
             break;
         default:
-            mode = x6100_mode_lsb;
+            mode = x6200_mode_lsb;
             break;
     }
     return mode;
@@ -328,25 +328,25 @@ static void change_mode(keypad_key_t key, keypad_state_t state) {
 
     // Define mode->text struct
     typedef struct {
-        x6100_mode_t    mode;
+        x6200_mode_t    mode;
         const char*     msg;
     } mode_text_t;
 
     mode_text_t modes_text[] = {
-        {.mode=x6100_mode_wfm, .msg="W F M modulation"},
-        {.mode=x6100_mode_nfm, .msg="N F M modulation"},
-        {.mode=x6100_mode_sam, .msg="S A M modulation"},
-        {.mode=x6100_mode_am, .msg="A M modulation"},
-        {.mode=x6100_mode_cwr, .msg="CWR modulation"},
-        {.mode=x6100_mode_cw, .msg="CW modulation"},
-        {.mode=x6100_mode_lsb_dig, .msg="LSB digital modulation"},
-        {.mode=x6100_mode_lsb, .msg="LSB modulation"},
-        {.mode=x6100_mode_usb_dig, .msg="USB digital modulation"},
-        {.mode=x6100_mode_usb, .msg="USB modulation"},
+        {.mode=x6200_mode_wfm, .msg="W F M modulation"},
+        {.mode=x6200_mode_nfm, .msg="N F M modulation"},
+        {.mode=x6200_mode_sam, .msg="S A M modulation"},
+        {.mode=x6200_mode_am, .msg="A M modulation"},
+        {.mode=x6200_mode_cwr, .msg="CWR modulation"},
+        {.mode=x6200_mode_cw, .msg="CW modulation"},
+        {.mode=x6200_mode_lsb_dig, .msg="LSB digital modulation"},
+        {.mode=x6200_mode_lsb, .msg="LSB modulation"},
+        {.mode=x6200_mode_usb_dig, .msg="USB digital modulation"},
+        {.mode=x6200_mode_usb, .msg="USB modulation"},
     };
 
     // find next mode
-    x6100_mode_t    next_mode;
+    x6200_mode_t    next_mode;
     switch (key) {
         case KEYPAD_MODE_AM:
             next_mode = get_next_mode_am_fm(state == KEYPAD_LONG);
@@ -380,7 +380,7 @@ static void main_screen_keypad_cb(lv_event_t * e) {
             if (keypad->state == KEYPAD_RELEASE) {
                 pre = !pre;
                 if (pre && att) {
-                    subject_set_int(cfg_cur.att, x6100_att_off);
+                    subject_set_int(cfg_cur.att, x6200_att_off);
                 }
                 subject_set_int(cfg_cur.pre, pre);
                 voice_say_text_fmt("Preamplifier %s", pre ? "On" : "Off");
@@ -393,7 +393,7 @@ static void main_screen_keypad_cb(lv_event_t * e) {
             } else if (keypad->state == KEYPAD_LONG) {
                 att = !att;
                 if (pre && att) {
-                    subject_set_int(cfg_cur.pre, x6100_pre_off);
+                    subject_set_int(cfg_cur.pre, x6200_pre_off);
                 }
                 subject_set_int(cfg_cur.att, att);
                 voice_say_text_fmt("Attenuator %s", att ? "On" : "Off");
@@ -434,25 +434,25 @@ static void main_screen_keypad_cb(lv_event_t * e) {
 
         case KEYPAD_AGC:
             if (keypad->state == KEYPAD_RELEASE) {
-                x6100_agc_t agc = subject_get_int(cfg_cur.agc);
+                x6200_agc_t agc = subject_get_int(cfg_cur.agc);
                 switch (agc) {
-                    case x6100_agc_off:
-                        agc = x6100_agc_slow;
+                    case x6200_agc_off:
+                        agc = x6200_agc_slow;
                         voice_say_text_fmt("Auto gain slow mode");
                         break;
 
-                    case x6100_agc_slow:
-                        agc = x6100_agc_fast;
+                    case x6200_agc_slow:
+                        agc = x6200_agc_fast;
                         voice_say_text_fmt("Auto gain fast mode");
                         break;
 
-                    case x6100_agc_fast:
-                        agc = x6100_agc_auto;
+                    case x6200_agc_fast:
+                        agc = x6200_agc_auto;
                         voice_say_text_fmt("Auto gain auto mode");
                         break;
 
-                    case x6100_agc_auto:
-                        agc = x6100_agc_off;
+                    case x6200_agc_auto:
+                        agc = x6200_agc_off;
                         voice_say_text_fmt("Auto gain off");
                         break;
                 }
@@ -566,8 +566,8 @@ static void main_screen_keypad_cb(lv_event_t * e) {
         case KEYPAD_MSG:
             if (keypad->state == KEYPAD_RELEASE) {
                 switch (subject_get_int(cfg_cur.mode)) {
-                    case x6100_mode_cw:
-                    case x6100_mode_cwr:
+                    case x6200_mode_cw:
+                    case x6200_mode_cwr:
                         if (!dialog_type_is_run(dialog_msg_cw)) {
                             apps_disable();
                         }
@@ -577,10 +577,10 @@ static void main_screen_keypad_cb(lv_event_t * e) {
                         voice_say_text_fmt("CW messages window");
                         break;
 
-                    case x6100_mode_lsb:
-                    case x6100_mode_usb:
-                    case x6100_mode_am:
-                    case x6100_mode_nfm:
+                    case x6200_mode_lsb:
+                    case x6200_mode_usb:
+                    case x6200_mode_am:
+                    case x6200_mode_nfm:
                         if (!dialog_type_is_run(dialog_msg_voice)) {
                             apps_disable();
                         }
@@ -629,11 +629,11 @@ static void main_screen_keypad_cb(lv_event_t * e) {
                         msg_tiny_set_text_fmt("%s", info_params_vfo_label_get());
                     }
                 } else if (keypad->state == KEYPAD_LONG) {
-                    x6100_vfo_t cur_vfo = subject_get_int(cfg_cur.band->vfo.val);
+                    x6200_vfo_t cur_vfo = subject_get_int(cfg_cur.band->vfo.val);
                     cfg_band_vfo_copy();
                     // radio_vfo_set();
-                    msg_update_text_fmt("Clone VFO %s", cur_vfo == X6100_VFO_A ? "A->B" : "B->A");
-                    voice_say_text_fmt("V F O cloned %s", cur_vfo == X6100_VFO_A ? "from A to B" : "from B to A");
+                    msg_update_text_fmt("Clone VFO %s", cur_vfo == X6200_VFO_A ? "A->B" : "B->A");
+                    voice_say_text_fmt("V F O cloned %s", cur_vfo == X6200_VFO_A ? "from A to B" : "from B to A");
                 }
             }
             break;
@@ -664,8 +664,8 @@ static void main_screen_keypad_cb(lv_event_t * e) {
                     radio_set_ptt(true);
 
                     switch (subject_get_int(cfg_cur.mode)) {
-                        case x6100_mode_cw:
-                        case x6100_mode_cwr:
+                        case x6200_mode_cw:
+                        case x6200_mode_cwr:
                             radio_set_morse_key(true);
                             break;
                     }
@@ -674,8 +674,8 @@ static void main_screen_keypad_cb(lv_event_t * e) {
                 case KEYPAD_RELEASE:
                 case KEYPAD_LONG_RELEASE:
                     switch (subject_get_int(cfg_cur.mode)) {
-                        case x6100_mode_cw:
-                        case x6100_mode_cwr:
+                        case x6200_mode_cw:
+                        case x6200_mode_cwr:
                             radio_set_morse_key(false);
                             break;
                     }
@@ -1090,7 +1090,7 @@ lv_obj_t * main_screen() {
 
     cw_tune_init(obj);
 
-    msg_schedule_text_fmt("X6100 de R1CBU " VERSION);
+    msg_schedule_text_fmt("X6200 de R1CBU " VERSION);
 
     subject_add_delayed_observer(freq_lock, on_fg_freq_change, NULL);
     subject_add_delayed_observer(cfg_cur.band->split.val, on_fg_freq_change, NULL);

@@ -110,7 +110,7 @@ bool cfg_memory_load(int32_t id) {
 void cfg_memory_save(int32_t id) {
 
     struct vfo_params fg_params;
-    if (subject_get_int(cfg_cur.band->vfo.val) == X6100_VFO_A) {
+    if (subject_get_int(cfg_cur.band->vfo.val) == X6200_VFO_A) {
         fg_params = cfg_cur.band->vfo_a;
     } else {
         fg_params = cfg_cur.band->vfo_b;

@@ -43,7 +43,7 @@ PkgConfig::deps
 FT8 QTH
 Threads::Threads
 lvgl lvgl::drivers
-aether_x6100_control
+aether_x6200_control
 liquid
 RHVoice RHVoice_core RHVoice_audio
 ft8

@@ -2,7 +2,7 @@
 
 #include "common.h"
 
-#include <aether_radio/x6100_control/control.h>
+#include <aether_radio/x6200_control/control.h>
 
 typedef struct {
     int32_t  id;
@@ -32,7 +32,7 @@ typedef struct {
     } grid;
 } cfg_band_t;
 
-void cfg_band_set_freq_for_vfo(x6100_vfo_t vfo, int32_t freq);
+void cfg_band_set_freq_for_vfo(x6200_vfo_t vfo, int32_t freq);
 
 void        cfg_band_vfo_copy();
 void        cfg_band_load_next(bool up);

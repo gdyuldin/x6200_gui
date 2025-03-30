@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2024 Georgy Dyuldin aka R2RFE
  */
@@ -186,7 +186,7 @@ int adif_read(const char * path, qso_log_record_t ** records) {
 }
 
 static void write_header(FILE *fd) {
-    fprintf(fd, "<PROGRAMID:5>X6100\r\n");
+    fprintf(fd, "<PROGRAMID:5>X6200\r\n");
     fprintf(fd, "<PROGRAMVERSION:5>1.0.0\r\n");
     fprintf(fd, "<ADIF_VER:4>3.14\r\n");
     fprintf(fd, "<EOH>\r\n");

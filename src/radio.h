@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -9,7 +9,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include <aether_radio/x6100_control/control.h>
+#include <aether_radio/x6200_control/control.h>
 
 #include "lvgl/lvgl.h"
 
@@ -47,7 +47,7 @@ radio_state_t radio_get_state();
 void radio_set_freq(int32_t freq);
 bool radio_check_freq(int32_t freq);
 
-x6100_vfo_t radio_toggle_vfo();
+x6200_vfo_t radio_toggle_vfo();
 
 uint16_t radio_change_vol(int16_t df);
 uint16_t radio_change_moni(int16_t df);
@@ -59,7 +59,7 @@ void radio_set_pwr(float d);
 
 radio_charger_t radio_change_charger(int16_t d);
 
-x6100_mic_sel_t radio_change_mic(int16_t d);
+x6200_mic_sel_t radio_change_mic(int16_t d);
 uint8_t radio_change_hmic(int16_t d);
 uint8_t radio_change_imic(int16_t d);
 

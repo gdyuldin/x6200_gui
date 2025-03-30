@@ -1,1 +1,1 @@
-BUILDROOT="../../AetherX6100Buildroot/build"
+BUILDROOT="../../AetherX6200Buildroot/build"

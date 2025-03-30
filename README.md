@@ -1,10 +1,10 @@
-# X6100 LVGL GUI
+# X6200 LVGL GUI
 
-This is part of an alternative firmware for X6100 using the LVGL library
+This is part of an alternative firmware for X6200 using the LVGL library
 
 ## Installing
 
-Open [Releases](https://github.com/gdyuldin/x6100_gui/releases/latest) page and download `sdcard.img` file (in Assets section). With balenaEtcher or Rufus
+Open [Releases](https://github.com/gdyuldin/x6200_gui/releases/latest) page and download `sdcard.img` file (in Assets section). With balenaEtcher or Rufus
 burn img file to microSD card. Insert card to the transceiver and boot it.
 
 ## Importing ADI log
@@ -27,16 +27,16 @@ Application stores FT8/FT4 QSOs to the `ft_log.adi` file on the `DATA` partition
 * Clone repositories
 
 ```
-mkdir x6100
-cd x6100
-git clone https://github.com/gdyuldin/AetherX6100Buildroot
-git clone https://github.com/gdyuldin/x6100_gui
+mkdir x6200
+cd x6200
+git clone https://github.com/gdyuldin/AetherX6200Buildroot
+git clone https://github.com/gdyuldin/x6200_gui
 ```
 
 * Build buildroot
 
 ```
-cd AetherX6100Buildroot
+cd AetherX6200Buildroot
 ./br_build.sh
 cd ..
 ```
@@ -44,7 +44,7 @@ cd ..
 * Build app
 
 ```
-cd x6100_gui
+cd x6200_gui
 git submodule init
 git submodule update
 cd buildroot

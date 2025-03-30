@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -56,7 +56,7 @@ params_t params = {
     .clock_power_timeout    = 3,
     .clock_tx_timeout       = 1,
 
-    .mic                    = x6100_mic_auto,
+    .mic                    = x6200_mic_auto,
     .hmic                   = 20,
     .imic                   = 30,
     .charger                = true,
@@ -644,35 +644,35 @@ inline char * params_charger_str_get(radio_charger_t val) {
     }
 }
 
-inline char * params_mic_str_get(x6100_mic_sel_t val) {
+inline char * params_mic_str_get(x6200_mic_sel_t val) {
     switch (val) {
-        case x6100_mic_builtin:
+        case x6200_mic_builtin:
             return "Built-In";
-        case x6100_mic_handle:
+        case x6200_mic_handle:
             return "Handle";
-        case x6100_mic_auto:
+        case x6200_mic_auto:
             return "Auto";
         default:
             return "";
     }
 }
 
-inline char * params_key_mode_str_get(x6100_key_mode_t val) {
+inline char * params_key_mode_str_get(x6200_key_mode_t val) {
     switch (val) {
-        case x6100_key_manual:
+        case x6200_key_manual:
             return "Manual";
-        case x6100_key_auto_left:
+        case x6200_key_auto_left:
             return "Auto-L";
-        case x6100_key_auto_right:
+        case x6200_key_auto_right:
             return "Auto-R";
     }
 }
 
-inline char * params_iambic_mode_str_ger(x6100_iambic_mode_t val) {
+inline char * params_iambic_mode_str_ger(x6200_iambic_mode_t val) {
     switch (val) {
-        case x6100_iambic_a:
+        case x6200_iambic_a:
             return "A";
-        case x6100_iambic_b:
+        case x6200_iambic_b:
             return "B";
     }
 }

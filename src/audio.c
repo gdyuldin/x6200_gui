@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -82,7 +82,7 @@ void audio_init() {
     pa_threaded_mainloop_start(mloop);
 
     mlapi = pa_threaded_mainloop_get_api(mloop);
-    ctx = pa_context_new(mlapi, "X6100 GUI");
+    ctx = pa_context_new(mlapi, "X6200 GUI");
 
     pa_threaded_mainloop_lock(mloop);
     pa_context_set_state_callback(ctx, on_state_change, NULL);
@@ -110,7 +110,7 @@ void audio_init() {
     attr.fragsize = pa_usec_to_bytes(AUDIO_RATE_MS * PA_USEC_PER_MSEC, &spec);
     attr.tlength = attr.fragsize * 8;
 
-    play_stm = pa_stream_new(ctx, "X6100 GUI Play", &spec, NULL);
+    play_stm = pa_stream_new(ctx, "X6200 GUI Play", &spec, NULL);
 
     pa_threaded_mainloop_lock(mloop);
     pa_stream_connect_playback(play_stm, play_device, &attr, PA_STREAM_ADJUST_LATENCY, NULL, NULL);
@@ -121,7 +121,7 @@ void audio_init() {
     spec.rate = AUDIO_CAPTURE_RATE,
     attr.fragsize = attr.tlength = pa_usec_to_bytes(AUDIO_RATE_MS * PA_USEC_PER_MSEC, &spec);
 
-    capture_stm = pa_stream_new(ctx, "X6100 GUI Capture", &spec, NULL);
+    capture_stm = pa_stream_new(ctx, "X6200 GUI Capture", &spec, NULL);
 
     pa_threaded_mainloop_lock(mloop);
     pa_stream_set_read_callback(capture_stm, read_callback, NULL);
@@ -220,13 +220,13 @@ void audio_gain_db_transition(int16_t *buf, size_t samples, float gain1, float g
 
 void audio_play_en(bool on) {
     if (on) {
-        x6100_control_hmic_set(0);
-        x6100_control_imic_set(0);
-        x6100_control_record_set(true);
+        x6200_control_hmic_set(0);
+        x6200_control_imic_set(0);
+        x6200_control_record_set(true);
     } else {
-        x6100_control_record_set(false);
-        x6100_control_hmic_set(params.hmic);
-        x6100_control_imic_set(params.imic);
+        x6200_control_record_set(false);
+        x6200_control_hmic_set(params.hmic);
+        x6200_control_imic_set(params.imic);
     }
 }
 
@@ -306,7 +306,7 @@ static void record_monitor_setup() {
 
     spec.rate = 30;
 
-    monitor_stm = pa_stream_new(ctx, "X6100 GUI Monitor", &spec, NULL);
+    monitor_stm = pa_stream_new(ctx, "X6200 GUI Monitor", &spec, NULL);
 
     pa_threaded_mainloop_lock(mloop);
     pa_stream_set_read_callback(monitor_stm, monitor_cb, NULL);

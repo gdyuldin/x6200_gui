@@ -10,7 +10,7 @@
 
 #include "../lvgl/lvgl.h"
 #include "../util.h"
-#include <aether_radio/x6100_control/control.h>
+#include <aether_radio/x6200_control/control.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -115,8 +115,8 @@ static void on_key_tone_change(Subject *subj, void *user_data) {
     //     LV_LOG_USER("Skip update filters, cfg_cur.mode is not initialized");
     //     return;
     // }
-    // x6100_mode_t db_mode = xmode_2_db(subject_get_int(cfg_cur.mode));
-    // if (db_mode == x6100_mode_cw) {
+    // x6200_mode_t db_mode = xmode_2_db(subject_get_int(cfg_cur.mode));
+    // if (db_mode == x6200_mode_cw) {
     //     int32_t high, low, bw;
     //     bw   = subject_get_int(cfg_cur.filter.bw);
     //     low  = key_tone - bw / 2;
@@ -253,8 +253,8 @@ static int init_params_cfg(sqlite3 *db) {
     fill_cfg_item(&cfg.atu_enabled, subject_create_int(false), "atu");
 
     fill_cfg_item(&cfg.key_speed, subject_create_int(15), "key_speed");
-    fill_cfg_item(&cfg.key_mode, subject_create_int(x6100_key_manual), "key_mode");
-    fill_cfg_item(&cfg.iambic_mode, subject_create_int(x6100_iambic_a), "iambic_mode");
+    fill_cfg_item(&cfg.key_mode, subject_create_int(x6200_key_manual), "key_mode");
+    fill_cfg_item(&cfg.iambic_mode, subject_create_int(x6200_iambic_a), "iambic_mode");
     fill_cfg_item(&cfg.key_vol, subject_create_int(10), "key_vol");
     fill_cfg_item(&cfg.key_train, subject_create_int(false), "key_train");
     fill_cfg_item(&cfg.qsk_time, subject_create_int(100), "qsk_time");

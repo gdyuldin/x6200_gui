@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2025 Georgy Dyuldin aka R2RFE
  */
@@ -287,7 +287,7 @@ static void key_cb(lv_event_t * e) {
 
 static char* rx_eq_en_label_getter() {
     static char buf[22];
-    if (subject_get_int(cfg_cur.mode) == x6100_mode_wfm) {
+    if (subject_get_int(cfg_cur.mode) == x6200_mode_wfm) {
         sprintf(buf, "RX EQ:\n%s", subject_get_int(cfg.eq.rx_wfm.en.val) ? "On": "Off");
 
     } else {
@@ -311,7 +311,7 @@ static void rx_eq_press_cb(button_item_t *item) {
 
 static void rx_eq_en_press_cb(button_item_t *item) {
     Subject *subj;
-    if (subject_get_int(cfg_cur.mode) == x6100_mode_wfm) {
+    if (subject_get_int(cfg_cur.mode) == x6200_mode_wfm) {
         subj = cfg.eq.rx_wfm.en.val;
     } else {
         subj = cfg.eq.rx.en.val;
@@ -353,7 +353,7 @@ void on_rx_en_change(Subject *subj, void *user_data) {
 }
 
 eq_type_t get_rx_eq_type() {
-    if (subject_get_int(cfg_cur.mode) == x6100_mode_wfm) {
+    if (subject_get_int(cfg_cur.mode) == x6200_mode_wfm) {
         return EQ_TYPE_RX_WFM;
     } else {
         return EQ_TYPE_RX;

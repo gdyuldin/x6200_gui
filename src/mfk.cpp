@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -215,10 +215,10 @@ void mfk_update(int16_t diff, bool voice) {
             // i = radio_change_key_mode(diff);
             i = subject_get_int(cfg.key_mode.val);
             if (diff) {
-                i = loop_items({x6100_key_manual, x6100_key_auto_left, x6100_key_auto_right}, (x6100_key_mode_t)i, diff > 0);
+                i = loop_items({x6200_key_manual, x6200_key_auto_left, x6200_key_auto_right}, (x6200_key_mode_t)i, diff > 0);
                 subject_set_int(cfg.key_mode.val, i);
             }
-            str = params_key_mode_str_get((x6100_key_mode_t)i);
+            str = params_key_mode_str_get((x6200_key_mode_t)i);
             msg_update_text_fmt("#%3X Key mode: %s", color, str);
 
             if (diff) {
@@ -232,10 +232,10 @@ void mfk_update(int16_t diff, bool voice) {
             // i = radio_change_iambic_mode(diff);
             i = subject_get_int(cfg.key_mode.val);
             if (diff) {
-                i = loop_items({x6100_iambic_a, x6100_iambic_b}, (x6100_iambic_mode_t)i, diff > 0);
+                i = loop_items({x6200_iambic_a, x6200_iambic_b}, (x6200_iambic_mode_t)i, diff > 0);
                 subject_set_int(cfg.key_mode.val, i);
             }
-            str = params_iambic_mode_str_ger((x6100_iambic_mode_t)i);
+            str = params_iambic_mode_str_ger((x6200_iambic_mode_t)i);
             msg_update_text_fmt("#%3X Iambic mode: %s", color, str);
 
             if (diff) {
@@ -515,7 +515,7 @@ void mfk_update(int16_t diff, bool voice) {
                     i = (i + diff + 4) % 4;
                     subject_set_int(cfg_cur.agc, i);
                 }
-                const char *agc_str = cfg_mode_agc_label((x6100_agc_t)i);
+                const char *agc_str = cfg_mode_agc_label((x6200_agc_t)i);
                 msg_update_text_fmt("#%3X AGC: %s", color, agc_str);
 
                 if (diff) {

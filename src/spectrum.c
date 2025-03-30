@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -49,7 +49,7 @@ static bool spectrum_tx = false;
 
 static int32_t filter_from = 0;
 static int32_t filter_to   = 3000;
-static x6100_mode_t cur_mode;
+static x6200_mode_t cur_mode;
 
 static int32_t dnf_enabled = false;
 static int32_t dnf_center;
@@ -254,7 +254,7 @@ static void spectrum_draw_cb(lv_event_t *e) {
 
     if (recorder_is_on()) {
         main_line_dsc.color = lv_color_hex(0xFF0000);
-    } else if (cur_mode == x6100_mode_cw || cur_mode == x6100_mode_cwr) {
+    } else if (cur_mode == x6200_mode_cw || cur_mode == x6200_mode_cwr) {
         // Hide LO line on CW
         main_line_dsc.opa = LV_OPA_0;
     }
@@ -392,7 +392,7 @@ static void on_real_filter_to_change(Subject *subj, void *user_data) {
 }
 
 static void on_cur_mode_change(Subject *subj, void *user_data) {
-    cur_mode = (x6100_mode_t)subject_get_int(subj);
+    cur_mode = (x6200_mode_t)subject_get_int(subj);
 }
 
 static void on_grid_min_change(Subject *subj, void *user_data) {

@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <aether_radio/x6100_control/control.h>
+#include <aether_radio/x6200_control/control.h>
 #include <ft8lib/constants.h>
 #include "../radio.h"
 #include "../clock.h"
@@ -79,7 +79,7 @@ typedef struct {
     /* radio */
 
     int16_t             band_id;
-    x6100_mic_sel_t     mic;
+    x6200_mic_sel_t     mic;
     uint8_t             hmic;
     uint8_t             imic;
     radio_charger_t     charger;
@@ -271,8 +271,8 @@ void params_msg_cw_delete(uint32_t id);
 
 char *params_charger_str_get(radio_charger_t val);
 
-char *params_mic_str_get(x6100_mic_sel_t val);
+char *params_mic_str_get(x6200_mic_sel_t val);
 
-char *params_key_mode_str_get(x6100_key_mode_t val);
+char *params_key_mode_str_get(x6200_key_mode_t val);
 
-char *params_iambic_mode_str_ger(x6100_iambic_mode_t val);
+char *params_iambic_mode_str_ger(x6200_iambic_mode_t val);

@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -104,19 +104,19 @@ void pannel_hide() {
 }
 
 void pannel_visible() {
-    x6100_mode_t    mode = subject_get_int(cfg_cur.mode);
+    x6200_mode_t    mode = subject_get_int(cfg_cur.mode);
     bool            on = false;
 
     switch (mode) {
-        case x6100_mode_cw:
-        case x6100_mode_cwr:
+        case x6200_mode_cw:
+        case x6200_mode_cwr:
             on = subject_get_int(cfg.cw_decoder.val);
             break;
 
-        case x6100_mode_usb:
-        case x6100_mode_lsb:
-        case x6100_mode_usb_dig:
-        case x6100_mode_lsb_dig:
+        case x6200_mode_usb:
+        case x6200_mode_lsb:
+        case x6200_mode_usb_dig:
+        case x6200_mode_lsb_dig:
             on = rtty_get_state() != RTTY_OFF;
             break;
     }

@@ -1,9 +1,9 @@
 #!/bin/sh
 #
-# Starts X6100 GUI daemon
+# Starts X6200 GUI daemon
 #
 
-DAEMON="x6100_daemon"
+DAEMON="x6200_daemon"
 PIDFILE="/var/run/$DAEMON.pid"
 
 # shellcheck source=/dev/null
@@ -12,7 +12,7 @@ PIDFILE="/var/run/$DAEMON.pid"
 start() {
 	printf 'Starting %s: ' "$DAEMON"
 	echo 0 > /sys/class/graphics/fbcon/cursor_blink
-	[ ! -f /mnt/params.db ] && cp /usr/share/x6100/params.default.db /mnt/params.db
+	[ ! -f /mnt/params.db ] && cp /usr/share/x6200/params.default.db /mnt/params.db
 	# shellcheck disable=SC2086 # we need the word splitting
 	start-stop-daemon -S -b -q -m -p "$PIDFILE" -x "/usr/sbin/$DAEMON"
 	status=$?
@@ -34,7 +34,7 @@ stop() {
 	else
 		echo "FAIL"
 	fi
-	killall x6100_gui
+	killall x6200_gui
 	return "$status"
 }
 

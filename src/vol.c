@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -88,8 +88,8 @@ void vol_update(int16_t diff, bool voice) {
             if (diff) {
                 uint8_t freq_step;
                 switch (subject_get_int(cfg_cur.mode)) {
-                case x6100_mode_cw:
-                case x6100_mode_cwr:
+                case x6200_mode_cw:
+                case x6200_mode_cwr:
                     freq_step = 10;
                     break;
                 default:

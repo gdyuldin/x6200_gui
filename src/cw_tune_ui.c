@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2024 Georgy Dyuldin aka R2RFE
  */
@@ -120,8 +120,8 @@ static void update_cb(lv_event_t * e) {
 }
 
 static void update_visibility(Subject *subj, void *user_data) {
-    x6100_mode_t mode = subject_get_int(cfg_cur.mode);
-    bool on = subject_get_int(cfg.cw_tune.val) && ((mode == x6100_mode_cw) || (mode == x6100_mode_cwr));
+    x6200_mode_t mode = subject_get_int(cfg_cur.mode);
+    bool on = subject_get_int(cfg.cw_tune.val) && ((mode == x6200_mode_cw) || (mode == x6200_mode_cwr));
     if (on) {
         lv_obj_clear_flag(obj, LV_OBJ_FLAG_HIDDEN);
     } else {

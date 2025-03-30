@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(x6100_gui)
+project(x6200_gui)
 
 include_directories(.)
 include_directories(third-party/rapidxml)
@@ -26,7 +26,7 @@ else()
                 DESTINATION /
                 USE_SOURCE_PERMISSIONS
         )
-        install(DIRECTORY images DESTINATION share/x6100)
+        install(DIRECTORY images DESTINATION share/x6200)
 endif()
 
 

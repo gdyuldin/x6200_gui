@@ -9,4 +9,4 @@ add_custom_command(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-install(FILES ${MAIN_DB_FN} DESTINATION share/x6100 RENAME params.default.db)
+install(FILES ${MAIN_DB_FN} DESTINATION share/x6200 RENAME params.default.db)

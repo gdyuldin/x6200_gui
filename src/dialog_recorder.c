@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -21,7 +21,7 @@
 #include "buttons.h"
 #include "scheduler.h"
 
-#include <aether_radio/x6100_control/control.h>
+#include <aether_radio/x6200_control/control.h>
 
 #include <sys/stat.h>
 #include <stdlib.h>

@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2024 Georgy Dyuldin aka R2RFE
  */
@@ -16,7 +16,7 @@ extern "C" {
 #include "params/params.h"
 #include "pubsub_ids.h"
 
-#include <aether_radio/x6100_control/low/gpio.h>
+#include <aether_radio/x6200_control/low/gpio.h>
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -91,7 +91,7 @@ void wifi_power_setup() {
 void wifi_power_on() {
     LV_LOG_USER("Power on wifi/bt");
     params_bool_set(&params.wifi_enabled, true);
-    x6100_gpio_set(x6100_pin_wifi, 0);
+    x6200_gpio_set(x6200_pin_wifi, 0);
     if (!device) {
         set_status(WIFI_STARTING);
     }
@@ -105,7 +105,7 @@ void wifi_power_off() {
         device = NULL;
     }
     params_bool_set(&params.wifi_enabled, false);
-    x6100_gpio_set(x6100_pin_wifi, 1);
+    x6200_gpio_set(x6200_pin_wifi, 1);
     if (scan_timer) {
         lv_timer_del(scan_timer);
         scan_timer = NULL;

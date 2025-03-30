@@ -1,13 +1,13 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
 
 /*
- * X6100 protocol implementation (Mfg 3087)
+ * X6200 protocol implementation (Mfg 3087)
  */
 
 #include "cat.h"
@@ -33,7 +33,7 @@ extern "C" {
     #include "tx_info.h"
 
     #include "lvgl/lvgl.h"
-    #include <aether_radio/x6100_control/low/gpio.h>
+    #include <aether_radio/x6200_control/low/gpio.h>
     #include <fcntl.h>
     #include <stdio.h>
     #include <stdlib.h>
@@ -284,31 +284,31 @@ static void set_vfo(void *arg) {
     if (!arg) {
         LV_LOG_ERROR("arg is NULL");
     }
-    x6100_vfo_t vfo = *(x6100_vfo_t *)arg;
+    x6200_vfo_t vfo = *(x6200_vfo_t *)arg;
     subject_set_int(cfg_cur.band->vfo.val, vfo);
 }
 
-static x6100_mode_t ci_mode_2_x_mode(uint8_t mode, bool data_mode=false) {
-    x6100_mode_t r_mode;
+static x6200_mode_t ci_mode_2_x_mode(uint8_t mode, bool data_mode=false) {
+    x6200_mode_t r_mode;
 
     switch (mode) {
         case M_LSB:
-            r_mode = data_mode ? x6100_mode_lsb_dig : x6100_mode_lsb;
+            r_mode = data_mode ? x6200_mode_lsb_dig : x6200_mode_lsb;
             break;
         case M_USB:
-            r_mode = data_mode ? x6100_mode_usb_dig : x6100_mode_usb;
+            r_mode = data_mode ? x6200_mode_usb_dig : x6200_mode_usb;
             break;
         case M_AM:
-            r_mode = x6100_mode_am;
+            r_mode = x6200_mode_am;
             break;
         case M_CW:
-            r_mode = x6100_mode_cw;
+            r_mode = x6200_mode_cw;
             break;
         case M_NFM:
-            r_mode = x6100_mode_nfm;
+            r_mode = x6200_mode_nfm;
             break;
         case M_CWR:
-            r_mode = x6100_mode_cwr;
+            r_mode = x6200_mode_cwr;
             break;
         default:
             break;
@@ -316,28 +316,28 @@ static x6100_mode_t ci_mode_2_x_mode(uint8_t mode, bool data_mode=false) {
     return r_mode;
 }
 
-static uint8_t x_mode_2_ci_mode(x6100_mode_t mode, bool *data_mode=nullptr) {
+static uint8_t x_mode_2_ci_mode(x6200_mode_t mode, bool *data_mode=nullptr) {
     switch (mode) {
-        case x6100_mode_lsb_dig:
+        case x6200_mode_lsb_dig:
             if (data_mode) *data_mode = true;
-        case x6100_mode_lsb:
+        case x6200_mode_lsb:
             return M_LSB;
             break;
-        case x6100_mode_usb_dig:
+        case x6200_mode_usb_dig:
             if (data_mode) *data_mode = true;
-        case x6100_mode_usb:
+        case x6200_mode_usb:
             return M_USB;
             break;
-        case x6100_mode_cw:
+        case x6200_mode_cw:
             return M_CW;
             break;
-        case x6100_mode_cwr:
+        case x6200_mode_cwr:
             return M_CWR;
             break;
-        case x6100_mode_am:
+        case x6200_mode_am:
             return M_AM;
             break;
-        case x6100_mode_nfm:
+        case x6200_mode_nfm:
             return M_NFM;
             break;
         default:
@@ -349,20 +349,20 @@ static uint8_t x_mode_2_ci_mode(x6100_mode_t mode, bool *data_mode=nullptr) {
 static uint8_t get_if_bandwidth() {
     uint32_t bw = subject_get_int(cfg_cur.filter.bw);
     switch (subject_get_int(cfg_cur.mode)) {
-        case x6100_mode_cw:
-        case x6100_mode_cwr:
-        case x6100_mode_lsb:
-        case x6100_mode_lsb_dig:
-        case x6100_mode_usb:
-        case x6100_mode_usb_dig:
+        case x6200_mode_cw:
+        case x6200_mode_cwr:
+        case x6200_mode_lsb:
+        case x6200_mode_lsb_dig:
+        case x6200_mode_usb:
+        case x6200_mode_usb_dig:
             if (bw <= 500) {
                 return (bw - 25) / 50;
             } else {
                 return (bw - 50) / 100 + 5;
             }
             break;
-        case x6100_mode_am:
-        case x6100_mode_nfm:
+        case x6200_mode_am:
+        case x6200_mode_nfm:
             return (bw - 100) / 200;
         default:
             return 31;
@@ -412,16 +412,16 @@ static Frame *process_req(const Frame *req) {
     auto resp = new Frame(req);
 
     int32_t        new_freq;
-    x6100_vfo_t    cur_vfo    = (x6100_vfo_t)subject_get_int(cfg_cur.band->vfo.val);
+    x6200_vfo_t    cur_vfo    = (x6200_vfo_t)subject_get_int(cfg_cur.band->vfo.val);
     int32_t        cur_freq   = subject_get_int(cfg_cur.fg_freq);
-    x6100_mode_t   cur_mode   = (x6100_mode_t)subject_get_int(cfg_cur.mode);
-    x6100_vfo_t    target_vfo = cur_vfo;
+    x6200_mode_t   cur_mode   = (x6200_mode_t)subject_get_int(cfg_cur.mode);
+    x6200_vfo_t    target_vfo = cur_vfo;
     uint8_t        vfo_id;
 
     size_t data_size = req->data.size();
 
     struct vfo_params *vfo_params[2];
-    if (cur_vfo == X6100_VFO_A) {
+    if (cur_vfo == X6200_VFO_A) {
         vfo_params[0] = &cfg_cur.band->vfo_a;
         vfo_params[1] = &cfg_cur.band->vfo_b;
     } else {
@@ -479,11 +479,11 @@ static Frame *process_req(const Frame *req) {
 
         case C_SET_VFO:
             if (data_size == 1) {
-                x6100_vfo_t new_vfo;
+                x6200_vfo_t new_vfo;
                 switch (req->data[0]) {
                     case S_VFOA:
-                        if (cur_vfo != X6100_VFO_A) {
-                            new_vfo = X6100_VFO_A;
+                        if (cur_vfo != X6200_VFO_A) {
+                            new_vfo = X6200_VFO_A;
                             subject_set_int(cfg_cur.band->vfo.val, new_vfo);
                         }
 
@@ -491,18 +491,18 @@ static Frame *process_req(const Frame *req) {
                         break;
 
                     case S_VFOB:
-                        if (cur_vfo != X6100_VFO_B) {
-                            new_vfo = X6100_VFO_B;
+                        if (cur_vfo != X6200_VFO_B) {
+                            new_vfo = X6200_VFO_B;
                             subject_set_int(cfg_cur.band->vfo.val, new_vfo);
                         }
                         resp->set_code(CODE_OK);
                         break;
 
                     case S_XCHNG:
-                        if (cur_vfo == X6100_VFO_A) {
-                            new_vfo = X6100_VFO_B;
+                        if (cur_vfo == X6200_VFO_A) {
+                            new_vfo = X6200_VFO_B;
                         } else {
-                            new_vfo = X6100_VFO_A;
+                            new_vfo = X6200_VFO_A;
                         }
                         subject_set_int(cfg_cur.band->vfo.val, new_vfo);
                         resp->set_code(CODE_OK);
@@ -519,7 +519,7 @@ static Frame *process_req(const Frame *req) {
                 }
             } else if (data_size == 0) {
                 resp->set_payload_len(2);
-                resp->data[0] = cur_vfo == X6100_VFO_A ? S_VFOA : S_VFOB;
+                resp->data[0] = cur_vfo == X6200_VFO_A ? S_VFOA : S_VFOB;
             } else {
                 set_unsupported(req, resp);
             }
@@ -746,7 +746,7 @@ static Frame *process_req(const Frame *req) {
                         resp->set_payload_len(5);
                         resp->data[1] = x_mode_2_ci_mode(cur_mode);
                         // data mode
-                        resp->data[2] = (cur_mode == x6100_mode_lsb_dig) || (cur_mode == x6100_mode_usb_dig);
+                        resp->data[2] = (cur_mode == x6200_mode_lsb_dig) || (cur_mode == x6200_mode_usb_dig);
                         // filter group
                         resp->data[3] = 0;
                         break;
@@ -762,7 +762,7 @@ static Frame *process_req(const Frame *req) {
                         break;
                     case MEM_DM_FG:
                         {
-                            x6100_mode_t new_mode  = ci_mode_2_x_mode(req->data[1], req->data[2]);
+                            x6200_mode_t new_mode  = ci_mode_2_x_mode(req->data[1], req->data[2]);
                             subject_set_int(cfg_cur.mode, new_mode);
                             resp->set_code(CODE_OK);
                         }
@@ -814,12 +814,12 @@ static Frame *process_req(const Frame *req) {
         case C_SEND_SEL_MODE:
             {
                 uint8_t v;
-                x6100_mode_t new_mode;
+                x6200_mode_t new_mode;
                 bool data_mode = false;
                 switch (data_size) {
                     case 1:
                         vfo_id    = req->data[0] > 0;
-                        v = x_mode_2_ci_mode((x6100_mode_t)subject_get_int(vfo_params[vfo_id]->mode.val), &data_mode);
+                        v = x_mode_2_ci_mode((x6200_mode_t)subject_get_int(vfo_params[vfo_id]->mode.val), &data_mode);
                         resp->set_payload_len(5);
                         resp->data[1] = v;
                         resp->data[2] = data_mode;
@@ -988,7 +988,7 @@ static void cat_thread() {
 
 void cat_init() {
     /* UART */
-    x6100_gpio_set(x6100_pin_usb, 1); /* USB -> CAT */
+    x6200_gpio_set(x6200_pin_usb, 1); /* USB -> CAT */
 
     int fd = open("/dev/ttyS2", O_RDWR | O_NONBLOCK | O_NOCTTY);
 

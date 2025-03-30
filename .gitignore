@@ -53,3 +53,5 @@ dkms.conf
 # Misc
 .vscode
 images/*.png
+CMakeCache.txt
+CMakeFiles/

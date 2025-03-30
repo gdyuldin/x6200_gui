@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -27,7 +27,7 @@ void mouse_init() {
 
     LV_IMG_DECLARE(mouse_cursor_icon)
 
-    lv_obj_t * cursor_obj = lv_img_create(lv_scr_act()); 
+    lv_obj_t * cursor_obj = lv_img_create(lv_scr_act());
     lv_img_set_src(cursor_obj, &mouse_cursor_icon);
     lv_indev_set_cursor(mouse_indev, cursor_obj);
 }

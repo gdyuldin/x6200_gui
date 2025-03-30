@@ -21,7 +21,7 @@ void controls_toggle_key_train(button_item_t *btn) {
 }
 
 void controls_toggle_key_iambic_mode(button_item_t *btn) {
-    x6100_iambic_mode_t new_mode = subject_get_int(cfg.iambic_mode.val) == x6100_iambic_a ? x6100_iambic_b : x6100_iambic_a;
+    x6200_iambic_mode_t new_mode = subject_get_int(cfg.iambic_mode.val) == x6200_iambic_a ? x6200_iambic_b : x6200_iambic_a;
     subject_set_int(cfg.iambic_mode.val, new_mode);
     char *str = params_iambic_mode_str_ger(new_mode);
     voice_say_text("Iambic mode", str);

@@ -44,7 +44,7 @@ void cfg_mode_params_init(sqlite3 *database) {
     init_db(database);
 
     /* Fill mode configuration */
-    x6100_mode_t mode    = subject_get_int(cfg_cur.mode);
+    x6200_mode_t mode    = subject_get_int(cfg_cur.mode);
     db_mode_t    db_mode = xmode_2_db(mode);
     int32_t      low, high;
     uint32_t     step, zoom;
@@ -186,7 +186,7 @@ int cfg_mode_params_save_item(cfg_item_t *item) {
     switch (subject_get_dtype(item->val)) {
         case DTYPE_INT:
         int_val = subject_get_int(item->val);
-            if ((int_val < 0) && (item->pk != x6100_mode_cw)) {
+            if ((int_val < 0) && (item->pk != x6200_mode_cw)) {
                 LV_LOG_ERROR("%s can't be negative (%i), will not save", item->db_name, int_val);
                 sqlite3_reset(stmt);
                 sqlite3_clear_bindings(stmt);
@@ -221,34 +221,34 @@ int cfg_mode_params_save_item(cfg_item_t *item) {
     return rc;
 }
 
-db_mode_t xmode_2_db(x6100_mode_t mode) {
+db_mode_t xmode_2_db(x6200_mode_t mode) {
     switch (mode) {
-        case x6100_mode_lsb:
-        case x6100_mode_usb:
-            return x6100_mode_lsb;
+        case x6200_mode_lsb:
+        case x6200_mode_usb:
+            return x6200_mode_lsb;
             break;
 
-        case x6100_mode_lsb_dig:
-        case x6100_mode_usb_dig:
-            return x6100_mode_lsb_dig;
+        case x6200_mode_lsb_dig:
+        case x6200_mode_usb_dig:
+            return x6200_mode_lsb_dig;
             break;
 
-        case x6100_mode_cw:
-        case x6100_mode_cwr:
-            return x6100_mode_cw;
+        case x6200_mode_cw:
+        case x6200_mode_cwr:
+            return x6200_mode_cw;
             break;
 
-        case x6100_mode_am:
-        case x6100_mode_sam:
-            return x6100_mode_am;
+        case x6200_mode_am:
+        case x6200_mode_sam:
+            return x6200_mode_am;
             break;
 
-        case x6100_mode_nfm:
-            return x6100_mode_nfm;
+        case x6200_mode_nfm:
+            return x6200_mode_nfm;
             break;
 
-        case x6100_mode_wfm:
-            return x6100_mode_wfm;
+        case x6200_mode_wfm:
+            return x6200_mode_wfm;
             break;
 
         default:
@@ -260,33 +260,33 @@ db_mode_t xmode_2_db(x6100_mode_t mode) {
 bool mode_default_values(db_mode_t mode, int32_t *low, int32_t *high, uint32_t *step, uint32_t *zoom) {
     bool result = true;
     switch (mode) {
-        case x6100_mode_lsb:
-        case x6100_mode_lsb_dig:
+        case x6200_mode_lsb:
+        case x6200_mode_lsb_dig:
             *low  = 50;
             *high = 2950;
             *step = 500;
             *zoom = 1;
             break;
-        case x6100_mode_cw:
+        case x6200_mode_cw:
             *low  = -250;
             *high = 250;
             *step = 100;
             *zoom = 4;
             break;
-        case x6100_mode_am:
-        case x6100_mode_sam:
+        case x6200_mode_am:
+        case x6200_mode_sam:
             *low  = 0;
             *high = 4500;
             *step = 1000;
             *zoom = 1;
             break;
-        case x6100_mode_nfm:
+        case x6200_mode_nfm:
             *low  = 0;
             *high = 3500;
             *step = 1000;
             *zoom = 1;
             break;
-        case x6100_mode_wfm:
+        case x6200_mode_wfm:
             *low  = 0;
             *high = 8000;
             *step = 1000;
@@ -315,16 +315,16 @@ int32_t cfg_mode_change_freq_step(bool up) {
 }
 
 int32_t cfg_mode_set_low_filter(int32_t val) {
-    x6100_mode_t mode = subject_get_int(cfg_cur.mode);
+    x6200_mode_t mode = subject_get_int(cfg_cur.mode);
     int32_t      high = subject_get_int(cfg_cur.filter.high);
     switch (mode) {
-        case x6100_mode_am:
-        case x6100_mode_sam:
-        case x6100_mode_nfm:
-        case x6100_mode_wfm:
+        case x6200_mode_am:
+        case x6200_mode_sam:
+        case x6200_mode_nfm:
+        case x6200_mode_wfm:
             return 0;
-        case x6100_mode_cw:
-        case x6100_mode_cwr:
+        case x6200_mode_cw:
+        case x6200_mode_cwr:
             if (val < high) {
                 subject_set_int(cfg_cur.filter.low, val);
             }
@@ -338,7 +338,7 @@ int32_t cfg_mode_set_low_filter(int32_t val) {
 }
 
 int32_t cfg_mode_set_high_filter(int32_t val) {
-    x6100_mode_t mode = subject_get_int(cfg_cur.mode);
+    x6200_mode_t mode = subject_get_int(cfg_cur.mode);
     int32_t      low = subject_get_int(cfg_cur.filter.low);
     if ((val <= MAX_FILTER_FREQ) & (val > low)) {
         subject_set_int(cfg_cur.filter.high, val);
@@ -346,15 +346,15 @@ int32_t cfg_mode_set_high_filter(int32_t val) {
     return subject_get_int(cfg_cur.filter.high);
 }
 
-const char *cfg_mode_agc_label(x6100_agc_t val) {
+const char *cfg_mode_agc_label(x6200_agc_t val) {
     switch (val) {
-        case x6100_agc_off:
+        case x6200_agc_off:
             return "Off";
-        case x6100_agc_slow:
+        case x6200_agc_slow:
             return "Slow";
-        case x6100_agc_fast:
+        case x6200_agc_fast:
             return "Fast";
-        case x6100_agc_auto:
+        case x6200_agc_auto:
             return "Auto";
         default:
             return "?";
@@ -378,7 +378,7 @@ static void init_db(sqlite3 *database) {
 }
 
 static void on_cur_mode_change(Subject *subj, void *user_data) {
-    x6100_mode_t new_mode = subject_get_int(subj);
+    x6200_mode_t new_mode = subject_get_int(subj);
 
     if (cfg_mode.filter_high.dirty == NULL) {
         LV_LOG_USER("Skip updating mode values, not initialized");
@@ -413,8 +413,8 @@ static void on_cur_filter_low_change(Subject *subj, void *user_data) {
     subject_set_int(cfg_cur.filter.bw, subject_get_int(cfg_cur.filter.high) - new_low);
     // int32_t new_high;
     // switch (cfg_mode.filter_low.pk) {
-    //     case x6100_mode_cw:
-    //     case x6100_mode_cwr:
+    //     case x6200_mode_cw:
+    //     case x6200_mode_cwr:
     //         new_high = (subject_get_int(cfg.key_tone.val) - new_low) * 2;
     //         subject_set_int(cfg_mode.filter_high.val, new_high);
     //         break;
@@ -431,8 +431,8 @@ static void on_cur_filter_high_change(Subject *subj, void *user_data) {
     LV_LOG_INFO("New current high=%i", new_high);
     subject_set_int(cfg_cur.filter.bw, new_high - subject_get_int(cfg_cur.filter.low));
     // switch (cfg_mode.filter_high.pk) {
-    //     case x6100_mode_cw:
-    //     case x6100_mode_cwr:
+    //     case x6200_mode_cw:
+    //     case x6200_mode_cwr:
     //         new_high = (new_high - subject_get_int(cfg.key_tone.val)) * 2;
     //         subject_set_int(cfg_mode.filter_high.val, new_high);
     //         break;
@@ -452,12 +452,12 @@ static void on_cur_filter_bw_change(Subject *subj, void *user_data) {
     int32_t new_bw = subject_get_int(subj);
     int32_t new_low, new_high;
     switch (cfg_mode.filter_high.pk) {
-        // case x6100_mode_cw:
-        // case x6100_mode_cwr:
-        case x6100_mode_am:
-        case x6100_mode_sam:
-        case x6100_mode_nfm:
-        case x6100_mode_wfm:
+        // case x6200_mode_cw:
+        // case x6200_mode_cwr:
+        case x6200_mode_am:
+        case x6200_mode_sam:
+        case x6200_mode_nfm:
+        case x6200_mode_wfm:
             new_low  = subject_get_int(cfg_cur.filter.low);
             new_high = new_low + new_bw;
             break;
@@ -492,12 +492,12 @@ static void update_cur_low_filter(Subject *subj, void *user_data) {
     cfg_item_t *item    = (cfg_item_t *)user_data;
     int32_t     cur_low = subject_get_int(cfg_mode.filter_low.val);
     switch (item->pk) {
-        // case x6100_mode_cw:
-        // case x6100_mode_cwr:
-        case x6100_mode_am:
-        case x6100_mode_sam:
-        case x6100_mode_nfm:
-        case x6100_mode_wfm:
+        // case x6200_mode_cw:
+        // case x6200_mode_cwr:
+        case x6200_mode_am:
+        case x6200_mode_sam:
+        case x6200_mode_nfm:
+        case x6200_mode_wfm:
             // cur_low = subject_get_int(cfg.key_tone.val) - subject_get_int(cfg_mode.filter_high.val) / 2;
             // cur_low = 0;
             return;
@@ -515,17 +515,17 @@ static void update_cur_high_filter(Subject *subj, void *user_data) {
     int32_t     cur_high = subject_get_int(cfg_mode.filter_high.val);
     int32_t     bw;
     switch (item->pk) {
-        // case x6100_mode_cw:
-        // case x6100_mode_cwr:
+        // case x6200_mode_cw:
+        // case x6200_mode_cwr:
             // bw       = cur_high;
             // cur_high = subject_get_int(cfg.key_tone.val) + bw / 2;
             // subject_set_int(cfg_cur.filter.low, cur_high - bw);
             // break;
 
-        case x6100_mode_am:
-        case x6100_mode_sam:
-        case x6100_mode_nfm:
-        case x6100_mode_wfm:
+        case x6200_mode_am:
+        case x6200_mode_sam:
+        case x6200_mode_nfm:
+        case x6200_mode_wfm:
             subject_set_int(cfg_cur.filter.low, 0);
             break;
 
@@ -548,30 +548,30 @@ static void on_zoom_change(Subject *subj, void *user_data) {
  * get frequencies for display and dsp (with negative numbers)
  */
 static void update_real_filters(Subject *subj, void *user_data) {
-    x6100_mode_t mode = subject_get_int(cfg_cur.mode);
+    x6200_mode_t mode = subject_get_int(cfg_cur.mode);
     int32_t      low  = subject_get_int(cfg_cur.filter.low);
     int32_t      high = subject_get_int(cfg_cur.filter.high);
     int32_t      from, to;
 
     switch (mode) {
-        case x6100_mode_lsb:
-        case x6100_mode_lsb_dig:
+        case x6200_mode_lsb:
+        case x6200_mode_lsb_dig:
             from = -high;
             to   = -low;
             break;
 
-        case x6100_mode_usb:
-        case x6100_mode_usb_dig:
-        case x6100_mode_cw:
-        case x6100_mode_cwr:
+        case x6200_mode_usb:
+        case x6200_mode_usb_dig:
+        case x6200_mode_cw:
+        case x6200_mode_cwr:
             from = low;
             to   = high;
             break;
 
-        case x6100_mode_am:
-        case x6100_mode_sam:
-        case x6100_mode_nfm:
-        case x6100_mode_wfm:
+        case x6200_mode_am:
+        case x6200_mode_sam:
+        case x6200_mode_nfm:
+        case x6200_mode_wfm:
             from = -high;
             to   = high;
             break;

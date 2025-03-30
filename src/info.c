@@ -1,7 +1,7 @@
 /*
  *  SPDX-License-Identifier: LGPL-2.1-or-later
  *
- *  Xiegu X6100 LVGL GUI
+ *  Xiegu X6200 LVGL GUI
  *
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
@@ -96,47 +96,47 @@ lv_obj_t * info_init(lv_obj_t * parent) {
 }
 
 const char* info_params_mode_label_get() {
-    x6100_mode_t    mode = subject_get_int(cfg_cur.mode);
+    x6200_mode_t    mode = subject_get_int(cfg_cur.mode);
     char            *str;
 
     switch (mode) {
-        case x6100_mode_lsb:
+        case x6200_mode_lsb:
             str = "LSB";
             break;
 
-        case x6100_mode_lsb_dig:
+        case x6200_mode_lsb_dig:
             str = "LSB-D";
             break;
 
-        case x6100_mode_usb:
+        case x6200_mode_usb:
             str = "USB";
             break;
 
-        case x6100_mode_usb_dig:
+        case x6200_mode_usb_dig:
             str = "USB-D";
             break;
 
-        case x6100_mode_cw:
+        case x6200_mode_cw:
             str = "CW";
             break;
 
-        case x6100_mode_cwr:
+        case x6200_mode_cwr:
             str = "CW-R";
             break;
 
-        case x6100_mode_am:
+        case x6200_mode_am:
             str = "AM";
             break;
 
-        case x6100_mode_sam:
+        case x6200_mode_sam:
             str = "SAM";
             break;
 
-        case x6100_mode_nfm:
+        case x6200_mode_nfm:
             str = "NFM";
             break;
 
-        case x6100_mode_wfm:
+        case x6200_mode_wfm:
             str = "WFM";
             break;
 
@@ -149,13 +149,13 @@ const char* info_params_mode_label_get() {
 }
 
 const char* info_params_vfo_label_get() {
-    x6100_vfo_t cur_vfo = subject_get_int(cfg_cur.band->vfo.val);
+    x6200_vfo_t cur_vfo = subject_get_int(cfg_cur.band->vfo.val);
     char            *str;
 
     if (subject_get_int(cfg_cur.band->split.val)) {
-        str = cur_vfo == X6100_VFO_A ? "SPL-A" : "SPL-B";
+        str = cur_vfo == X6200_VFO_A ? "SPL-A" : "SPL-B";
     } else {
-        str = cur_vfo == X6100_VFO_A ? "VFO-A" : "VFO-B";
+        str = cur_vfo == X6200_VFO_A ? "VFO-A" : "VFO-B";
     }
 
     return str;
@@ -188,8 +188,8 @@ static void vfo_label_update(Subject *subj, void * user_data) {
 
 static void mode_label_update(Subject *subj, void *user_data) {
     lv_label_set_text(items[INFO_MODE], info_params_mode_label_get());
-    x6100_mode_t mode = subject_get_int(cfg_cur.mode);
-    if ((mode == x6100_mode_lsb_dig) || (mode == x6100_mode_usb_dig)) {
+    x6200_mode_t mode = subject_get_int(cfg_cur.mode);
+    if ((mode == x6200_mode_lsb_dig) || (mode == x6200_mode_usb_dig)) {
         lv_obj_set_style_text_color(items[INFO_MODE], lv_color_hex(COLOR_LIGHT_RED), 0);
     } else if (subject_get_int(mode_lock)) {
         lv_obj_set_style_text_color(items[INFO_MODE], lv_color_hex(0xAAAAAA), 0);

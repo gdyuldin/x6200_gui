@@ -1,6 +1,0 @@
-#!/bin/sh
-mkdir -p /mnt/app_logs/
-cp -R /usr/share/x6100/images /dev/shm/
-while true; do
-    /usr/sbin/x6100_gui > /tmp/x6100_log.txt 2>&1 || sync; mv /tmp/x6100_log.txt /mnt/app_logs/x6100_log_$(date +%Y-%m-%d_%H-%M-%S).txt
-done
