@@ -68,7 +68,6 @@ class EQControl {
                     eq_cfg = &cfg.eq.rx;
                     break;
             }
-            clear_observers();
 
             eq_en = eq_cfg->en.val;
             values[0] = eq_cfg->p1.val;
@@ -88,6 +87,7 @@ class EQControl {
             if (observer)
                 delete observer;
         }
+        value_observers.fill(nullptr);
     }
 
     void set_slider_label(lv_obj_t *slider, lv_obj_t *label, uint8_t p) {
@@ -210,8 +210,8 @@ static void construct_cb(lv_obj_t *parent) {
 
     lv_obj_set_layout(obj, LV_LAYOUT_GRID);
 
-    lv_obj_add_event_cb(obj, key_cb, LV_EVENT_KEY, NULL);
-    lv_group_add_obj(keyboard_group, obj);
+    // lv_obj_add_event_cb(obj, key_cb, LV_EVENT_KEY, NULL);
+    // lv_group_add_obj(keyboard_group, obj);
 
     lv_obj_t *slider;
     lv_obj_t *label;
@@ -231,6 +231,7 @@ static void construct_cb(lv_obj_t *parent) {
         lv_obj_set_grid_cell(slider, LV_GRID_ALIGN_CENTER, i, 1, LV_GRID_ALIGN_CENTER, 1, 1);
         lv_obj_set_user_data(slider, (void*)i);
         lv_obj_add_event_cb(slider, slider_update_cb, LV_EVENT_VALUE_CHANGED, (void*)label);
+        lv_obj_add_event_cb(slider, key_cb, LV_EVENT_KEY, NULL);
         lv_group_add_obj(keyboard_group, slider);
         controls.set_slider_label(slider, label, i);
 
