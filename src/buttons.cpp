@@ -74,6 +74,7 @@ static char * xit_label_getter();
 static char * agc_label_getter();
 static char * att_label_getter();
 static char * pre_label_getter();
+static char * comp_label_getter();
 
 static char * key_speed_label_getter();
 static char * key_volume_label_getter();
@@ -202,12 +203,12 @@ static button_item_t btn_pre  = {.type     = BTN_TEXT_FN,
                                  .hold     = button_mfk_hold_cb,
                                  .data     = MFK_PRE,
                                  .subj     = &cfg_cur.pre};
-// static button_item_t btn_pre  = {.type     = BTN_TEXT_FN,
-//                                  .label_fn = comp_label_getter,
-//                                  .press    = controls_toggle_comp,
-//                                  .hold     = button_mfk_hold_cb,
-//                                  .data     = MFK_PRE,
-//                                  .subj     = &cfg_cur.pre};
+static button_item_t btn_comp = {.type     = BTN_TEXT_FN,
+                                 .label_fn = comp_label_getter,
+                                 .press    = controls_toggle_comp,
+                                 .hold     = button_mfk_hold_cb,
+                                 .data     = MFK_COMP,
+                                 .subj     = &cfg.comp.val};
 
 /* MFK page 2 */
 
@@ -390,7 +391,7 @@ static button_item_t btn_mfk_p3 = make_page_btn("(MFK 3:4)", "MFK|page 3");
 static button_item_t btn_mfk_p4 = make_page_btn("(MFK 4:4)", "MFK|page 4");
 
 static buttons_page_t page_mfk_1 = {
-    {&btn_mfk_p1, &btn_agc, &btn_att, &btn_pre}
+    {&btn_mfk_p1, &btn_agc, &btn_att, &btn_pre, &btn_comp}
 };
 static buttons_page_t page_mfk_2 = {
     {&btn_mfk_p2, &btn_spectrum_min_level, &btn_spectrum_max_level, &btn_zoom, &btn_spectrum_beta}
@@ -892,6 +893,12 @@ char *att_label_getter() {
 char *pre_label_getter() {
     static char buf[22];
     sprintf(buf, "PRE:\n%s", subject_get_int(cfg_cur.pre) ? "On": "Off");
+    return buf;
+}
+
+char *comp_label_getter() {
+    static char buf[22];
+    sprintf(buf, "Comp:\n%s", subject_get_int(cfg.comp.val) ? "On": "Off");
     return buf;
 }
 

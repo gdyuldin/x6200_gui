@@ -68,8 +68,8 @@ void controls_toggle_pre(button_item_t *btn) {
 }
 
 void controls_toggle_comp(button_item_t *btn) {
-    // bool new_val = toggle_subj(cfg.comp);
-    // voice_say_bool("COMP", new_val);
+    bool new_val = toggle_subj(cfg.comp.val);
+    voice_say_bool("COMP", new_val);
 }
 
 static inline bool toggle_subj(Subject *subj) {

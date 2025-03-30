@@ -606,6 +606,21 @@ void mfk_update(int16_t diff, bool voice) {
             }
             break;
 
+        case MFK_COMP:
+            b = subject_get_int(cfg.comp.val);
+            if (diff) {
+                b = !b;
+                subject_set_int(cfg.comp.val, b);
+            }
+            msg_update_text_fmt("#%3X Comp: %s", color, b ? "On" : "Off");
+
+            if (diff) {
+                voice_say_bool("Comp", b);
+            } else if (voice) {
+                voice_say_text_fmt("Comp switcher");
+            }
+            break;
+
         case MFK_CW_DECODER:
             // b = cw_change_decoder(diff);
             b = subject_get_int(cfg.cw_decoder.val);

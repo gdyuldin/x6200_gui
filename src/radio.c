@@ -418,6 +418,8 @@ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb) {
     subject_add_observer_and_call(cfg.agc_knee.val, on_change_int8, x6100_control_agc_knee_set);
     subject_add_observer_and_call(cfg.agc_slope.val, on_change_uint8, x6100_control_agc_slope_set);
 
+    subject_add_observer_and_call(cfg.comp.val, on_change_bool, x6100_control_comp_set);
+
     subject_add_observer_and_call(cfg.dnf.val, on_change_uint8, x6100_control_dnf_set);
     subject_add_observer_and_call(cfg.dnf_center.val, on_change_uint16, x6100_control_dnf_center_set);
     subject_add_observer_and_call(cfg.dnf_width.val, on_change_uint16, x6100_control_dnf_width_set);

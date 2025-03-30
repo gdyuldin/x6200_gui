@@ -52,6 +52,8 @@ typedef struct {
     cfg_item_t agc_knee;
     cfg_item_t agc_slope;
 
+    cfg_item_t comp;
+
     // DSP
     cfg_item_t dnf;
     cfg_item_t dnf_center;

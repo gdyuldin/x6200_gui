@@ -268,9 +268,12 @@ static int init_params_cfg(sqlite3 *db) {
     fill_cfg_item_float(&cfg.cw_decoder_peak_beta, subject_create_float(0.10f), 0.01f, "cw_decoder_peak_beta");
     fill_cfg_item_float(&cfg.cw_decoder_noise_beta, subject_create_float(0.80f), 0.01f, "cw_decoder_noise_beta");
 
+    //
     fill_cfg_item(&cfg.agc_hang, subject_create_int(false), "agc_hang");
     fill_cfg_item(&cfg.agc_knee, subject_create_int(-60), "agc_knee");
     fill_cfg_item(&cfg.agc_slope, subject_create_int(6), "agc_slope");
+
+    fill_cfg_item(&cfg.comp, subject_create_int(false), "comp");
 
     // DSP
     fill_cfg_item(&cfg.dnf, subject_create_int(false), "dnf");
