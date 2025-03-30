@@ -43,6 +43,7 @@
 
 rotary_t                    *vol;
 encoder_t                   *mfk;
+rotary_t                    *mfk_inner;
 
 static lv_color_t           buf[DISP_BUF_SIZE];
 static lv_disp_draw_buf_t   disp_buf;
@@ -83,12 +84,16 @@ int main(void) {
 
     vol = rotary_init("/dev/input/event2");
     mfk = encoder_init("/dev/input/event3");
+    mfk_inner = rotary_init("/dev/input/event4");
 
     vol->left[VOL_EDIT] = KEY_VOL_LEFT_EDIT;
     vol->right[VOL_EDIT] = KEY_VOL_RIGHT_EDIT;
 
     vol->left[VOL_SELECT] = KEY_VOL_LEFT_SELECT;
     vol->right[VOL_SELECT] = KEY_VOL_RIGHT_SELECT;
+
+    mfk_inner->left[0] = LV_KEY_DOWN;
+    mfk_inner->right[0] = LV_KEY_UP;
 
     params_init();
     audio_set_play_vol(params.play_gain_db_f.x);

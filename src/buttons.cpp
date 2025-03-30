@@ -546,7 +546,6 @@ void buttons_init(lv_obj_t *parent) {
         lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
 
         btn[i].label = label;
-        printf("button %d: %p\n", i, f);
     }
 
 
