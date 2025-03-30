@@ -9,6 +9,14 @@
 
 #define FFT_FULL_WIDTH 384000
 
+typedef struct {
+    cfg_item_t en;
+    cfg_item_t p1;
+    cfg_item_t p2;
+    cfg_item_t p3;
+    cfg_item_t p4;
+    cfg_item_t p5;
+} cfg_eq_t;
 
 /* configuration structs. Should contain same types (for correct initialization) */
 typedef struct {
@@ -63,6 +71,13 @@ typedef struct {
 
     // FT8
     cfg_item_t ft8_hold_freq;
+
+    // EQ
+    struct {
+        cfg_eq_t rx;
+        cfg_eq_t rx_wfm;
+        cfg_eq_t mic;
+    } eq;
 } cfg_t;
 extern cfg_t cfg;
 

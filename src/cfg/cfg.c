@@ -190,6 +190,21 @@ void save_items_to_db(cfg_item_t *cfg_arr, uint32_t cfg_size) {
 }
 
 /**
+ * Helpers for initialization
+ */
+void fill_cfg_item(cfg_item_t *item, Subject * val, const char * db_name) {
+    item->db_name = strdup(db_name);
+    item->val = val;
+}
+
+void fill_cfg_item_float(cfg_item_t *item, Subject * val, float db_scale, const char * db_name) {
+    item->db_name = strdup(db_name);
+    item->db_scale = db_scale;
+    item->val = val;
+}
+
+
+/**
  * Save thread
  */
 static void *params_save_thread(void *arg) {
@@ -226,56 +241,79 @@ static int init_params_cfg(sqlite3 *db) {
     cfg_params_init(db);
 
     /* Fill configuration */
-    cfg.vol = (cfg_item_t){.val = subject_create_int(20), .db_name = "vol"};
-    cfg.sql = (cfg_item_t){.val = subject_create_int(0), .db_name = "sql"};
-    cfg.pwr = (cfg_item_t){.val = subject_create_float(5.0f), .db_scale = 0.1f, .db_name = "pwr"};
+    fill_cfg_item(&cfg.vol, subject_create_int(20), "vol");
+    fill_cfg_item(&cfg.sql, subject_create_int(0), "sql");
+    fill_cfg_item_float(&cfg.pwr, subject_create_float(5.0f), 0.1f, "pwr");
 
-    cfg.fft_dec = (cfg_item_t){.val = subject_create_int(0), .db_name = "fft_dec"};
+    fill_cfg_item(&cfg.fft_dec, subject_create_int(0), "fft_dec");
 
-    cfg.key_tone    = (cfg_item_t){.val = subject_create_int(700), .db_name = "key_tone"};
-    cfg.band_id     = (cfg_item_t){.val = subject_create_int(5), .db_name = "band"};
-    cfg.ant_id      = (cfg_item_t){.val = subject_create_int(1), .db_name = "ant"};
-    cfg.atu_enabled = (cfg_item_t){.val = subject_create_int(false), .db_name = "atu"};
+    fill_cfg_item(&cfg.key_tone   , subject_create_int(700), "key_tone");
+    fill_cfg_item(&cfg.band_id    , subject_create_int(5), "band");
+    fill_cfg_item(&cfg.ant_id     , subject_create_int(1), "ant");
+    fill_cfg_item(&cfg.atu_enabled, subject_create_int(false), "atu");
 
-    cfg.key_speed = (cfg_item_t){.val = subject_create_int(15), .db_name="key_speed"};
-    cfg.key_mode = (cfg_item_t){.val = subject_create_int(x6100_key_manual), .db_name="key_mode"};
-    cfg.iambic_mode = (cfg_item_t){.val = subject_create_int(x6100_iambic_a), .db_name="iambic_mode"};
-    cfg.key_vol = (cfg_item_t){.val = subject_create_int(10), .db_name="key_vol"};
-    cfg.key_train = (cfg_item_t){.val = subject_create_int(false), .db_name="key_train"};
-    cfg.qsk_time = (cfg_item_t){.val = subject_create_int(100), .db_name="qsk_time"};
-    cfg.key_ratio = (cfg_item_t){.val = subject_create_float(3.0f), .db_scale=0.1f, .db_name="key_ratio"};
+    fill_cfg_item(&cfg.key_speed, subject_create_int(15), "key_speed");
+    fill_cfg_item(&cfg.key_mode, subject_create_int(x6100_key_manual), "key_mode");
+    fill_cfg_item(&cfg.iambic_mode, subject_create_int(x6100_iambic_a), "iambic_mode");
+    fill_cfg_item(&cfg.key_vol, subject_create_int(10), "key_vol");
+    fill_cfg_item(&cfg.key_train, subject_create_int(false), "key_train");
+    fill_cfg_item(&cfg.qsk_time, subject_create_int(100), "qsk_time");
+    fill_cfg_item_float(&cfg.key_ratio, subject_create_float(3.0f), 0.1f, "key_ratio");
 
     /* CW decoder */
-    cfg.cw_decoder = (cfg_item_t){.val = subject_create_int(true), .db_name="cw_decoder"};
-    cfg.cw_tune = (cfg_item_t){.val = subject_create_int(false), .db_name="cw_tune"};
-    cfg.cw_decoder_snr = (cfg_item_t){.val = subject_create_float(5.0f), .db_scale=0.1f, .db_name="cw_decoder_snr_2"};
-    cfg.cw_decoder_snr_gist = (cfg_item_t){.val = subject_create_float(1.0f), .db_scale=0.1f, .db_name="cw_decoder_snr_gist"};
-    cfg.cw_decoder_peak_beta = (cfg_item_t){.val = subject_create_float(0.10f), .db_scale=0.01f, .db_name="cw_decoder_peak_beta"};
-    cfg.cw_decoder_noise_beta = (cfg_item_t){.val = subject_create_float(0.80f), .db_scale=0.01f, .db_name="cw_decoder_noise_beta"};
+    fill_cfg_item(&cfg.cw_decoder, subject_create_int(true), "cw_decoder");
+    fill_cfg_item(&cfg.cw_tune, subject_create_int(false), "cw_tune");
+    fill_cfg_item_float(&cfg.cw_decoder_snr, subject_create_float(5.0f), 0.1f, "cw_decoder_snr_2");
+    fill_cfg_item_float(&cfg.cw_decoder_snr_gist, subject_create_float(1.0f), 0.1f, "cw_decoder_snr_gist");
+    fill_cfg_item_float(&cfg.cw_decoder_peak_beta, subject_create_float(0.10f), 0.01f, "cw_decoder_peak_beta");
+    fill_cfg_item_float(&cfg.cw_decoder_noise_beta, subject_create_float(0.80f), 0.01f, "cw_decoder_noise_beta");
 
-    cfg.agc_hang = (cfg_item_t){.val=subject_create_int(false), .db_name="agc_hang"};
-    cfg.agc_knee = (cfg_item_t){.val=subject_create_int(-60), .db_name="agc_knee"};
-    cfg.agc_slope = (cfg_item_t){.val=subject_create_int(6), .db_name="agc_slope"};
+    fill_cfg_item(&cfg.agc_hang, subject_create_int(false), "agc_hang");
+    fill_cfg_item(&cfg.agc_knee, subject_create_int(-60), "agc_knee");
+    fill_cfg_item(&cfg.agc_slope, subject_create_int(6), "agc_slope");
 
     // DSP
-    cfg.dnf = (cfg_item_t){.val = subject_create_int(false), .db_name = "dnf"};
-    cfg.dnf_center = (cfg_item_t){.val = subject_create_int(1000), .db_name = "dnf_center"};
-    cfg.dnf_width = (cfg_item_t){.val = subject_create_int(50), .db_name = "dnf_width"};
-    cfg.dnf_auto = (cfg_item_t){.val = subject_create_int(false), .db_name = "dnf_auto"};
+    fill_cfg_item(&cfg.dnf, subject_create_int(false), "dnf");
+    fill_cfg_item(&cfg.dnf_center, subject_create_int(1000), "dnf_center");
+    fill_cfg_item(&cfg.dnf_width, subject_create_int(50), "dnf_width");
+    fill_cfg_item(&cfg.dnf_auto, subject_create_int(false), "dnf_auto");
 
-    cfg.nb = (cfg_item_t){.val = subject_create_int(false), .db_name = "nb"};
-    cfg.nb_level = (cfg_item_t){.val = subject_create_int(10), .db_name = "nb_level"};
-    cfg.nb_width = (cfg_item_t){.val = subject_create_int(10), .db_name = "nb_width"};
+    fill_cfg_item(&cfg.nb, subject_create_int(false), "nb");
+    fill_cfg_item(&cfg.nb_level, subject_create_int(10), "nb_level");
+    fill_cfg_item(&cfg.nb_width, subject_create_int(10), "nb_width");
 
-    cfg.nr = (cfg_item_t){.val = subject_create_int(false), .db_name = "nr"};
-    cfg.nr_level = (cfg_item_t){.val = subject_create_int(0), .db_name = "nr_level"};
+    fill_cfg_item(&cfg.nr, subject_create_int(false), "nr");
+    fill_cfg_item(&cfg.nr_level, subject_create_int(0), "nr_level");
 
     // SWR scan
-    cfg.swrscan_linear = (cfg_item_t){.val=subject_create_int(true), .db_name="swrscan_linear"};
-    cfg.swrscan_span = (cfg_item_t){.val=subject_create_int(200000), .db_name="swrscan_span"};
+    fill_cfg_item(&cfg.swrscan_linear, subject_create_int(true), "swrscan_linear");
+    fill_cfg_item(&cfg.swrscan_span, subject_create_int(200000), "swrscan_span");
 
     // FT8
-    cfg.ft8_hold_freq = (cfg_item_t){.val=subject_create_int(true), .db_name="ft8_hold_freq"};
+    fill_cfg_item(&cfg.ft8_hold_freq, subject_create_int(true), "ft8_hold_freq");
+
+    // EQ
+    fill_cfg_item(&cfg.eq.rx.en, subject_create_int(false), "eq_rx_en");
+    fill_cfg_item(&cfg.eq.rx.p1, subject_create_int(0), "eq_rx_p1");
+    fill_cfg_item(&cfg.eq.rx.p2, subject_create_int(0), "eq_rx_p2");
+    fill_cfg_item(&cfg.eq.rx.p3, subject_create_int(0), "eq_rx_p3");
+    fill_cfg_item(&cfg.eq.rx.p4, subject_create_int(0), "eq_rx_p4");
+    fill_cfg_item(&cfg.eq.rx.p5, subject_create_int(0), "eq_rx_p5");
+
+    fill_cfg_item(&cfg.eq.rx_wfm.en, subject_create_int(false), "eq_rx_wfm_en");
+    fill_cfg_item(&cfg.eq.rx_wfm.p1, subject_create_int(0), "eq_rx_wfm_p1");
+    fill_cfg_item(&cfg.eq.rx_wfm.p2, subject_create_int(0), "eq_rx_wfm_p2");
+    fill_cfg_item(&cfg.eq.rx_wfm.p3, subject_create_int(0), "eq_rx_wfm_p3");
+    fill_cfg_item(&cfg.eq.rx_wfm.p4, subject_create_int(0), "eq_rx_wfm_p4");
+    fill_cfg_item(&cfg.eq.rx_wfm.p5, subject_create_int(0), "eq_rx_wfm_p5");
+
+    fill_cfg_item(&cfg.eq.mic.en, subject_create_int(false), "eq_mic_en");
+
+    fill_cfg_item(&cfg.eq.mic.p1, subject_create_int(0), "eq_mic_p1");
+    fill_cfg_item(&cfg.eq.mic.p2, subject_create_int(0), "eq_mic_p2");
+    fill_cfg_item(&cfg.eq.mic.p3, subject_create_int(0), "eq_mic_p3");
+    fill_cfg_item(&cfg.eq.mic.p4, subject_create_int(0), "eq_mic_p4");
+    fill_cfg_item(&cfg.eq.mic.p5, subject_create_int(0), "eq_mic_p5");
 
 
     cfg_cur.fft_width = subject_create_int(FFT_FULL_WIDTH);
