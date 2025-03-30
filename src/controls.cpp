@@ -57,6 +57,21 @@ void controls_toggle_nr(button_item_t *btn) {
     voice_say_bool("NR", new_val);
 }
 
+void controls_toggle_att(button_item_t *btn) {
+    bool new_val = toggle_subj(cfg_cur.att);
+    voice_say_bool("ATT", new_val);
+}
+
+void controls_toggle_pre(button_item_t *btn) {
+    bool new_val = toggle_subj(cfg_cur.pre);
+    voice_say_bool("PRE", new_val);
+}
+
+void controls_toggle_comp(button_item_t *btn) {
+    // bool new_val = toggle_subj(cfg.comp);
+    // voice_say_bool("COMP", new_val);
+}
+
 static inline bool toggle_subj(Subject *subj) {
     bool new_val = !subject_get_int(subj);
     subject_set_int(subj, new_val);

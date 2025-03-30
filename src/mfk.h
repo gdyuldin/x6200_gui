@@ -61,6 +61,10 @@ typedef enum {
     MFK_RIT,
     MFK_XIT,
 
+    MFK_ATT,
+    MFK_PRE,
+    MFK_COMP,
+
     MFK_LAST,
 
     /* APPs */

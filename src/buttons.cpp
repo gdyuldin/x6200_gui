@@ -72,6 +72,8 @@ static char * rit_label_getter();
 static char * xit_label_getter();
 
 static char * agc_label_getter();
+static char * att_label_getter();
+static char * pre_label_getter();
 
 static char * key_speed_label_getter();
 static char * key_volume_label_getter();
@@ -188,6 +190,24 @@ static button_item_t btn_voice_vol   = make_btn("Voice\nVolume", VOL_VOICE_VOLUM
 
 /* MFK page 1 */
 static button_item_t btn_agc  = make_btn(agc_label_getter, MFK_AGC, &cfg_cur.agc);
+static button_item_t btn_att  = {.type     = BTN_TEXT_FN,
+                                 .label_fn = att_label_getter,
+                                 .press    = controls_toggle_att,
+                                 .hold     = button_mfk_hold_cb,
+                                 .data     = MFK_ATT,
+                                 .subj     = &cfg_cur.att};
+static button_item_t btn_pre  = {.type     = BTN_TEXT_FN,
+                                 .label_fn = pre_label_getter,
+                                 .press    = controls_toggle_pre,
+                                 .hold     = button_mfk_hold_cb,
+                                 .data     = MFK_PRE,
+                                 .subj     = &cfg_cur.pre};
+// static button_item_t btn_pre  = {.type     = BTN_TEXT_FN,
+//                                  .label_fn = comp_label_getter,
+//                                  .press    = controls_toggle_comp,
+//                                  .hold     = button_mfk_hold_cb,
+//                                  .data     = MFK_PRE,
+//                                  .subj     = &cfg_cur.pre};
 
 /* MFK page 2 */
 
@@ -370,7 +390,7 @@ static button_item_t btn_mfk_p3 = make_page_btn("(MFK 3:4)", "MFK|page 3");
 static button_item_t btn_mfk_p4 = make_page_btn("(MFK 4:4)", "MFK|page 4");
 
 static buttons_page_t page_mfk_1 = {
-    {&btn_mfk_p1, &btn_agc}
+    {&btn_mfk_p1, &btn_agc, &btn_att, &btn_pre}
 };
 static buttons_page_t page_mfk_2 = {
     {&btn_mfk_p2, &btn_spectrum_min_level, &btn_spectrum_max_level, &btn_zoom, &btn_spectrum_beta}
@@ -860,6 +880,18 @@ static char * agc_label_getter() {
     const char * agc_str = cfg_mode_agc_label((x6100_agc_t)subject_get_int(cfg_cur.agc));
     static char buf[22];
     sprintf(buf, "AGC:\n%s", agc_str);
+    return buf;
+}
+
+char *att_label_getter() {
+    static char buf[22];
+    sprintf(buf, "ATT:\n%s", subject_get_int(cfg_cur.att) ? "On": "Off");
+    return buf;
+}
+
+char *pre_label_getter() {
+    static char buf[22];
+    sprintf(buf, "PRE:\n%s", subject_get_int(cfg_cur.pre) ? "On": "Off");
     return buf;
 }
 

@@ -278,7 +278,6 @@ void mfk_update(int16_t diff, bool voice) {
             break;
 
         case MFK_KEY_TRAIN:
-            // b = radio_change_key_train(diff);
             b = subject_get_int(cfg.key_train.val);
             if (diff) {
                 b = !b;
@@ -574,6 +573,36 @@ void mfk_update(int16_t diff, bool voice) {
                 voice_say_int("Auto gain slope level", i);
             } else if (voice) {
                 voice_say_text_fmt("Auto gain slope level");
+            }
+            break;
+
+        case MFK_ATT:
+            b = subject_get_int(cfg_cur.att);
+            if (diff) {
+                b = !b;
+                subject_set_int(cfg_cur.att, b);
+            }
+            msg_update_text_fmt("#%3X ATT: %s", color, b ? "On" : "Off");
+
+            if (diff) {
+                voice_say_bool("ATT", b);
+            } else if (voice) {
+                voice_say_text_fmt("Att switcher");
+            }
+            break;
+
+        case MFK_PRE:
+            b = subject_get_int(cfg_cur.pre);
+            if (diff) {
+                b = !b;
+                subject_set_int(cfg_cur.pre, b);
+            }
+            msg_update_text_fmt("#%3X PRE: %s", color, b ? "On" : "Off");
+
+            if (diff) {
+                voice_say_bool("PRE", b);
+            } else if (voice) {
+                voice_say_text_fmt("Pre switcher");
             }
             break;
 
