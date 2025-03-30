@@ -162,7 +162,7 @@ void dsp_reset() {
 
 static void update_s_meter(int16_t peak_db) {
     if (dialog_msg_voice_get_state() != MSG_VOICE_RECORD) {
-        meter_update(peak_db, 0.8f);
+        meter_update(peak_db, 0.0f);
     }
 }
 
