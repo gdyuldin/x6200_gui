@@ -166,14 +166,6 @@ lv_obj_t * meter_init(lv_obj_t * parent) {
 
 void meter_update(int16_t db, float beta) {
     noise_level = spectrum_get_min();
-    if (att) {
-        db += 14;
-        noise_level+= 14.0f;
-    }
-    if (pre){
-        db -= 14;
-        noise_level -= 14.0f;
-    }
     if (db < min_db) {
         db = min_db;
     } else if (db > max_db) {

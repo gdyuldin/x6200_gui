@@ -68,24 +68,6 @@ static void radio_unlock() {
     pthread_mutex_unlock(&control_mux);
 }
 
-/**
- * Restore "listening" of main board and USB soundcard after ATU
- */
-// static void recover_processing_audio_inputs() {
-//     usleep(10000);
-//     x6100_vfo_t vfo = subject_get_int(cfg_cur.band->vfo.val);
-//     radio_lock();
-//     x6100_control_vfo_mode_set(vfo, x6100_mode_usb_dig);
-//     x6100_control_txpwr_set(0.1f);
-//     x6100_control_modem_set(true);
-//     usleep(50000);
-//     x6100_control_modem_set(false);
-//     x6100_control_txpwr_set(subject_get_float(cfg.pwr.val));
-//     x6100_control_vfo_mode_set(vfo, subject_get_int(cfg_cur.mode));
-//     radio_unlock();
-// }
-
-
 static void process_power_key(bool val, uint64_t now) {
     static event_keypad_t event = { .key = KEYPAD_POWER, .state = KEYPAD_RELEASE };
     static bool prev_val;
