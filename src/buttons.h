@@ -42,7 +42,7 @@ typedef struct button_item_t {
     struct buttons_page_t *prev;
     int32_t                data;
     lv_obj_t              *label_obj;
-    Subject               *subj;
+    Subject               **subj;
     Observer              *observer;
 } button_item_t;
 
@@ -64,13 +64,14 @@ extern buttons_group_t buttons_group_app;
 extern buttons_group_t buttons_group_key;
 extern buttons_group_t buttons_group_dfn;
 extern buttons_group_t buttons_group_dfl;
-extern buttons_group_t buttons_group_vm;
 
 // TODO: move to applications
 extern buttons_group_t buttons_group_msg_cw;
 extern buttons_group_t buttons_group_msg_voice;
 
 void            buttons_init(lv_obj_t *parent);
+void            buttons_refresh(button_item_t *item);
+void            buttons_mark(button_item_t *item, bool on);
 void            buttons_load(uint8_t n, button_item_t *item);
 void            buttons_load_page(buttons_page_t *page);
 void            buttons_unload_page();

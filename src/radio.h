@@ -70,7 +70,7 @@ void radio_stop_swrscan();
 
 void radio_poweroff();
 void radio_set_ptt(bool tx);
-void radio_set_modem(bool tx);
+// void radio_set_modem(bool tx);
 
 
 int16_t radio_change_xit(int16_t d);

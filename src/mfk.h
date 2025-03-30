@@ -46,6 +46,7 @@ typedef enum {
     MFK_NR,
     MFK_NR_LEVEL,
 
+    MFK_AGC,
     MFK_AGC_HANG,
     MFK_AGC_KNEE,
     MFK_AGC_SLOPE,

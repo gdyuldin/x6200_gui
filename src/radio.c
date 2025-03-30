@@ -71,19 +71,19 @@ static void radio_unlock() {
 /**
  * Restore "listening" of main board and USB soundcard after ATU
  */
-static void recover_processing_audio_inputs() {
-    usleep(10000);
-    x6100_vfo_t vfo = subject_get_int(cfg_cur.band->vfo.val);
-    radio_lock();
-    x6100_control_vfo_mode_set(vfo, x6100_mode_usb_dig);
-    x6100_control_txpwr_set(0.1f);
-    x6100_control_modem_set(true);
-    usleep(50000);
-    x6100_control_modem_set(false);
-    x6100_control_txpwr_set(subject_get_float(cfg.pwr.val));
-    x6100_control_vfo_mode_set(vfo, subject_get_int(cfg_cur.mode));
-    radio_unlock();
-}
+// static void recover_processing_audio_inputs() {
+//     usleep(10000);
+//     x6100_vfo_t vfo = subject_get_int(cfg_cur.band->vfo.val);
+//     radio_lock();
+//     x6100_control_vfo_mode_set(vfo, x6100_mode_usb_dig);
+//     x6100_control_txpwr_set(0.1f);
+//     x6100_control_modem_set(true);
+//     usleep(50000);
+//     x6100_control_modem_set(false);
+//     x6100_control_txpwr_set(subject_get_float(cfg.pwr.val));
+//     x6100_control_vfo_mode_set(vfo, subject_get_int(cfg_cur.mode));
+//     radio_unlock();
+// }
 
 
 static void process_power_key(bool val, uint64_t now) {
@@ -134,8 +134,11 @@ bool radio_tick() {
             delay = 0;
             clock_update_power(pack->vext * 0.1f, pack->vbat*0.1f, pack->batcap, pack->flag.charging);
         }
+        // printf("sql_mute=%d sql_fm_mute=%d\n", pack->flag.sql_mute, pack->flag.sql_fm_mute);
+        // printf("flags %08x\n", pack->flag);
         float *samples = (float*)((char *)pack + offsetof(x6100_flow_t, samples));
         dsp_samples(samples, RADIO_SAMPLES, pack->flag.tx, -(int16_t)pack->dbm);
+        // printf("als=%f\n", pack->alc_level * 0.1f);
 
         process_power_key(pack->flag.power_key, now_time);
 
@@ -173,7 +176,7 @@ bool radio_tick() {
                     cfg_atu_save_network(pack->atu_params);
                     WITH_RADIO_LOCK(x6100_control_atu_tune(false));
                     subject_set_int(cfg.atu_enabled.val, true);
-                    recover_processing_audio_inputs();
+                    // recover_processing_audio_inputs();
                     notify_rx();
 
                     // TODO: change with observer on atu->loaded change
@@ -228,6 +231,12 @@ static void * radio_thread(void *arg) {
     }
 }
 
+static void on_change_bool(Subject *subj, void *user_data) {
+    int32_t new_val = subject_get_int(subj);
+    void (*fn)(bool) = (void (*)(bool))user_data;
+    WITH_RADIO_LOCK(fn(new_val));
+}
+
 static void on_change_int8(Subject *subj, void *user_data) {
     int32_t new_val = subject_get_int(subj);
     void (*fn)(int8_t) = (void (*)(int8_t))user_data;
@@ -270,7 +279,7 @@ static void on_vfo_mode_change(Subject *subj, void *user_data) {
     x6100_vfo_t vfo = (x6100_vfo_t )user_data;
     int32_t new_val = subject_get_int(subj);
     WITH_RADIO_LOCK(x6100_control_vfo_mode_set(vfo, new_val));
-    LV_LOG_USER("Radio set vfo %i mode=%i", vfo, new_val);;
+    LV_LOG_USER("Radio set vfo %i mode=%i", vfo, new_val);
 }
 
 static void on_vfo_agc_change(Subject *subj, void *user_data) {
@@ -278,49 +287,6 @@ static void on_vfo_agc_change(Subject *subj, void *user_data) {
     int32_t new_val = subject_get_int(subj);
     WITH_RADIO_LOCK(x6100_control_vfo_agc_set(vfo, new_val));
     LV_LOG_USER("Radio set vfo %i agc=%i", vfo, new_val);
-}
-
-static void update_agc_time(Subject *subj, void *user_data) {
-    x6100_agc_t     agc = subject_get_int(cfg_cur.agc);
-    x6100_mode_t    mode = subject_get_int(cfg_cur.mode);
-    uint16_t        agc_time = 500;
-
-    switch (agc) {
-        case x6100_agc_off:
-            agc_time = 1000;
-            break;
-
-        case x6100_agc_slow:
-            agc_time = 1000;
-            break;
-
-        case x6100_agc_fast:
-            agc_time = 100;
-            break;
-
-        case x6100_agc_auto:
-            switch (mode) {
-                case x6100_mode_lsb:
-                case x6100_mode_lsb_dig:
-                case x6100_mode_usb:
-                case x6100_mode_usb_dig:
-                    agc_time = 500;
-                    break;
-
-                case x6100_mode_cw:
-                case x6100_mode_cwr:
-                    agc_time = 100;
-                    break;
-
-                case x6100_mode_am:
-                case x6100_mode_nfm:
-                    agc_time = 1000;
-                    break;
-            }
-            break;
-    }
-    WITH_RADIO_LOCK(x6100_control_agc_time_set(agc_time));
-    LV_LOG_USER("Radio set agc time=%u for agc: %i\n", agc_time, agc);
 }
 
 static void on_vfo_att_change(Subject *subj, void *user_data) {
@@ -429,9 +395,6 @@ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb) {
     subject_add_observer_and_call(cfg_cur.band->split.val, on_change_uint8, x6100_control_split_set);
     subject_add_observer_and_call(cfg_cur.band->rfg.val, on_change_uint8, x6100_control_rfg_set);
 
-    // subject_add_observer(cfg_cur.agc, update_agc_time, NULL);
-    // subject_add_observer_and_call(cfg_cur.mode, update_agc_time, NULL);
-
     subject_add_observer_and_call(cfg_cur.filter.low, on_low_filter_change, NULL);
     subject_add_observer_and_call(cfg_cur.filter.high, on_high_filter_change, NULL);
 
@@ -464,6 +427,27 @@ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb) {
     subject_add_observer_and_call(cfg.nr.val, on_change_uint8, x6100_control_nr_set);
     subject_add_observer_and_call(cfg.nr_level.val, on_change_uint8, x6100_control_nr_level_set);
 
+    subject_add_observer_and_call(cfg.eq.rx.en.val, on_change_bool, x6100_control_rx_eq_set);
+    subject_add_observer_and_call(cfg.eq.rx.p1.val, on_change_int8, x6100_control_rx_eq_p1_set);
+    subject_add_observer_and_call(cfg.eq.rx.p2.val, on_change_int8, x6100_control_rx_eq_p2_set);
+    subject_add_observer_and_call(cfg.eq.rx.p3.val, on_change_int8, x6100_control_rx_eq_p3_set);
+    subject_add_observer_and_call(cfg.eq.rx.p4.val, on_change_int8, x6100_control_rx_eq_p4_set);
+    subject_add_observer_and_call(cfg.eq.rx.p5.val, on_change_int8, x6100_control_rx_eq_p5_set);
+
+    subject_add_observer_and_call(cfg.eq.rx_wfm.en.val, on_change_bool, x6100_control_rx_eq_wfm_set);
+    subject_add_observer_and_call(cfg.eq.rx_wfm.p1.val, on_change_int8, x6100_control_rx_eq_wfm_p1_set);
+    subject_add_observer_and_call(cfg.eq.rx_wfm.p2.val, on_change_int8, x6100_control_rx_eq_wfm_p2_set);
+    subject_add_observer_and_call(cfg.eq.rx_wfm.p3.val, on_change_int8, x6100_control_rx_eq_wfm_p3_set);
+    subject_add_observer_and_call(cfg.eq.rx_wfm.p4.val, on_change_int8, x6100_control_rx_eq_wfm_p4_set);
+    subject_add_observer_and_call(cfg.eq.rx_wfm.p5.val, on_change_int8, x6100_control_rx_eq_wfm_p5_set);
+
+    subject_add_observer_and_call(cfg.eq.mic.en.val, on_change_bool, x6100_control_mic_eq_set);
+    subject_add_observer_and_call(cfg.eq.mic.p1.val, on_change_int8, x6100_control_mic_eq_p1_set);
+    subject_add_observer_and_call(cfg.eq.mic.p2.val, on_change_int8, x6100_control_mic_eq_p2_set);
+    subject_add_observer_and_call(cfg.eq.mic.p3.val, on_change_int8, x6100_control_mic_eq_p3_set);
+    subject_add_observer_and_call(cfg.eq.mic.p4.val, on_change_int8, x6100_control_mic_eq_p4_set);
+    subject_add_observer_and_call(cfg.eq.mic.p5.val, on_change_int8, x6100_control_mic_eq_p5_set);
+
     x6100_control_charger_set(params.charger == RADIO_CHARGER_ON);
     x6100_control_bias_drive_set(params.bias_drive);
     x6100_control_bias_final_set(params.bias_final);
@@ -484,6 +468,11 @@ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb) {
     x6100_control_linein_set(params.line_in);
     x6100_control_lineout_set(params.line_out);
     x6100_control_monitor_level_set(params.moni);
+
+    // x6100_control_comp_set(false);
+    // x6100_control_comp_level_set(x6100_comp_1_8);
+
+    // x6100_control_sql_enable_set(true);
 
     prev_time = get_time();
     idle_time = prev_time;
@@ -705,9 +694,9 @@ void radio_set_ptt(bool tx) {
     WITH_RADIO_LOCK(x6100_control_ptt_set(tx));
 }
 
-void radio_set_modem(bool tx) {
-    WITH_RADIO_LOCK(x6100_control_modem_set(tx));
-}
+// void radio_set_modem(bool tx) {
+//     WITH_RADIO_LOCK(x6100_control_modem_set(tx));
+// }
 
 int16_t radio_change_rit(int16_t d) {
     if (d == 0) {

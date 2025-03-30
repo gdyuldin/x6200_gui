@@ -42,6 +42,7 @@
 #include "dialog_recorder.h"
 #include "dialog_callsign.h"
 #include "dialog_wifi.h"
+#include "dialog_eq.h"
 #include "backlight.h"
 #include "buttons.h"
 #include "recorder.h"
@@ -156,6 +157,11 @@ void main_screen_start_app(press_action_t app_action) {
         case ACTION_APP_WIFI:
             dialog_construct(dialog_wifi, obj);
             voice_say_text_fmt("Wi-Fi window");
+            break;
+
+        case ACTION_APP_EQ:
+            dialog_construct(dialog_eq, obj);
+            voice_say_text_fmt("EQ window");
             break;
 
         default:
@@ -455,7 +461,7 @@ static void main_screen_keypad_cb(lv_event_t * e) {
                 //
 
                 if (params.mag_info.x) {
-                    msg_tiny_set_text_fmt("AGC: %s", info_params_agc());
+                    msg_tiny_set_text_fmt("AGC: %s", cfg_mode_agc_label(subject_get_int(cfg_cur.agc)));
                 }
             } else if (keypad->state == KEYPAD_LONG) {
                 bool new_split = !subject_get_int(cfg_cur.band->split.val);
@@ -678,13 +684,6 @@ static void main_screen_keypad_cb(lv_event_t * e) {
                     break;
                 default:
                     break;
-            }
-            break;
-
-        case KEYPAD_VM:
-            if ((keypad->state == KEYPAD_RELEASE) && !dialog_is_run()) {
-                buttons_load_page_group(buttons_group_vm);
-                voice_say_text_fmt("VM parameters");
             }
             break;
 

@@ -248,7 +248,7 @@ static void worker_done() {
 
     pthread_cancel(thread);
     pthread_join(thread, NULL);
-    radio_set_modem(false);
+    radio_set_ptt(false);
     pthread_mutex_unlock(&audio_mutex);
     ftx_worker_free();
     free(decim_buf);
@@ -710,8 +710,8 @@ static void construct_cb(lv_obj_t *parent) {
     }
 
     // setup gain offset
-    float target_pwr = LV_MIN(subject_get_float(cfg.pwr.val), MAX_PWR);
-    base_gain_offset = -16.4f + log10f(target_pwr) * 10.0f;
+    // float target_pwr = LV_MIN(subject_get_float(cfg.pwr.val), MAX_PWR);
+    // base_gain_offset = -16.4f + log10f(target_pwr) * 10.0f;
 }
 
 /* Buttons */
@@ -1041,14 +1041,15 @@ static void tx_worker() {
         state = RX_PROCESS;
         return;
     }
-    float gain_offset = base_gain_offset + params.ft8_output_gain_offset.x;
-    float play_gain_offset = audio_set_play_vol(gain_offset + 6.0f);
-    gain_offset -= play_gain_offset;
+    // float gain_offset = base_gain_offset + params.ft8_output_gain_offset.x;
+    // float play_gain_offset = audio_set_play_vol(gain_offset + 6.0f);
+    // gain_offset -= play_gain_offset;
+    float gain_offset = 0.0f;
 
     // Change freq before tx
     uint64_t radio_freq = subject_get_int(cfg_cur.fg_freq);
     radio_set_freq(radio_freq + params.ft8_tx_freq.x - signal_freq);
-    radio_set_modem(true);
+    radio_set_ptt(true);
 
     float    prev_gain_offset = gain_offset;
     size_t   counter = 0;
@@ -1057,7 +1058,7 @@ static void tx_worker() {
 
     while (true) {
         if (counter > 30) {
-            gain_offset += get_correction() * 0.4f;
+            // gain_offset += get_correction() * 0.4f;
 
             if (gain_offset > 0.0)
                 gain_offset = 0.0f;
@@ -1069,28 +1070,29 @@ static void tx_worker() {
             break;
         }
         part = LV_MIN(1024 * 2, n_samples);
-        if (gain_offset == prev_gain_offset) {
-            if (gain_offset != 0.0f) {
-                audio_gain_db(ptr, part, gain_offset, ptr);
-            }
-        } else {
-            // Smooth change gain
-            audio_gain_db_transition(ptr, part, prev_gain_offset, gain_offset, ptr);
-            prev_gain_offset = gain_offset;
-        }
+        // audio_gain_db(ptr, part, -3.0f, ptr);
+        // if (gain_offset == prev_gain_offset) {
+        //     if (gain_offset != 0.0f) {
+        //         audio_gain_db(ptr, part, gain_offset, ptr);
+        //     }
+        // } else {
+        //     // Smooth change gain
+        //     audio_gain_db_transition(ptr, part, prev_gain_offset, gain_offset, ptr);
+        //     prev_gain_offset = gain_offset;
+        // }
         audio_play(ptr, part);
 
         n_samples -= part;
         ptr += part;
         counter++;
     }
-    params_float_set(&params.ft8_output_gain_offset, gain_offset - base_gain_offset + play_gain_offset);
+    // params_float_set(&params.ft8_output_gain_offset, gain_offset - base_gain_offset + play_gain_offset);
     audio_play_wait();
-    radio_set_modem(false);
+    radio_set_ptt(false);
     // Restore freq
     radio_set_freq(radio_freq);
     free(samples);
-    audio_set_play_vol(params.play_gain_db_f.x);
+    // audio_set_play_vol(params.play_gain_db_f.x);
 }
 
 /**

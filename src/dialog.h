@@ -12,9 +12,14 @@
 
 #include "buttons.h"
 
+#include <liquid/liquid.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "lvgl/lvgl.h"
 
-#include <liquid/liquid.h>
 
 typedef void (*dialog_construct_cb_t)(lv_obj_t *);
 typedef void (*dialog_destruct_cb_t)(void);
@@ -46,3 +51,7 @@ void dialog_item(dialog_t *dialog, lv_obj_t *obj);
 
 void dialog_audio_samples(unsigned int n, cfloat *samples);
 void dialog_rotary(int32_t diff);
+
+#ifdef __cplusplus
+}
+#endif

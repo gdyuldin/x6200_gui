@@ -69,11 +69,13 @@ static button_item_t btn_scale = {
     .type  = BTN_TEXT_FN,
     .label_fn = scale_label_fn,
     .press = dialog_swrscan_scale_cb,
+    .subj = &cfg.swrscan_linear.val,
 };
 static button_item_t btn_span = {
     .type  = BTN_TEXT_FN,
     .label_fn = span_label_fn,
     .press = dialog_swrscan_span_cb,
+    .subj = &cfg.swrscan_span.val,
 };
 
 static buttons_page_t btn_page = {
@@ -248,8 +250,6 @@ static void freq_update_cb(Subject *subj, void *user_data) {
 
 static void construct_cb(lv_obj_t *parent) {
     dialog.obj = dialog_init(parent);
-    btn_scale.subj = cfg.swrscan_linear.val;
-    btn_span.subj = cfg.swrscan_span.val;
     linear_obs = subject_add_delayed_observer_and_call(cfg.swrscan_linear.val, set_linear, NULL);
     span_obs = subject_add_delayed_observer_and_call(cfg.swrscan_span.val, set_span, NULL);
 

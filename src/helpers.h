@@ -1,8 +1,8 @@
 #pragma once
 
 #ifdef __cplusplus
-#include <complex>
-typedef std::complex<float> cfloat;
+    #include <complex>
+    typedef std::complex<float> cfloat;
 #else
-typedef float _Complex cfloat;
+    typedef float _Complex cfloat;
 #endif

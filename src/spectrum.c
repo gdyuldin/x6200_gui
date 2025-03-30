@@ -311,7 +311,7 @@ void spectrum_data(float *data_buf, uint16_t size, bool tx) {
     pthread_mutex_lock(&data_mux);
     spectrum_tx = tx;
     for (uint16_t i = 0; i < size; i++) {
-        spectrum_buf[i] = data_buf[i];
+        spectrum_buf[i] = tx ? data_buf[i] - 30.0f : data_buf[i];
 
         if (params.spectrum_peak && !tx) {
             float   v    = spectrum_buf[i];

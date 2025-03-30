@@ -9,10 +9,13 @@
 #include "info.h"
 
 #include "cfg/transverter.h"
+#include "cfg/mode.h"
 #include "styles.h"
 #include "params/params.h"
 #include "pubsub_ids.h"
 #include "wifi.h"
+
+#include <ctype.h>
 
 typedef enum {
     INFO_VFO = 0,
@@ -145,36 +148,6 @@ const char* info_params_mode_label_get() {
     return str;
 }
 
-const char* info_params_agc() {
-    x6100_agc_t     agc = subject_get_int(cfg_cur.agc);
-    char            *str;
-
-    switch (agc) {
-        case x6100_agc_off:
-            str = "OFF";
-            break;
-
-        case x6100_agc_slow:
-            str = "SLOW";
-            break;
-
-        case x6100_agc_fast:
-            str = "FAST";
-            break;
-
-        case x6100_agc_auto:
-            str = "AUTO";
-            break;
-
-        default:
-            str = "?";
-            break;
-
-    }
-
-    return str;
-}
-
 const char* info_params_vfo_label_get() {
     x6100_vfo_t cur_vfo = subject_get_int(cfg_cur.band->vfo.val);
     char            *str;
@@ -246,8 +219,13 @@ static void atu_label_update(Subject *subj, void * user_data) {
     }
 }
 
-static void agc_label_update(Subject *subj, void * user_data) {
-    lv_label_set_text(items[INFO_AGC], info_params_agc());
+static void agc_label_update(Subject *subj, void *user_data) {
+    char label[8];
+    strcpy(label, cfg_mode_agc_label(subject_get_int(cfg_cur.agc)));
+    for (size_t i = 0; i < strlen(label); i++) {
+        label[i] = toupper(label[i]);
+    }
+    lv_label_set_text(items[INFO_AGC], label);
 }
 
 static void att_pre_label_update(Subject *subj, void * user_data) {

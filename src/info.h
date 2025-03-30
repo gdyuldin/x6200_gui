@@ -14,7 +14,6 @@
 lv_obj_t * info_init(lv_obj_t * parent);
 
 const char* info_params_mode_label_get();
-const char* info_params_agc();
 const char* info_params_vfo_label_get();
 
 void info_lock_mode(bool lock);

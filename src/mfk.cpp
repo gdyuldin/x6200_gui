@@ -29,6 +29,7 @@ extern "C" {
     #include "band_info.h"
     #include "pubsub_ids.h"
     #include "meter.h"
+    #include "cfg/mode.h"
 
     #include "lvgl/lvgl.h"
 }
@@ -505,6 +506,24 @@ void mfk_update(int16_t diff, bool voice) {
                 voice_say_int("NR level", i);
             } else if (voice) {
                 voice_say_text_fmt("NR level");
+            }
+            break;
+
+        case MFK_AGC:
+            {
+                i = subject_get_int(cfg_cur.agc);
+                if (diff) {
+                    i = (i + diff + 4) % 4;
+                    subject_set_int(cfg_cur.agc, i);
+                }
+                const char *agc_str = cfg_mode_agc_label((x6100_agc_t)i);
+                msg_update_text_fmt("#%3X AGC: %s", color, agc_str);
+
+                if (diff) {
+                    voice_say_text_fmt("Auto gain control %s", agc_str);
+                } else if (voice) {
+                    voice_say_text_fmt("Auto gain hang switcher");
+                }
             }
             break;
 
