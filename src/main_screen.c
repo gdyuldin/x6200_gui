@@ -480,7 +480,8 @@ static void main_screen_keypad_cb(lv_event_t * e) {
             if (keypad->state == KEYPAD_RELEASE) {
                 next_freq_step(true);
             } else if (keypad->state == KEYPAD_LONG) {
-                next_freq_step(false);
+                subject_set_int(freq_lock, !subject_get_int(freq_lock));
+                voice_say_text_fmt("Frequency %s", subject_get_int(freq_lock) ? "locked" : "unlocked");
             }
             break;
 
@@ -645,16 +646,6 @@ static void main_screen_keypad_cb(lv_event_t * e) {
                 voice_say_text_fmt("Power off");
                 msg_update_text_fmt("Power off");
                 radio_poweroff();
-            }
-            break;
-
-        case KEYPAD_LOCK:
-            if (keypad->state == KEYPAD_RELEASE) {
-                subject_set_int(freq_lock, !subject_get_int(freq_lock));
-                voice_say_text_fmt("Frequency %s", subject_get_int(freq_lock) ? "locked" : "unlocked");
-            } else if (keypad->state == KEYPAD_LONG) {
-                radio_bb_reset();
-                exit(1);
             }
             break;
 
