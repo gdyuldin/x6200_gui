@@ -610,7 +610,7 @@ uint8_t radio_change_hmic(int16_t d) {
     if (d == 0) {
         return params.hmic;
     }
-    int32_t new_val = limit(params.hmic + d, 0, 50);
+    int32_t new_val = limit(params.hmic + d, 0, 30);
     CHANGE_PARAM(new_val, params.hmic, params.dirty.hmic, x6200_control_hmic_set);
 
     return params.hmic;
@@ -621,7 +621,7 @@ uint8_t radio_change_imic(int16_t d) {
         return params.imic;
     }
 
-    int32_t new_val = limit(params.imic + d, 0, 35);
+    int32_t new_val = limit(params.imic + d, 0, 30);
     CHANGE_PARAM(new_val, params.imic, params.dirty.imic, x6200_control_imic_set);
 
     return params.imic;

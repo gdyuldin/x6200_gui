@@ -265,7 +265,7 @@ void mfk_update(int16_t diff, bool voice) {
             // i = radio_change_key_vol(diff);
             i = subject_get_int(cfg.key_vol.val);
             if (diff) {
-                i = clip(i + diff, 0, 32);
+                i = clip(i + diff, 0, 63);
                 subject_set_int(cfg.key_vol.val, i);
             }
             msg_update_text_fmt("#%3X Key volume: %i", color, i);
@@ -498,7 +498,7 @@ void mfk_update(int16_t diff, bool voice) {
             // limit(params.nr_level + d * 5, 0, 60);
             i = subject_get_int(cfg.nr_level.val);
             if (diff) {
-                i = limit(i + diff * 5, 0, 60);
+                i = limit(i + diff * 5, 0, 100);
                 subject_set_int(cfg.nr_level.val, i);
             }
             msg_update_text_fmt("#%3X NR level: %i", color, i);

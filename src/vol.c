@@ -128,7 +128,7 @@ void vol_update(int16_t diff, bool voice) {
         case VOL_PWR:
             f = subject_get_float(cfg.pwr.val);
             f += diff * 0.1f;
-            f = LV_MIN(10.0f, f);
+            f = LV_MIN(8.0f, f);
             f = LV_MAX(0.1f, f);
             subject_set_float(cfg.pwr.val, f);
             msg_update_text_fmt("#%3X Power: %0.1f W", color, f);

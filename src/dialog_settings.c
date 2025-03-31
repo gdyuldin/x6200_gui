@@ -504,7 +504,7 @@ static uint8_t make_line_gain(uint8_t row) {
     lv_obj_clear_flag(cell, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(cell);
 
-    label_with_text(cell, params.line_in, 0, 36, SMALL_3 - 30 - 60, "%d", line_in_update_cb);
+    label_with_text(cell, params.line_in, 0, 30, SMALL_3 - 30 - 60, "%d", line_in_update_cb);
 
     cell = lv_obj_create(grid);
 
@@ -514,7 +514,7 @@ static uint8_t make_line_gain(uint8_t row) {
     lv_obj_clear_flag(cell, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(cell);
 
-    label_with_text(cell, params.line_out, 0, 36, SMALL_3 - 30 - 60, "%d", line_out_update_cb);
+    label_with_text(cell, params.line_out, 0, 30, SMALL_3 - 30 - 60, "%d", line_out_update_cb);
 
     return row + 1;
 }
