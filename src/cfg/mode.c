@@ -128,7 +128,7 @@ int cfg_mode_params_load_item(cfg_item_t *item) {
         switch (subject_get_dtype(item->val)) {
             case DTYPE_INT:
                 val = sqlite3_column_int(stmt, 0);
-                if (val < 0) {
+                if ((val < 0) && (item->pk != x6200_mode_cw)) {
                     LV_LOG_WARN("%s can't be negative (%i), ignore DB value", item->db_name, val);
                 } else {
                     LV_LOG_USER("Loaded %s=%i (pk=%u)", item->db_name, val, item->pk);
