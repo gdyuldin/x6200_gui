@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 static sqlite3      *db;
 static sqlite3_stmt *insert_stmt;
@@ -115,7 +116,7 @@ int cfg_params_save_item(cfg_item_t *item) {
         case DTYPE_FLOAT:
             float_val = subject_get_float(item->val);
             if (item->db_scale != 0) {
-                rc = sqlite3_bind_int(insert_stmt, val_index, float_val / item->db_scale);
+                rc = sqlite3_bind_int(insert_stmt, val_index, roundf(float_val / item->db_scale));
             } else {
                 rc = sqlite3_bind_double(insert_stmt, val_index, float_val);
             }
