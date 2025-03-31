@@ -58,7 +58,6 @@ typedef struct {
     cfg_item_t dnf;
     cfg_item_t dnf_center;
     cfg_item_t dnf_width;
-    cfg_item_t dnf_auto;
 
     cfg_item_t nb;
     cfg_item_t nb_level;
@@ -114,3 +113,5 @@ typedef struct {
 extern cfg_cur_t cfg_cur;
 
 int cfg_init(sqlite3 *db);
+
+const char * cfg_dnf_label_get();

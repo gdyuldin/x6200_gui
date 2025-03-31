@@ -26,8 +26,8 @@ static void construct_cb(lv_obj_t *parent);
 static void destruct_cb();
 static void key_cb(lv_event_t * e);
 
-static char *rx_eq_en_label_getter();
-static char *mic_eq_en_label_getter();
+static const char *rx_eq_en_label_getter();
+static const char *mic_eq_en_label_getter();
 
 static void rx_eq_press_cb(button_item_t *item);
 static void rx_eq_en_press_cb(button_item_t *item);
@@ -284,7 +284,7 @@ static void key_cb(lv_event_t * e) {
     }
 }
 
-static char* rx_eq_en_label_getter() {
+static const char* rx_eq_en_label_getter() {
     static char buf[22];
     if (subject_get_int(cfg_cur.mode) == x6200_mode_wfm) {
         sprintf(buf, "RX EQ:\n%s", subject_get_int(cfg.eq.rx_wfm.en.val) ? "On": "Off");
@@ -295,7 +295,7 @@ static char* rx_eq_en_label_getter() {
     return buf;
 }
 
-static char* mic_eq_en_label_getter() {
+static const char* mic_eq_en_label_getter() {
     static char buf[22];
     sprintf(buf, "MIC EQ:\n%s", subject_get_int(cfg.eq.mic.en.val) ? "On": "Off");
     return buf;

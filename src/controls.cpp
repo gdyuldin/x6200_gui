@@ -37,14 +37,11 @@ void controls_toggle_cw_tuner(button_item_t *btn) {
     voice_say_bool("CW Decoder", new_val);
 }
 
-void controls_toggle_dnf(button_item_t *btn) {
-    bool new_val = toggle_subj(cfg.dnf.val);
-    voice_say_bool("DNF", new_val);
-}
-
-void controls_toggle_dnf_auto(button_item_t *btn) {
-    bool new_val = toggle_subj(cfg.dnf_auto.val);
-    voice_say_bool("DNF auto", new_val);
+void controls_loop_dnf(button_item_t *btn) {
+    int32_t val = subject_get_int(cfg.dnf.val);
+    val = (val + 1) % 3;
+    subject_set_int(cfg.dnf.val, val);
+    voice_say_text("DNF", cfg_dnf_label_get());
 }
 
 void controls_toggle_nb(button_item_t *btn) {

@@ -57,8 +57,8 @@ static void dialog_swrscan_span_cb(button_item_t *item);
 static void set_span(Subject *subj, void *user_data);
 static void set_linear(Subject *subj, void *user_data);
 
-static char *scale_label_fn();
-static char *span_label_fn();
+static const char *scale_label_fn();
+static const char *span_label_fn();
 
 static button_item_t btn_run = {
     .type  = BTN_TEXT,
@@ -375,7 +375,7 @@ void set_linear(Subject *subj, void *user_data) {
     linear = subject_get_int(subj);
 }
 
-char *scale_label_fn() {
+const char *scale_label_fn() {
     if (subject_get_int(cfg.swrscan_linear.val)) {
         return "Scale:\nLinear";
     } else {
@@ -383,7 +383,7 @@ char *scale_label_fn() {
     }
 }
 
-char *span_label_fn() {
+const char *span_label_fn() {
     static char buf[20];
     const char * fmt = "Span:\n%u kHz";
     int32_t val = subject_get_int(cfg.swrscan_span.val);

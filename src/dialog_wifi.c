@@ -48,11 +48,11 @@ static void con_change_passwd_cb(button_item_t *item);
 static void con_delete_cb(button_item_t *item);
 
 // button label getters
-static char *wifi_on_off_label_getter();
-static char *wifi_scan_label_getter();
-static char *wifi_connected_label_getter();
-static char *wifi_con_change_passwd_label_getter();
-static char *wifi_con_delete_label_getter();
+static const char *wifi_on_off_label_getter();
+static const char *wifi_scan_label_getter();
+static const char *wifi_connected_label_getter();
+static const char *wifi_con_change_passwd_label_getter();
+static const char *wifi_con_delete_label_getter();
 
 static void start_refresh_ap_list();
 static void stop_refresh_ap_list();
@@ -376,7 +376,7 @@ static void con_delete_cb(button_item_t *item) {
 
 /* Buttons labels getters */
 
-static char *wifi_on_off_label_getter() {
+static const char *wifi_on_off_label_getter() {
     switch (wifi_get_status()) {
     case WIFI_OFF:
         return "Wifi/BT:\nOff";
@@ -387,7 +387,7 @@ static char *wifi_on_off_label_getter() {
     }
 }
 
-static char *wifi_scan_label_getter() {
+static const char *wifi_scan_label_getter() {
     wifi_status_t status;
     status = wifi_get_status();
     if ((status == WIFI_OFF) || (status == WIFI_STARTING))
@@ -395,7 +395,7 @@ static char *wifi_scan_label_getter() {
     return wifi_scanning() ? "Scanning..." : "Scan";
 }
 
-static char *wifi_connected_label_getter() {
+static const char *wifi_connected_label_getter() {
     switch (wifi_get_status()) {
     case WIFI_DISCONNECTED:
         if (sel_ap_type != SELECTED_AP_NONE) {
@@ -412,7 +412,7 @@ static char *wifi_connected_label_getter() {
     }
 }
 
-static char *wifi_con_change_passwd_label_getter() {
+static const char *wifi_con_change_passwd_label_getter() {
     switch (wifi_get_status()) {
     case WIFI_DISCONNECTED:
     case WIFI_CONNECTED:
@@ -426,7 +426,7 @@ static char *wifi_con_change_passwd_label_getter() {
     }
 }
 
-static char *wifi_con_delete_label_getter() {
+static const char *wifi_con_delete_label_getter() {
     switch (wifi_get_status()) {
     case WIFI_DISCONNECTED:
     case WIFI_CONNECTED:

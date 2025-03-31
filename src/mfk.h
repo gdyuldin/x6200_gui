@@ -39,7 +39,6 @@ typedef enum {
     MFK_DNF,
     MFK_DNF_CENTER,
     MFK_DNF_WIDTH,
-    MFK_DNF_AUTO,
     MFK_NB,
     MFK_NB_LEVEL,
     MFK_NB_WIDTH,

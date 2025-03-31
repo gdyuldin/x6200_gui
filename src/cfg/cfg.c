@@ -51,6 +51,7 @@ static void on_cur_zoom_change(Subject *subj, void *user_data);
 // #define TEST_CFG
 #ifdef TEST_CFG
 #include "test_cfg.c"
+#include "cfg.h"
 #endif
 
 int cfg_init(sqlite3 *db) {
@@ -91,6 +92,18 @@ int cfg_init(sqlite3 *db) {
     run_tests();
 #endif
     return rc;
+}
+
+const char *cfg_dnf_label_get() {
+    switch (subject_get_int(cfg.dnf.val)) {
+        case x6200_dnf_off:
+            return "Off";
+        case x6200_dnf_manual:
+            return "Manual";
+        case x6200_dnf_auto:
+            return "Auto";
+    }
+    return "--";
 }
 
 /**
@@ -276,10 +289,9 @@ static int init_params_cfg(sqlite3 *db) {
     fill_cfg_item(&cfg.comp, subject_create_int(false), "comp");
 
     // DSP
-    fill_cfg_item(&cfg.dnf, subject_create_int(false), "dnf");
+    fill_cfg_item(&cfg.dnf, subject_create_int(x6200_dnf_off), "dnf");
     fill_cfg_item(&cfg.dnf_center, subject_create_int(1000), "dnf_center");
     fill_cfg_item(&cfg.dnf_width, subject_create_int(50), "dnf_width");
-    fill_cfg_item(&cfg.dnf_auto, subject_create_int(false), "dnf_auto");
 
     fill_cfg_item(&cfg.nb, subject_create_int(false), "nb");
     fill_cfg_item(&cfg.nb_level, subject_create_int(10), "nb_level");

@@ -10,12 +10,12 @@
 #include "util.hpp"
 #include "cw.h"
 #include "voice.h"
-#include "cfg/cfg.h"
 #include "dsp.h"
 
 #include <vector>
 
 extern "C" {
+    #include "cfg/cfg.h"
     #include "util.h"
     #include "params/params.h"
     #include "spectrum.h"
@@ -378,18 +378,20 @@ void mfk_update(int16_t diff, bool voice) {
             break;
 
         case MFK_DNF:
-            // b = radio_change_dnf(diff);
-            b = subject_get_int(cfg.dnf.val);
+            i = subject_get_int(cfg.dnf.val);
             if (diff) {
-                b = !b;
-                subject_set_int(cfg.dnf.val, b);
+                i = (i + 3 + diff) % 3;
+                subject_set_int(cfg.dnf.val, i);
             }
-            msg_update_text_fmt("#%3X DNF: %s", color, b ? "On" : "Off");
+            {
+                const char * label = cfg_dnf_label_get();
+                msg_update_text_fmt("#%3X DNF: %s", color, label);
 
-            if (diff) {
-                voice_say_bool("DNF", b);
-            } else if (voice) {
-                voice_say_text_fmt("DNF switcher");
+                if (diff) {
+                    voice_say_text("DNF", label);
+                } else if (voice) {
+                    voice_say_text_fmt("DNF switcher");
+                }
             }
             break;
 

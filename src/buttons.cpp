@@ -52,58 +52,56 @@ static void button_mem_save_cb(button_item_t *item);
 
 // Label getters
 
-static char * vol_label_getter();
-static char * sql_label_getter();
-static char * rfg_label_getter();
-static char * tx_power_label_getter();
+static const char * vol_label_getter();
+static const char * sql_label_getter();
+static const char * rfg_label_getter();
+static const char * tx_power_label_getter();
 
-static char * filter_low_label_getter();
-static char * filter_high_label_getter();
-static char * filter_bw_label_getter();
-static char * speaker_mode_label_getter();
+static const char * filter_low_label_getter();
+static const char * filter_high_label_getter();
+static const char * filter_bw_label_getter();
 
-static char * mic_sel_label_getter();
-static char * h_mic_gain_label_getter();
-static char * i_mic_gain_label_getter();
-static char * moni_level_label_getter();
+static const char * mic_sel_label_getter();
+static const char * h_mic_gain_label_getter();
+static const char * i_mic_gain_label_getter();
+static const char * moni_level_label_getter();
 
-static char * charger_label_getter();
-static char * rit_label_getter();
-static char * xit_label_getter();
+static const char * charger_label_getter();
+static const char * rit_label_getter();
+static const char * xit_label_getter();
 
-static char * agc_label_getter();
-static char * att_label_getter();
-static char * pre_label_getter();
-static char * comp_label_getter();
+static const char * agc_label_getter();
+static const char * att_label_getter();
+static const char * pre_label_getter();
+static const char * comp_label_getter();
 
-static char * key_speed_label_getter();
-static char * key_volume_label_getter();
-static char * key_train_label_getter();
-static char * key_tone_label_getter();
+static const char * key_speed_label_getter();
+static const char * key_volume_label_getter();
+static const char * key_train_label_getter();
+static const char * key_tone_label_getter();
 
-static char * key_mode_label_getter();
-static char * iambic_mode_label_getter();
-static char * qsk_time_label_getter();
-static char * key_ratio_label_getter();
+static const char * key_mode_label_getter();
+static const char * iambic_mode_label_getter();
+static const char * qsk_time_label_getter();
+static const char * key_ratio_label_getter();
 
-static char * cw_decoder_label_getter();
-static char * cw_tuner_label_getter();
-static char * cw_snr_label_getter();
+static const char * cw_decoder_label_getter();
+static const char * cw_tuner_label_getter();
+static const char * cw_snr_label_getter();
 
-static char * cw_peak_beta_label_getter();
-static char * cw_noise_beta_label_getter();
+static const char * cw_peak_beta_label_getter();
+static const char * cw_noise_beta_label_getter();
 
-static char * dnf_label_getter();
-static char * dnf_center_label_getter();
-static char * dnf_width_label_getter();
-static char * dnf_auto_label_getter();
+static const char * dnf_label_getter();
+static const char * dnf_center_label_getter();
+static const char * dnf_width_label_getter();
 
-static char * nb_label_getter();
-static char * nb_level_label_getter();
-static char * nb_width_label_getter();
+static const char * nb_label_getter();
+static const char * nb_level_label_getter();
+static const char * nb_width_label_getter();
 
-static char * nr_label_getter();
-static char * nr_level_label_getter();
+static const char * nr_label_getter();
+static const char * nr_level_label_getter();
 
 static void button_action_cb(button_item_t *item);
 
@@ -113,7 +111,7 @@ static button_item_t make_btn(const char *name, vol_mode_t data) {
         .type = BTN_TEXT, .label = name, .press = button_vol_update_cb, .hold = button_vol_hold_cb, .data = data};
 }
 
-static button_item_t make_btn(char *(*label_fn)(), vol_mode_t data, Subject **subj = nullptr) {
+static button_item_t make_btn(const char *(*label_fn)(), vol_mode_t data, Subject **subj = nullptr) {
     return button_item_t{.type     = BTN_TEXT_FN,
                          .label_fn = label_fn,
                          .press    = button_vol_update_cb,
@@ -128,7 +126,7 @@ static button_item_t make_btn(const char *name, mfk_mode_t data) {
         .type = BTN_TEXT, .label = name, .press = button_mfk_update_cb, .hold = button_mfk_hold_cb, .data = data};
 }
 
-static button_item_t make_btn(char *(*label_fn)(), mfk_mode_t data, Subject **subj = nullptr) {
+static button_item_t make_btn(const char *(*label_fn)(), mfk_mode_t data, Subject **subj = nullptr) {
     return button_item_t{.type     = BTN_TEXT_FN,
                          .label_fn = label_fn,
                          .press    = button_mfk_update_cb,
@@ -289,18 +287,13 @@ static button_item_t btn_cw_noise_beta =
 
 static button_item_t btn_dnf        = {.type     = BTN_TEXT_FN,
                                        .label_fn = dnf_label_getter,
-                                       .press    = controls_toggle_dnf,
+                                       .press    = controls_loop_dnf,
                                        .hold     = button_mfk_hold_cb,
                                        .data     = MFK_DNF,
                                        .subj     = &cfg.dnf.val};
 static button_item_t btn_dnf_center = make_btn(dnf_center_label_getter, MFK_DNF_CENTER, &cfg.dnf_center.val);
 static button_item_t btn_dnf_width  = make_btn(dnf_width_label_getter, MFK_DNF_WIDTH, &cfg.dnf_width.val);
-static button_item_t btn_dnf_auto   = {.type     = BTN_TEXT_FN,
-                                       .label_fn = dnf_auto_label_getter,
-                                       .press    = controls_toggle_dnf_auto,
-                                       .hold     = button_mfk_hold_cb,
-                                       .data     = MFK_DNF_AUTO,
-                                       .subj     = &cfg.dnf_auto.val};
+
 
 static button_item_t btn_nb       = {.type     = BTN_TEXT_FN,
                                      .label_fn = nb_label_getter,
@@ -440,7 +433,7 @@ static button_item_t btn_dfn_p2 = make_page_btn("(DFN 2:3)", "NB page");
 static button_item_t btn_dfn_p3 = make_page_btn("(DFN 3:3)", "NR page");
 
 static buttons_page_t page_dfn_1 = {
-    {&btn_dfn_p1, &btn_dnf, &btn_dnf_center, &btn_dnf_width, &btn_dnf_auto}
+    {&btn_dfn_p1, &btn_dnf, &btn_dnf_center, &btn_dnf_width}
 };
 static buttons_page_t page_dfn_2 = {
     {&btn_dfn_p2, &btn_nb, &btn_nb_level, &btn_nb_width}
@@ -555,6 +548,7 @@ void buttons_init(lv_obj_t *parent) {
         lv_obj_remove_style_all(f);
         lv_obj_add_style(f, &btn_style, 0);
         lv_obj_add_style(f, &btn_active_style, LV_STATE_CHECKED);
+        lv_obj_add_style(f, &btn_disabled_style, LV_STATE_DISABLED);
 
         lv_obj_set_pos(f, x, y);
         lv_obj_set_size(f, width, btn_height);
@@ -597,6 +591,18 @@ void buttons_mark(button_item_t *item, bool on) {
 
         } else {
             lv_obj_clear_state(btn, LV_STATE_CHECKED);
+        }
+    }
+}
+
+void buttons_disabled(button_item_t *item, bool on) {
+    if (item->label_obj) {
+        lv_obj_t *btn = lv_obj_get_parent(item->label_obj);
+        if (on) {
+            lv_obj_add_state(btn, LV_STATE_DISABLED);
+
+        } else {
+            lv_obj_clear_state(btn, LV_STATE_DISABLED);
         }
     }
 }
@@ -652,6 +658,7 @@ void buttons_unload_page() {
         lv_label_set_text(label, "");
         lv_obj_set_user_data(label, NULL);
         lv_obj_clear_state(lv_obj_get_parent(label), LV_STATE_CHECKED);
+        lv_obj_clear_state(lv_obj_get_parent(label), LV_STATE_DISABLED);
         if (btn[i].item) {
             btn[i].item->label_obj = NULL;
             if (btn[i].item->observer) {
@@ -750,6 +757,11 @@ void buttons_press(uint8_t n, bool hold) {
         LV_LOG_WARN("Button %u is NULL", n);
         return;
     }
+    lv_obj_t *btn_obj = lv_obj_get_parent(item->label_obj);
+    if (lv_obj_has_state(btn_obj, LV_STATE_DISABLED)) {
+        LV_LOG_INFO("Button %s is disabled", lv_label_get_text(item->label_obj));
+        return;
+    }
     if (hold) {
         if (item->hold) {
             item->hold(item);
@@ -777,7 +789,7 @@ void buttons_load_page_group(buttons_group_t group) {
         return;
     }
     for (size_t i = 0; i < group_size; i++) {
-        if (group[i] == cur_page) {
+        if ((group[i] == cur_page) && (cur_page->items[0]->next)) {
             // load next
             cur_page->items[0]->press(cur_page->items[0]);
             return;
@@ -791,244 +803,239 @@ buttons_page_t *buttons_get_cur_page() {
     return cur_page;
 }
 
-static char * vol_label_getter() {
+static const char * vol_label_getter() {
     static char buf[16];
     sprintf(buf, "Volume:\n%zi", subject_get_int(cfg.vol.val));
     return buf;
 }
 
-static char * sql_label_getter() {
+static const char * sql_label_getter() {
     static char buf[16];
     sprintf(buf, "Squelch:\n%zu", subject_get_int(cfg.sql.val));
     return buf;
 }
 
-static char * rfg_label_getter() {
+static const char * rfg_label_getter() {
     static char buf[16];
     sprintf(buf, "RF gain:\n%zu", subject_get_int(cfg_cur.band->rfg.val));
     return buf;
 }
 
-static char * tx_power_label_getter() {
+static const char * tx_power_label_getter() {
     static char buf[20];
     sprintf(buf, "TX power:\n%0.1f W", subject_get_float(cfg.pwr.val));
     return buf;
 }
 
-static char * filter_low_label_getter() {
+static const char * filter_low_label_getter() {
     static char buf[22];
     sprintf(buf, "Filter low:\n%d Hz", subject_get_int(cfg_cur.filter.low));
     return buf;
 }
-static char * filter_high_label_getter() {
+static const char * filter_high_label_getter() {
     static char buf[22];
     sprintf(buf, "Filter high:\n%d Hz", subject_get_int(cfg_cur.filter.high));
     return buf;
 }
 
-static char * filter_bw_label_getter() {
+static const char * filter_bw_label_getter() {
     static char buf[22];
     sprintf(buf, "Filter BW:\n%i Hz", subject_get_int(cfg_cur.filter.bw));
     return buf;
 }
 
 
-static char * mic_sel_label_getter() {
+static const char * mic_sel_label_getter() {
     static char buf[22];
     sprintf(buf, "MIC Sel:\n%s", params_mic_str_get(params.mic));
     return buf;
 }
 
 
-static char * h_mic_gain_label_getter() {
+static const char * h_mic_gain_label_getter() {
     static char buf[22];
     sprintf(buf, "H-Mic gain:\n%zu", params.hmic);
     return buf;
 }
 
-static char * i_mic_gain_label_getter() {
+static const char * i_mic_gain_label_getter() {
     static char buf[22];
     sprintf(buf, "I-Mic gain:\n%zu", params.imic);
     return buf;
 }
 
-static char * moni_level_label_getter() {
+static const char * moni_level_label_getter() {
     static char buf[22];
     sprintf(buf, "Moni level:\n%zu", params.moni);
     return buf;
 }
 
-static char * charger_label_getter() {
+static const char * charger_label_getter() {
     static char buf[22];
     sprintf(buf, "Charger:\n%s", params_charger_str_get(params.charger));
     return buf;
 }
 
 
-static char * rit_label_getter() {
+static const char * rit_label_getter() {
     static char buf[22];
     sprintf(buf, "RIT:\n%+zi", params.rit);
     return buf;
 }
 
-static char * xit_label_getter() {
+static const char * xit_label_getter() {
     static char buf[22];
     sprintf(buf, "XIT:\n%+zi", params.xit);
     return buf;
 }
 
-static char * agc_label_getter() {
+static const char * agc_label_getter() {
     const char * agc_str = cfg_mode_agc_label((x6200_agc_t)subject_get_int(cfg_cur.agc));
     static char buf[22];
     sprintf(buf, "AGC:\n%s", agc_str);
     return buf;
 }
 
-char *att_label_getter() {
+static const char * att_label_getter() {
     static char buf[22];
     sprintf(buf, "ATT:\n%s", subject_get_int(cfg_cur.att) ? "On": "Off");
     return buf;
 }
 
-char *pre_label_getter() {
+static const char * pre_label_getter() {
     static char buf[22];
     sprintf(buf, "PRE:\n%s", subject_get_int(cfg_cur.pre) ? "On": "Off");
     return buf;
 }
 
-char *comp_label_getter() {
+static const char * comp_label_getter() {
     static char buf[22];
     sprintf(buf, "Comp:\n%s", subject_get_int(cfg.comp.val) ? "On": "Off");
     return buf;
 }
 
-static char * key_speed_label_getter() {
+static const char * key_speed_label_getter() {
     static char buf[22];
     sprintf(buf, "Speed:\n%zu wpm", subject_get_int(cfg.key_speed.val));
     return buf;
 }
 
-static char * key_volume_label_getter() {
+static const char * key_volume_label_getter() {
     static char buf[22];
     sprintf(buf, "Volume:\n%zu", subject_get_int(cfg.key_vol.val));
     return buf;
 }
 
-static char * key_train_label_getter() {
+static const char * key_train_label_getter() {
     static char buf[22];
     sprintf(buf, "Train:\n%s", subject_get_int(cfg.key_train.val) ? "On": "Off");
     return buf;
 }
 
-static char * key_tone_label_getter() {
+static const char * key_tone_label_getter() {
     static char buf[22];
     sprintf(buf, "Tone:\n%zu Hz", subject_get_int(cfg.key_tone.val));
     return buf;
 }
 
-static char * key_mode_label_getter() {
+static const char * key_mode_label_getter() {
     static char buf[22];
     sprintf(buf, "Mode:\n%s", params_key_mode_str_get((x6200_key_mode_t)subject_get_int(cfg.key_mode.val)));
     return buf;
 }
 
-static char * iambic_mode_label_getter() {
+static const char * iambic_mode_label_getter() {
     static char buf[22];
     sprintf(buf, "Iambic:\n%s mode", params_iambic_mode_str_ger((x6200_iambic_mode_t)subject_get_int(cfg.iambic_mode.val)));
     return buf;
 }
 
-static char * qsk_time_label_getter() {
+static const char * qsk_time_label_getter() {
     static char buf[22];
     sprintf(buf, "QSK time:\n%zu ms", subject_get_int(cfg.qsk_time.val));
     return buf;
 }
 
-static char * key_ratio_label_getter() {
+static const char * key_ratio_label_getter() {
     static char buf[22];
     sprintf(buf, "Ratio:\n%0.1f", subject_get_float(cfg.key_ratio.val));
     return buf;
 }
 
-static char * cw_decoder_label_getter() {
+static const char * cw_decoder_label_getter() {
     static char buf[22];
     sprintf(buf, "Decoder:\n%s", subject_get_int(cfg.cw_decoder.val) ? "On": "Off");
     return buf;
 }
 
-static char * cw_tuner_label_getter() {
+static const char * cw_tuner_label_getter() {
     static char buf[22];
     sprintf(buf, "Tuner:\n%s", subject_get_int(cfg.cw_tune.val) ? "On": "Off");
     return buf;
 }
 
-static char * cw_snr_label_getter() {
+static const char * cw_snr_label_getter() {
     static char buf[22];
     sprintf(buf, "Dec SNR:\n%0.1f dB", subject_get_float(cfg.cw_decoder_snr.val));
     return buf;
 }
 
-static char * cw_peak_beta_label_getter() {
+static const char * cw_peak_beta_label_getter() {
     static char buf[22];
     sprintf(buf, "Peak beta:\n%0.2f", subject_get_float(cfg.cw_decoder_peak_beta.val));
     return buf;
 }
 
-static char * cw_noise_beta_label_getter() {
+static const char * cw_noise_beta_label_getter() {
     static char buf[22];
     sprintf(buf, "Noise beta:\n%0.2f", subject_get_float(cfg.cw_decoder_noise_beta.val));
     return buf;
 }
 
-static char * dnf_label_getter() {
+static const char * dnf_label_getter() {
     static char buf[22];
-    sprintf(buf, "DNF:\n%s", subject_get_int(cfg.dnf.val) ? "On": "Off");
+    sprintf(buf, "DNF:\n%s", cfg_dnf_label_get());
     return buf;
 }
 
-static char * dnf_center_label_getter() {
+static const char * dnf_center_label_getter() {
     static char buf[22];
     sprintf(buf, "DNF freq:\n%zu Hz", subject_get_int(cfg.dnf_center.val));
     return buf;
 }
 
-static char * dnf_width_label_getter() {
+static const char * dnf_width_label_getter() {
     static char buf[22];
     sprintf(buf, "DNF width:\n%zu Hz", subject_get_int(cfg.dnf_width.val));
     return buf;
 }
 
-static char * dnf_auto_label_getter() {
-    static char buf[22];
-    sprintf(buf, "DNF auto:\n%s", subject_get_int(cfg.dnf_auto.val) ? "On": "Off");
-    return buf;
-}
 
-static char * nb_label_getter() {
+static const char * nb_label_getter() {
     static char buf[22];
     sprintf(buf, "NB:\n%s", subject_get_int(cfg.nb.val) ? "On": "Off");
     return buf;
 }
 
-static char * nb_level_label_getter() {
+static const char * nb_level_label_getter() {
     static char buf[22];
     sprintf(buf, "NB level:\n%zu", subject_get_int(cfg.nb_level.val));
     return buf;
 }
 
-static char * nb_width_label_getter() {
+static const char * nb_width_label_getter() {
     static char buf[22];
     sprintf(buf, "NB width:\n%zu Hz", subject_get_int(cfg.nb_width.val));
     return buf;
 }
 
-static char * nr_label_getter() {
+static const char * nr_label_getter() {
     static char buf[22];
     sprintf(buf, "NR:\n%s", subject_get_int(cfg.nr.val) ? "On": "Off");
     return buf;
 }
 
-static char * nr_level_label_getter() {
+static const char * nr_level_label_getter() {
     static char buf[22];
     sprintf(buf, "NR level:\n%zu", subject_get_int(cfg.nr_level.val));
     return buf;

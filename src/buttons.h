@@ -32,7 +32,7 @@ typedef struct button_item_t {
     btn_type_t type;
     union {
         const char *label;
-        char *(*label_fn)();
+        const char *(*label_fn)();
     };
     void (*press)(struct button_item_t *);
     void (*hold)(struct button_item_t *);
@@ -72,6 +72,7 @@ extern buttons_group_t buttons_group_msg_voice;
 void            buttons_init(lv_obj_t *parent);
 void            buttons_refresh(button_item_t *item);
 void            buttons_mark(button_item_t *item, bool on);
+void            buttons_disabled(button_item_t *item, bool on);
 void            buttons_load(uint8_t n, button_item_t *item);
 void            buttons_load_page(buttons_page_t *page);
 void            buttons_unload_page();
