@@ -43,7 +43,7 @@ static void on_rx_en_change(Subject * subj, void *user_data);
 static eq_type_t get_rx_eq_type();
 
 class EQControl {
-    eq_type_t                      eq_type = EQ_TYPE_RX;
+    eq_type_t                 eq_type = EQ_TYPE_RX;
     std::array<Subject *, 5>  values;
     std::array<Observer *, 5> value_observers;
     Subject                  *eq_en;
@@ -136,6 +136,11 @@ static EQControl controls;
 std::array<lv_obj_t *, 5> EQControl::sliders;
 std::array<lv_obj_t *, 5> EQControl::labels;
 
+
+static const char * freqs[] = {"300", "700", "1200", "1800", "2300"};
+static const char * freqs_wfm[] = {"50", "300", "1500", "5000", "12000"};
+static lv_obj_t* freq_labels[5];
+
 static button_item_t btn_rx_eq = {
     .type  = BTN_TEXT,
     .label = "RX EQ",
@@ -214,7 +219,12 @@ static void construct_cb(lv_obj_t *parent) {
 
     lv_obj_t *slider;
     lv_obj_t *label;
-    const char *labels[] = {"300", "700", "1200", "1800", "2300"};
+    decltype(freqs)* freq_arr;
+    if (rx_eq_type == EQ_TYPE_RX_WFM) {
+        freq_arr = &freqs_wfm;
+    } else{
+        freq_arr = &freqs;
+    }
     for (size_t i = 0; i < 5; i++)
     {
         int32_t val = controls.get(i);
@@ -236,8 +246,9 @@ static void construct_cb(lv_obj_t *parent) {
 
         label = lv_label_create(obj);
         lv_obj_set_style_pad_all(label, 0, 0);
-        lv_label_set_text(label, labels[i]);
+        lv_label_set_text(label, (*freq_arr)[i]);
         lv_obj_set_grid_cell(label, LV_GRID_ALIGN_CENTER, i, 1, LV_GRID_ALIGN_CENTER, 2, 1);
+        freq_labels[i] = label;
     }
 
     subject_add_delayed_observer(cfg_cur.mode, on_mode_change, nullptr);
@@ -343,7 +354,18 @@ static void slider_update_cb(lv_event_t * e) {
 
 static void on_mode_change(Subject * subj, void *user_data) {
     if (controls.get_eq_type() != EQ_TYPE_MIC) {
+        decltype(freqs)* freq_arr;
+        eq_type_t eq_type = get_rx_eq_type();
+        if (eq_type == EQ_TYPE_RX_WFM) {
+            freq_arr = &freqs_wfm;
+        } else {
+            freq_arr = &freqs;
+        }
         controls.set_type(get_rx_eq_type());
+        for (size_t i = 0; i < 5; i++) {
+            lv_label_set_text(freq_labels[i], (*freq_arr)[i]);
+        }
+
     }
 }
 
