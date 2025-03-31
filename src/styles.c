@@ -109,6 +109,7 @@ lv_style_t  dialog_item_edited_style;
 lv_style_t  dialog_dropdown_list_style;
 
 lv_style_t  cw_tune_style;
+lv_style_t  eq_style;
 
 lv_color_t  bg_color;
 
@@ -277,6 +278,16 @@ void styles_init(themes_t theme) {
     lv_style_set_y(&cw_tune_style, 70);
 
     styles_set_theme(theme);
+
+    /* EQ style */
+    lv_style_set_bg_color(&eq_style, lv_color_lighten(bg_color, 10));
+    lv_style_set_bg_opa(&eq_style, LV_OPA_90);
+    lv_style_set_border_color(&eq_style, lv_color_lighten(bg_color, 30));
+    lv_style_set_border_opa(&eq_style, LV_OPA_90);
+
+    lv_style_set_text_font(&eq_style, &sony_28);
+    lv_style_set_text_color(&eq_style, lv_color_white());
+
 }
 
 void styles_set_theme(themes_t theme) {

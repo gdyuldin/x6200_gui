@@ -57,6 +57,7 @@ extern lv_style_t   dialog_item_edited_style;
 extern lv_style_t   dialog_dropdown_list_style;
 
 extern lv_style_t   cw_tune_style;
+extern lv_style_t   eq_style;
 
 extern lv_font_t    sony_14;
 extern lv_font_t    sony_16;

@@ -200,6 +200,8 @@ static void construct_cb(lv_obj_t *parent) {
     static lv_coord_t col_dsc[] = {LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
     static lv_coord_t row_dsc[] = {LV_GRID_FR(1), 200, LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
 
+    lv_obj_add_style(obj, &eq_style, 0);
+
     lv_obj_set_style_grid_column_dsc_array(obj, col_dsc, 0);
     lv_obj_set_style_grid_row_dsc_array(obj, row_dsc, 0);
     lv_obj_set_style_pad_row(obj, 0, 0);
@@ -209,9 +211,6 @@ static void construct_cb(lv_obj_t *parent) {
     lv_obj_center(obj);
 
     lv_obj_set_layout(obj, LV_LAYOUT_GRID);
-
-    // lv_obj_add_event_cb(obj, key_cb, LV_EVENT_KEY, NULL);
-    // lv_group_add_obj(keyboard_group, obj);
 
     lv_obj_t *slider;
     lv_obj_t *label;
