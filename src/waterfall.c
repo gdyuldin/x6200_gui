@@ -277,11 +277,6 @@ static void refresh_waterfall( void * arg) {
     }
 }
 
-// static void on_fft_width_changed(Subject *subj, void *user_data) {
-//     zoom = subject_get_int(subj);
-//     lv_style_set_line_width(&middle_line_style, zoom / 2 + 2);
-// }
-
 static void on_fg_freq_change(Subject *subj, void *user_data) {
     radio_center_freq = subject_get_int(subj);
 }

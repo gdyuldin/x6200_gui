@@ -367,7 +367,7 @@ void spectrum_update_min(float db) {
 }
 
 void spectrum_clear() {
-    spectrum_min_max_reset();
+    // spectrum_min_max_reset();
     freq_mod = 0;
     uint64_t now = get_time();
 
