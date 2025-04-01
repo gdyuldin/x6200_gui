@@ -235,6 +235,8 @@ static void redraw_cb(lv_event_t * e) {
 
     lv_color_t black = lv_color_black();
     lv_color_t px_color;
+
+    int32_t hz_to_pix_divisor = width_hz / WIDTH;
     for (src_y = 0; src_y < height; src_y++) {
         dst_y = ((height - src_y + last_row_id) % height);
 
@@ -245,8 +247,8 @@ static void redraw_cb(lv_event_t * e) {
         right_freq -= wf_center_freq;
 
         // hz to px
-        left_freq = left_freq * WIDTH / width_hz + WIDTH / 2;
-        right_freq = right_freq * WIDTH / width_hz + WIDTH / 2;
+        left_freq = left_freq / hz_to_pix_divisor + WIDTH / 2;
+        right_freq = right_freq / hz_to_pix_divisor + WIDTH / 2;
         uint16_t src_w = right_freq - left_freq;
 
         if ((right_freq < 0) || (left_freq > WIDTH)) {
