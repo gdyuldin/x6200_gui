@@ -9,6 +9,7 @@
 #include "dialog_eq.h"
 
 #include <array>
+#include <vector>
 
 extern "C" {
     #include "events.h"
@@ -140,6 +141,7 @@ std::array<lv_obj_t *, 5> EQControl::labels;
 static const char * freqs[] = {"300", "700", "1200", "1800", "2300"};
 static const char * freqs_wfm[] = {"50", "300", "1500", "5000", "12000"};
 static lv_obj_t* freq_labels[5];
+static std::vector<ObserverDelayed*> observers;
 
 static button_item_t btn_rx_eq = {
     .type  = BTN_TEXT,
@@ -251,27 +253,19 @@ static void construct_cb(lv_obj_t *parent) {
         freq_labels[i] = label;
     }
 
-    subject_add_delayed_observer(cfg_cur.mode, on_mode_change, nullptr);
+    observers.push_back(subject_add_delayed_observer(cfg_cur.mode, on_mode_change, nullptr));
 
-    subject_add_delayed_observer(cfg.eq.rx.en.val, on_rx_en_change, nullptr);
-    subject_add_delayed_observer(cfg.eq.rx_wfm.en.val, on_rx_en_change, nullptr);
-
-    // TODO: switch rx en button depending on mode
-
-    // w = 780;
-    // h = 330;
-
-    // lv_obj_add_event_cb(chart, draw_cb, LV_EVENT_DRAW_MAIN_END, NULL);
-    // lv_obj_set_size(chart, w, h);
-    // lv_obj_center(chart);
-
-    // lv_obj_set_style_bg_opa(chart, LV_OPA_TRANSP, LV_PART_MAIN);
-    // lv_obj_set_style_border_width(chart, 0, LV_PART_MAIN);
+    observers.push_back(subject_add_delayed_observer(cfg.eq.rx.en.val, on_rx_en_change, nullptr));
+    observers.push_back(subject_add_delayed_observer(cfg.eq.rx_wfm.en.val, on_rx_en_change, nullptr));
 }
 
 static void destruct_cb() {
     controls.clear_observers();
     controls.clear_sliders_labels();
+    for (auto &&o : observers){
+        delete o;
+    }
+    observers.clear();
 }
 
 
