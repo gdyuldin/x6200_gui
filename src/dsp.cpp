@@ -134,8 +134,8 @@ static bool last_tx = false;
 static x6200_mode_t cur_mode;
 
 static void dsp_update_min_max(float *data_buf, uint16_t size);
-static void on_zoom_change(Subject *subj, void *user_data);
 static void on_cur_freq_change(Subject *subj, void *user_data);
+static void on_cur_mode_change(Subject *subj, void *user_data);
 
 
 /* * */
@@ -149,9 +149,8 @@ void dsp_init() {
     audio      = (cfloat *)malloc(AUDIO_CAPTURE_RATE * sizeof(cfloat));
     audio_hilb = firhilbf_create(7, 60.0f);
 
-    // subject_add_observer_and_call(cfg_cur.zoom, on_zoom_change, NULL);
-
     cfg_cur.fg_freq->subscribe(on_cur_freq_change);
+    cfg_cur.mode->subscribe(on_cur_mode_change)->notify();
     ready = true;
 }
 
@@ -208,10 +207,6 @@ void dsp_samples(float *buf_samples, uint16_t size, bool tx, int16_t dbm) {
     }
 }
 
-static void on_zoom_change(Subject *subj, void *user_data) {
-
-}
-
 static void on_cur_freq_change(Subject *subj, void *user_data) {
     int32_t new_freq = static_cast<SubjectT<int32_t> *>(subj)->get();
     int32_t diff = new_freq - cur_freq;
@@ -219,6 +214,10 @@ static void on_cur_freq_change(Subject *subj, void *user_data) {
     psd_delay = 3;
     waterfall_avg_psd.reset();
     spectrum_avg_psd.reset();
+}
+
+static void on_cur_mode_change(Subject *subj, void *user_data) {
+    cur_mode = (x6200_mode_t)subject_get_int(cfg_cur.mode);
 }
 
 float dsp_get_spectrum_beta() {
