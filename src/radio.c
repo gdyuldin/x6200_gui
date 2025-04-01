@@ -119,10 +119,17 @@ bool radio_tick() {
         // printf("sql_mute=%d sql_fm_mute=%d\n", pack->flag.sql_mute, pack->flag.sql_fm_mute);
         // printf("flags %08x\n", pack->flag);
         float *samples = (float*)((char *)pack + offsetof(x6200_flow_t, samples));
+        x6200_mode_t mode = subject_get_int(cfg_cur.mode);
+
         dsp_samples(samples, RADIO_SAMPLES, pack->flag.tx, -(int16_t)pack->dbm);
         // printf("als=%f\n", pack->alc_level * 0.1f);
 
         process_power_key(pack->flag.power_key, now_time);
+
+        if (subject_get_int(cfg.key_train.val) && ((mode == x6200_mode_cw) || (mode == x6200_mode_cwr))) {
+            // Ignore TX from BASE
+            pack->flag.tx = false;
+        }
 
         switch (state) {
             case RADIO_RX:
@@ -158,7 +165,6 @@ bool radio_tick() {
                     cfg_atu_save_network(pack->atu_params);
                     WITH_RADIO_LOCK(x6200_control_atu_tune(false));
                     subject_set_int(cfg.atu_enabled.val, true);
-                    // recover_processing_audio_inputs();
                     notify_rx();
 
                     // TODO: change with observer on atu->loaded change
