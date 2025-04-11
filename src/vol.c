@@ -25,7 +25,7 @@ void vol_update(int16_t diff, bool voice) {
     bool        b;
     int32_t     freq;
 
-    uint32_t    color = vol->mode == VOL_EDIT ? 0xFFFFFF : 0xBBBBBB;
+    uint32_t    color = vol->mode == ROT_VOL_EDIT_MODE ? 0xFFFFFF : 0xBBBBBB;
 
     switch (vol_mode) {
         case VOL_VOL:
@@ -235,5 +235,5 @@ void vol_change_mode(int16_t dir) {
 
 void vol_set_mode(vol_mode_t mode) {
     vol_mode = mode;
-    vol->mode = VOL_EDIT;
+    vol->mode = ROT_VOL_EDIT_MODE;
 }

@@ -12,6 +12,12 @@
 #include "lvgl/lvgl.h"
 #include "events.h"
 
+#define ROT_VOL_EDIT_MODE 0
+#define ROT_VOL_SELECT_MODE 1
+
+#define ROT_MFK_INNER_DEFAULT_MODE 0
+#define ROT_MFK_INNER_INVERSE_MODE 1
+
 typedef struct {
     int             fd;
     uint16_t        left[3];

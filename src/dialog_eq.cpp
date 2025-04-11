@@ -12,6 +12,7 @@
 #include <vector>
 
 extern "C" {
+    #include "main.h"
     #include "events.h"
     #include "keyboard.h"
     #include "styles.h"
@@ -199,6 +200,7 @@ static dialog_t dialog = {
 dialog_t *dialog_eq = &dialog;
 
 static void construct_cb(lv_obj_t *parent) {
+    mfk_inner->mode = ROT_MFK_INNER_INVERSE_MODE;
     eq_type_t rx_eq_type = get_rx_eq_type();
     controls.set_type(rx_eq_type);
     buttons_mark(&btn_rx_eq, true);
@@ -262,6 +264,7 @@ static void construct_cb(lv_obj_t *parent) {
 }
 
 static void destruct_cb() {
+    mfk_inner->mode = ROT_MFK_INNER_DEFAULT_MODE;
     controls.clear_observers();
     controls.clear_sliders_labels();
     for (auto &&o : observers){

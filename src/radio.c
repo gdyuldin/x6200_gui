@@ -350,7 +350,7 @@ static void on_change_cur_sql_level(Subject *subj, void *user_data) {
         x6200_control_sql_fm_set(val);
         break;
 
-        default:
+    default:
         x6200_control_sql_set(val);
         break;
     }

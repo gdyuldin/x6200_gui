@@ -906,13 +906,13 @@ static void spectrum_key_cb(lv_event_t * e) {
         case LV_KEY_ESC:
             if (!dialog_is_run()) {
                 switch (vol->mode) {
-                    case VOL_EDIT:
-                        vol->mode = VOL_SELECT;
+                    case ROT_VOL_EDIT_MODE:
+                        vol->mode = ROT_VOL_SELECT_MODE;
                         voice_say_text_fmt("Selection mode");
                         break;
 
-                    case VOL_SELECT:
-                        vol->mode = VOL_EDIT;
+                    case ROT_VOL_SELECT_MODE:
+                        vol->mode = ROT_VOL_EDIT_MODE;
                         voice_say_text_fmt("Edit mode");
                         break;
                 }
