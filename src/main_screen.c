@@ -903,6 +903,14 @@ static void spectrum_key_cb(lv_event_t * e) {
             }
             break;
 
+        case LV_KEY_UP:
+            mfk_change_mode(+1);
+            break;
+
+        case LV_KEY_DOWN:
+            mfk_change_mode(-1);
+            break;
+
         case LV_KEY_ESC:
             if (!dialog_is_run()) {
                 switch (vol->mode) {
