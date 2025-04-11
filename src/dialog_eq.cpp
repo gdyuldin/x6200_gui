@@ -30,6 +30,8 @@ static void key_cb(lv_event_t * e);
 static const char *rx_eq_en_label_getter();
 static const char *mic_eq_en_label_getter();
 
+static void update_freq_labels();
+
 static void rx_eq_press_cb(button_item_t *item);
 static void rx_eq_en_press_cb(button_item_t *item);
 static void mic_eq_press_cb(button_item_t *item);
@@ -306,9 +308,22 @@ static const char* mic_eq_en_label_getter() {
     return buf;
 }
 
+void update_freq_labels(eq_type_t eq_type) {
+    decltype(freqs)* freq_arr;
+    if (eq_type == EQ_TYPE_RX_WFM) {
+        freq_arr = &freqs_wfm;
+    } else {
+        freq_arr = &freqs;
+    }
+    for (size_t i = 0; i < 5; i++) {
+        lv_label_set_text(freq_labels[i], (*freq_arr)[i]);
+    }
+}
 
 static void rx_eq_press_cb(button_item_t *item) {
-    controls.set_type(get_rx_eq_type());
+    eq_type_t eq_type = get_rx_eq_type();
+    controls.set_type(eq_type);
+    update_freq_labels(eq_type);
     buttons_mark(&btn_mic_eq, false);
     buttons_mark(item, true);
 }
@@ -326,6 +341,7 @@ static void rx_eq_en_press_cb(button_item_t *item) {
 
 static void mic_eq_press_cb(button_item_t *item) {
     controls.set_type(EQ_TYPE_MIC);
+    update_freq_labels(EQ_TYPE_MIC);
     buttons_mark(&btn_rx_eq, false);
     buttons_mark(item, true);
 }
@@ -348,18 +364,9 @@ static void slider_update_cb(lv_event_t * e) {
 
 static void on_mode_change(Subject * subj, void *user_data) {
     if (controls.get_eq_type() != EQ_TYPE_MIC) {
-        decltype(freqs)* freq_arr;
         eq_type_t eq_type = get_rx_eq_type();
-        if (eq_type == EQ_TYPE_RX_WFM) {
-            freq_arr = &freqs_wfm;
-        } else {
-            freq_arr = &freqs;
-        }
-        controls.set_type(get_rx_eq_type());
-        for (size_t i = 0; i < 5; i++) {
-            lv_label_set_text(freq_labels[i], (*freq_arr)[i]);
-        }
-
+        controls.set_type(eq_type);
+        update_freq_labels(eq_type);
     }
 }
 
