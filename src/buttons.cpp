@@ -163,7 +163,7 @@ static button_item_t btn_vol = {
     .subj     = &cfg.vol.val,
 };
 
-static button_item_t btn_sql = make_btn(sql_label_getter, VOL_SQL, &cfg.sql.val);
+static button_item_t btn_sql = make_btn(sql_label_getter, VOL_SQL, &cfg_cur.sql_level);
 static button_item_t btn_rfg = make_btn(rfg_label_getter, VOL_RFG);
 static button_item_t btn_tx_pwr = make_btn(tx_power_label_getter, VOL_PWR, &cfg.pwr.val);
 
@@ -811,7 +811,7 @@ static const char * vol_label_getter() {
 
 static const char * sql_label_getter() {
     static char buf[16];
-    sprintf(buf, "Squelch:\n%zu", subject_get_int(cfg.sql.val));
+    sprintf(buf, "Squelch:\n%zu", subject_get_int(cfg_cur.sql_level));
     return buf;
 }
 

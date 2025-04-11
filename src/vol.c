@@ -53,9 +53,9 @@ void vol_update(int16_t diff, bool voice) {
             break;
 
         case VOL_SQL:
-            x = subject_get_int(cfg.sql.val);
+            x = subject_get_int(cfg_cur.sql_level);
             x = limit(x + diff, 0, 100);
-            subject_set_int(cfg.sql.val, x);
+            subject_set_int(cfg_cur.sql_level, x);
             msg_update_text_fmt("#%3X Voice SQL: %i", color, x);
 
             if (diff) {

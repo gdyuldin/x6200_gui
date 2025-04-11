@@ -22,6 +22,7 @@ typedef struct {
 typedef struct {
     cfg_item_t vol;
     cfg_item_t sql;
+    cfg_item_t sql_fm;
     cfg_item_t pwr;
 
     cfg_item_t fft_dec;
@@ -108,6 +109,7 @@ typedef struct {
     cfg_band_t    *band;
 
     Subject *fft_width;
+    Subject *sql_level;  // sql or sql_fm, depending on current mode
 } cfg_cur_t;
 
 extern cfg_cur_t cfg_cur;

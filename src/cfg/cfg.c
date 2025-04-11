@@ -22,8 +22,7 @@ cfg_cur_t cfg_cur;
 static band_info_t cur_band_info;
 
 static int init_params_cfg(sqlite3 *db);
-// static int init_band_cfg(sqlite3 *db);
-// static int init_mode_cfg(sqlite3 *db);
+static void bind_observers();
 
 
 static void *params_save_thread(void *arg);
@@ -83,6 +82,8 @@ int cfg_init(sqlite3 *db) {
     cfg_transverter_init(db);
     cfg_memory_init(db);
     cfg_digital_modes_init(db);
+
+    bind_observers();
 
     pthread_t thread;
     pthread_create(&thread, NULL, params_save_thread, NULL);
@@ -144,6 +145,33 @@ static void on_key_tone_change(Subject *subj, void *user_data) {
  */
 static void update_fft_width(Subject *subj, void *user_data) {
     subject_set_int(cfg_cur.fft_width, FFT_FULL_WIDTH / (1 << subject_get_int(subj)));
+}
+
+/**
+ * Update sql_level value
+ */
+static void update_sql_level(Subject *subj, void *user_data) {
+    switch (subject_get_int(cfg_cur.mode)) {
+        case x6200_mode_nfm:
+        case x6200_mode_wfm:
+            subject_set_int(cfg_cur.sql_level, subject_get_int(cfg.sql_fm.val));
+            break;
+        default:
+            subject_set_int(cfg_cur.sql_level, subject_get_int(cfg.sql.val));
+            break;
+    }
+}
+
+static void on_sql_level_change(Subject *subj, void *user_data) {
+    switch (subject_get_int(cfg_cur.mode)) {
+        case x6200_mode_nfm:
+        case x6200_mode_wfm:
+            subject_set_int(cfg.sql_fm.val, subject_get_int(subj));
+            break;
+        default:
+            subject_set_int(cfg.sql.val, subject_get_int(subj));
+            break;
+    }
 }
 
 /**
@@ -256,6 +284,7 @@ static int init_params_cfg(sqlite3 *db) {
     /* Fill configuration */
     fill_cfg_item(&cfg.vol, subject_create_int(20), "vol");
     fill_cfg_item(&cfg.sql, subject_create_int(0), "sql");
+    fill_cfg_item(&cfg.sql_fm, subject_create_int(0), "sql_fm");
     fill_cfg_item_float(&cfg.pwr, subject_create_float(5.0f), 0.1f, "pwr");
 
     fill_cfg_item(&cfg.fft_dec, subject_create_int(0), "fft_dec");
@@ -332,6 +361,7 @@ static int init_params_cfg(sqlite3 *db) {
 
 
     cfg_cur.fft_width = subject_create_int(FFT_FULL_WIDTH);
+    cfg_cur.sql_level = subject_create_int(0);
     /* Bind callbacks */
     // subject_add_observer(cfg.band_id.val, on_band_id_change, NULL);
     subject_add_observer(cfg.key_tone.val, on_key_tone_change, NULL);
@@ -342,4 +372,11 @@ static int init_params_cfg(sqlite3 *db) {
     uint32_t    cfg_size = sizeof(cfg) / sizeof(*cfg_arr);
     init_items(cfg_arr, cfg_size, cfg_params_load_item, cfg_params_save_item);
     return load_items_from_db(cfg_arr, cfg_size);
+}
+
+static void bind_observers() {
+    subject_add_observer(cfg.sql.val, update_sql_level, NULL);
+    subject_add_observer(cfg.sql_fm.val, update_sql_level, NULL);
+    subject_add_observer_and_call(cfg_cur.mode, update_sql_level, NULL);
+    subject_add_observer(cfg_cur.sql_level, on_sql_level_change, NULL);
 }

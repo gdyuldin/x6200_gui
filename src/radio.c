@@ -340,6 +340,22 @@ static void on_high_filter_change(Subject *subj, void *user_data) {
     radio_unlock();
 }
 
+static void on_change_cur_sql_level(Subject *subj, void *user_data) {
+    x6200_mode_t mode = subject_get_int(cfg_cur.mode);
+    uint8_t val = subject_get_int(subj);
+    switch (mode)
+    {
+    case x6200_mode_nfm:
+    case x6200_mode_wfm:
+        x6200_control_sql_fm_set(val);
+        break;
+
+        default:
+        x6200_control_sql_set(val);
+        break;
+    }
+}
+
 void radio_bb_reset() {
     x6200_gpio_set(x6200_pin_bb_reset, 1);
     usleep(100000);
@@ -387,7 +403,9 @@ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb) {
     subject_add_observer_and_call(cfg_cur.filter.high, on_high_filter_change, NULL);
 
     subject_add_observer_and_call(cfg.vol.val, on_change_uint8, x6200_control_rxvol_set);
-    subject_add_observer_and_call(cfg.sql.val, on_change_uint8, x6200_control_sql_set);
+    // subject_add_observer_and_call(cfg.sql.val, on_change_uint8, x6200_control_sql_set);
+    // subject_add_observer_and_call(cfg.sql_fm.val, on_change_uint8, x6200_control_sql_fm_set);
+    subject_add_observer_and_call(cfg_cur.sql_level, on_change_cur_sql_level, NULL);
     subject_add_observer_and_call(cfg.pwr.val, on_change_float, x6200_control_txpwr_set);
     subject_add_observer_and_call(cfg.fft_dec.val, on_change_uint8, x6200_control_fft_dec_set);
     subject_add_observer_and_call(cfg.key_tone.val, on_change_uint16, x6200_control_key_tone_set);
