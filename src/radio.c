@@ -522,7 +522,7 @@ uint16_t radio_change_vol(int16_t df) {
 
     mute = false;
 
-    uint16_t new_val = limit(vol + df, 0, 55);
+    uint16_t new_val = limit(vol + df, 0, 100);
 
     if (new_val != vol) {
         subject_set_int(cfg.vol.val, new_val);
