@@ -166,7 +166,7 @@ lv_obj_t * meter_init(lv_obj_t * parent) {
 
 void meter_update(int16_t db, float beta) {
     // TODO: make adjustable
-    db -= 30;
+    db -= 9;
     noise_level = spectrum_get_min();
     noise_level -= 40.0f;
 
@@ -174,7 +174,7 @@ void meter_update(int16_t db, float beta) {
         db += 17;
     }
     if (pre){
-        db -= 17;
+        db -= 14;
     }
 
     if (db < min_db) {
