@@ -20,6 +20,7 @@
 #include "clock.h"
 #include "voice.h"
 #include "audio.h"
+#include "main.h"
 
 #include <sys/time.h>
 #include <time.h>
@@ -1338,6 +1339,8 @@ static uint8_t make_delimiter(uint8_t row) {
 }
 
 static void construct_cb(lv_obj_t *parent) {
+    mfk_inner->mode = ROT_MFK_INNER_INVERSE_MODE;
+
     dialog.obj = dialog_init(parent);
 
     grid = lv_obj_create(dialog.obj);
