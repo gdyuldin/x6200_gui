@@ -152,15 +152,15 @@ static lv_obj_t * dropdown_uint8(lv_obj_t *parent, params_uint8_t *var, const ch
     return dropdown_uint8_custom_cb(parent, var, options, uint8_dropdown_update_cb);
 }
 
-static void label_with_text(lv_obj_t *cell, int32_t val, int32_t min, int32_t max, size_t width, char *fmt, lv_event_cb_t event_cb) {
+static void slider_with_text(lv_obj_t *cell, int32_t val, int32_t min, int32_t max, size_t width, char *fmt, lv_event_cb_t event_cb) {
     lv_obj_t *obj;
     obj = lv_slider_create(cell);
 
     dialog_item(&dialog, obj);
 
     lv_slider_set_mode(obj, LV_SLIDER_MODE_NORMAL);
-    lv_slider_set_value(obj, val, LV_ANIM_OFF);
     lv_slider_set_range(obj, min, max);
+    lv_slider_set_value(obj, val, LV_ANIM_OFF);
     lv_obj_set_width(obj, width);
 
     /*Create a label below the slider*/
@@ -505,7 +505,7 @@ static uint8_t make_line_gain(uint8_t row) {
     lv_obj_clear_flag(cell, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(cell);
 
-    label_with_text(cell, params.line_in, 0, 30, SMALL_3 - 30 - 60, "%d", line_in_update_cb);
+    slider_with_text(cell, params.line_in, 0, 30, SMALL_3 - 30 - 60, "%d", line_in_update_cb);
 
     cell = lv_obj_create(grid);
 
@@ -515,7 +515,7 @@ static uint8_t make_line_gain(uint8_t row) {
     lv_obj_clear_flag(cell, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(cell);
 
-    label_with_text(cell, params.line_out, 0, 30, SMALL_3 - 30 - 60, "%d", line_out_update_cb);
+    slider_with_text(cell, params.line_out, 0, 30, SMALL_3 - 30 - 60, "%d", line_out_update_cb);
 
     return row + 1;
 }
@@ -923,7 +923,6 @@ static void play_gain_update_cb(lv_event_t * e) {
 
     lv_obj_t *slider_label = (lv_obj_t *)lv_event_get_user_data(e);
     char *fmt = (char *)lv_obj_get_user_data(slider_label);
-    radio_set_line_in(val);
     lv_label_set_text_fmt(slider_label, fmt, val);
 }
 
@@ -934,7 +933,6 @@ static void rec_gain_update_cb(lv_event_t * e) {
     params_float_set(&params.rec_gain_db_f, val);
     lv_obj_t *slider_label = (lv_obj_t *)lv_event_get_user_data(e);
     char *fmt = (char *)lv_obj_get_user_data(slider_label);
-    radio_set_line_in(val);
     lv_label_set_text_fmt(slider_label, fmt, val);
 }
 
@@ -957,7 +955,7 @@ static uint8_t make_audio_gain(uint8_t row) {
     lv_obj_clear_flag(cell, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(cell);
 
-    label_with_text(cell, params.play_gain_db_f.x, -10, 10, SMALL_3 - 30 - 65, "%.1f", play_gain_update_cb);
+    slider_with_text(cell, params.play_gain_db_f.x, -10, 10, SMALL_3 - 30 - 65, "%.1f", play_gain_update_cb);
 
     cell = lv_obj_create(grid);
 
@@ -967,7 +965,7 @@ static uint8_t make_audio_gain(uint8_t row) {
     lv_obj_clear_flag(cell, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(cell);
 
-    label_with_text(cell, params.rec_gain_db_f.x, -10, 10, SMALL_3 - 30 - 65, "%.1f", rec_gain_update_cb);
+    slider_with_text(cell, params.rec_gain_db_f.x, -10, 10, SMALL_3 - 30 - 65, "%.1f", rec_gain_update_cb);
 
     return row + 1;
 }
