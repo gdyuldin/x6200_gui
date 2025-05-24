@@ -95,7 +95,7 @@ template <size_t input_size, size_t output_size> class AveragedPSD {
         }
 
         for (size_t i = 0; i < averaged.size(); i++) {
-            averaged[i] = 20.0f * log10f(averaged[i] + 1e-9f);
+            averaged[i] = 20.0f * log10f(averaged[i] + 1e-12f) - 30.0f;
         }
 
         reset();
@@ -201,7 +201,8 @@ void dsp_samples(float *buf_samples, uint16_t size, bool tx, int16_t dbm) {
 
             // update min/max
             if (!tx) {
-                dsp_update_min_max(waterfall_avg_data->data(), waterfall_avg_data->size());
+                // Ignore borders
+                dsp_update_min_max(waterfall_avg_data->data() + 16, waterfall_avg_data->size() - 32);
             }
         }
     }
@@ -267,12 +268,9 @@ static void dsp_update_min_max(float *data_buf, uint16_t size) {
         return;
     }
     qsort(data_buf, size, sizeof(float), compare_fft);
-    uint16_t min_nth = size * 20 / 100;
-    uint16_t max_nth = size * 10 / 100;
+    uint16_t min_nth = size * 10 / 100;
 
     float min = data_buf[min_nth];
-    // float max = data_buf[size - max_nth - 1];
-
 
     if (min < S_MIN) {
         min = S_MIN;
