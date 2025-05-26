@@ -17,8 +17,14 @@
 5	filter_high	250
 5	freq_step	100
 6	filter_low	0
-6	filter_high	4000
+6	filter_high	4500
 6	freq_step	1000
 7	filter_low	0
-7	filter_high	4000
+7	filter_high	4500
 7	freq_step	1000
+8	filter_low	0
+8	filter_high	3500
+8	freq_step	1000
+9	filter_low	0
+9	filter_high	8000
+9	freq_step	10000

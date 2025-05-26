@@ -2,7 +2,7 @@
 
 #include "cfg.h"
 
-#define TRANSVERTER_NUM 2
+#define TRANSVERTER_NUM 3
 
 typedef struct {
     cfg_item_t from;

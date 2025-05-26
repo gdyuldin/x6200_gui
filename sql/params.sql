@@ -5,7 +5,7 @@ CREATE TABLE bands(
     name        TEXT,
     start_freq  INTEGER,
     stop_freq   INTEGER,
-    type        INTEGER
+    type        INTEGER -- stop on band up/down buttons
 );
 
 .import bands_ham.csv bands

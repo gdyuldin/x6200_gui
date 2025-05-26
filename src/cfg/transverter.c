@@ -34,14 +34,19 @@ void cfg_transverter_init(sqlite3 *database) {
     }
 
     cfg_transverters[0] = (cfg_transverter_t){
-        .from  = {.val = subject_create_int(144000000), .db_name = "from",  .pk = 0},
-        .to    = {.val = subject_create_int(150000000), .db_name = "to",    .pk = 0},
-        .shift = {.val = subject_create_int(116000000), .db_name = "shift", .pk = 0},
+        .from  = {.val = subject_create_int(70000000), .db_name = "from",  .pk = 0},
+        .to    = {.val = subject_create_int(72000000), .db_name = "to",    .pk = 0},
+        .shift = {.val = subject_create_int(42000000), .db_name = "shift", .pk = 0},
     };
     cfg_transverters[1] = (cfg_transverter_t){
-        .from  = {.val = subject_create_int(432000000), .db_name = "from",  .pk = 1},
-        .to    = {.val = subject_create_int(438000000), .db_name = "to",    .pk = 1},
-        .shift = {.val = subject_create_int(404000000), .db_name = "shift", .pk = 1},
+        .from  = {.val = subject_create_int(144000000), .db_name = "from",  .pk = 1},
+        .to    = {.val = subject_create_int(150000000), .db_name = "to",    .pk = 1},
+        .shift = {.val = subject_create_int(116000000), .db_name = "shift", .pk = 1},
+    };
+    cfg_transverters[2] = (cfg_transverter_t){
+        .from  = {.val = subject_create_int(432000000), .db_name = "from",  .pk = 2},
+        .to    = {.val = subject_create_int(438000000), .db_name = "to",    .pk = 2},
+        .shift = {.val = subject_create_int(404000000), .db_name = "shift", .pk = 2},
     };
     /* Load values from table */
     cfg_item_t *cfg_arr  = (cfg_item_t *)&cfg_transverters;
