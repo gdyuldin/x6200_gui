@@ -168,7 +168,6 @@ void meter_update(int16_t db, float beta) {
     // TODO: make adjustable
     db -= 8;
     noise_level = spectrum_get_min();
-    noise_level -= 40.0f;
 
     if (att) {
         db += 17;
