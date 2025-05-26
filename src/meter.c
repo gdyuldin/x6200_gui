@@ -169,13 +169,6 @@ void meter_update(int16_t db, float beta) {
     db -= 8;
     noise_level = spectrum_get_min();
 
-    if (att) {
-        db += 17;
-    }
-    if (pre){
-        db -= 14;
-    }
-
     if (db < min_db) {
         db = min_db;
     } else if (db > max_db) {
