@@ -1,6 +1,6 @@
 # X6200 LVGL GUI
 
-This is part of an alternative firmware for X6200 using the LVGL library
+This is R1CBU alternative firmware, ported to X6200
 
 ## Installing
 
