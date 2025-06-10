@@ -11,7 +11,7 @@
 #include "rotary.h"
 #include "encoder.h"
 
-#define VERSION "v0.1.0"
+#define VERSION "v0.1.1"
 
 extern rotary_t     *vol;
 extern encoder_t    *mfk;
