@@ -26,4 +26,5 @@
 
 lv_obj_t * meter_init(lv_obj_t * parent);
 void meter_update(int16_t db, float beta);
+void meter_set_noise(float db);
 int16_t meter_get_raw_db();

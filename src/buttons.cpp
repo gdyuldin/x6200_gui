@@ -69,6 +69,7 @@ static const char * moni_level_label_getter();
 static const char * charger_label_getter();
 static const char * rit_label_getter();
 static const char * xit_label_getter();
+static const char * fft_dec_label_getter();
 
 static const char * agc_label_getter();
 static const char * att_label_getter();
@@ -212,7 +213,7 @@ static button_item_t btn_comp = {.type     = BTN_TEXT_FN,
 
 static button_item_t btn_spectrum_min_level = make_btn("Min\nLevel", MFK_MIN_LEVEL);
 static button_item_t btn_spectrum_max_level = make_btn("Max\nLevel", MFK_MAX_LEVEL);
-static button_item_t btn_zoom               = make_btn("FFT\nWidth", MFK_FFT_DECIM);
+static button_item_t btn_zoom               = make_btn(fft_dec_label_getter, MFK_FFT_DECIM, &cfg_cur.fft_dec);
 static button_item_t btn_spectrum_beta      = make_btn("Spectrum\nBeta", MFK_SPECTRUM_BETA);
 
 /* MFK page 3 */
@@ -873,6 +874,12 @@ static const char * moni_level_label_getter() {
 static const char * charger_label_getter() {
     static char buf[22];
     sprintf(buf, "Charger:\n%s", params_charger_str_get(params.charger));
+    return buf;
+}
+
+static const char * fft_dec_label_getter() {
+    static char buf[22];
+    sprintf(buf, "Span:\n%d kHz", subject_get_int(cfg_cur.fft_width) / 1000);
     return buf;
 }
 

@@ -79,10 +79,10 @@ void mfk_update(int16_t diff, bool voice) {
             break;
 
         case MFK_FFT_DECIM:
-            i = subject_get_int(cfg.fft_dec.val);
+            i = subject_get_int(cfg_cur.fft_dec);
             if (diff != 0) {
                 i = limit(i + diff, 0, 3);
-                subject_set_int(cfg.fft_dec.val, i);
+                subject_set_int(cfg_cur.fft_dec, i);
             }
             {
                 uint16_t fft_width_khz = subject_get_int(cfg_cur.fft_width) / 1000;

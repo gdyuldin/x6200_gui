@@ -118,10 +118,18 @@ bool radio_tick() {
         }
         // printf("sql_mute=%d sql_fm_mute=%d\n", pack->flag.sql_mute, pack->flag.sql_fm_mute);
         // printf("flags %08x\n", pack->flag);
-        float *samples = (float*)((char *)pack + offsetof(x6200_flow_t, samples));
+
+        float samples[RADIO_SAMPLES];
+        for (size_t i = 0; i < RADIO_SAMPLES; i++)
+        {
+            samples[i] = pack->samples[i] - 126.0f;
+        }
+        // TODO: add adjustment
+        int16_t dbm = -(int16_t)pack->dbm + 4;
+
         x6200_mode_t mode = subject_get_int(cfg_cur.mode);
 
-        dsp_samples(samples, RADIO_SAMPLES, pack->flag.tx, -(int16_t)pack->dbm);
+        dsp_samples(samples, RADIO_SAMPLES, pack->flag.tx, dbm);
         // printf("als=%f\n", pack->alc_level * 0.1f);
 
         process_power_key(pack->flag.power_key, now_time);
@@ -407,7 +415,8 @@ void radio_init(radio_state_change_t tx_cb, radio_state_change_t rx_cb) {
     // subject_add_observer_and_call(cfg.sql_fm.val, on_change_uint8, x6200_control_sql_fm_set);
     subject_add_observer_and_call(cfg_cur.sql_level, on_change_cur_sql_level, NULL);
     subject_add_observer_and_call(cfg.pwr.val, on_change_float, x6200_control_txpwr_set);
-    subject_add_observer_and_call(cfg.fft_dec.val, on_change_uint8, x6200_control_fft_dec_set);
+    subject_add_observer_and_call(cfg_cur.fft_dec, on_change_uint8, x6200_control_fft_dec_set);
+    subject_add_observer_and_call(cfg.fft_zoom_cw.val, on_change_uint8, x6200_control_fft_zoom_cw_set);
     subject_add_observer_and_call(cfg.key_tone.val, on_change_uint16, x6200_control_key_tone_set);
     subject_add_observer_and_call(cfg.atu_enabled.val, on_change_uint8, x6200_control_atu_set);
     subject_add_observer_and_call(cfg_cur.atu->network, on_atu_network_change, NULL);
