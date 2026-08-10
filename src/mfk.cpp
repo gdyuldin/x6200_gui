@@ -96,6 +96,24 @@ void mfk_update(int16_t diff, bool voice) {
             }
             break;
 
+        case MFK_CW_ZOOM:
+            i = subject_get_int(cfg.fft_zoom_cw.val);
+            if (diff != 0) {
+                i = limit(i + diff, 0, 3);
+                subject_set_int(cfg.fft_zoom_cw.val, i);
+            }
+            {
+                uint16_t zoom = 1 << subject_get_int(cfg.fft_zoom_cw.val);
+                msg_update_text_fmt("#%3X CW zoom: %d", color, zoom);
+
+                if (diff) {
+                    voice_say_int("CW zoom", zoom);
+                } else if (voice) {
+                    voice_say_text_fmt("CW zoom");
+                }
+            }
+            break;
+
         case MFK_SPECTRUM_BETA:
             if (diff != 0) {
                 params_lock();

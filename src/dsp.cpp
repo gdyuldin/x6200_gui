@@ -315,23 +315,32 @@ static void dsp_update_min_max(float *data_buf, uint16_t size) {
     switch (fft_width)
     {
     case FFT_FULL_WIDTH:
-        offset = 14.83f;
+        offset = 18.0f;
         break;
     case FFT_FULL_WIDTH / 2:
-        offset = 9.47f;
+        offset = 15.0f;
         break;
     case FFT_FULL_WIDTH / 4:
-        offset = 5.57f;
+        offset = 12.0f;
+        break;
+    case FFT_FULL_WIDTH / 8:
+        offset = 9.0f;
+        break;
+    case FFT_FULL_WIDTH / 16:
+        offset = 6.0f;
+        break;
+    case FFT_FULL_WIDTH / 32:
+        offset = 3.0f;
         break;
     default:
-        offset = 3.24f;
+        offset = 0.0f;
         break;
     }
 
     min = min + offset;
     meter_set_noise(min);
 
-    min -= 24.0f;
+    min -= 30.0f;
 
     float max = min + 48;
 

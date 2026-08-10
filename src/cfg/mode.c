@@ -34,6 +34,7 @@ static void update_cur_low_filter(Subject *subj, void *user_data);
 static void update_cur_high_filter(Subject *subj, void *user_data);
 static void on_freq_step_change(Subject *subj, void *user_data);
 static void on_fft_dec_change(Subject *subj, void *user_data);
+static void update_fft_width(Subject *subj, void *user_data);
 
 static void update_real_filters(Subject *subj, void *user_data);
 
@@ -90,6 +91,9 @@ void cfg_mode_params_init(sqlite3 *database) {
 
     subject_add_observer(cfg_cur.fft_dec, on_cur_fft_dec_change, NULL);
     subject_add_observer(cfg_mode.fft_dec.val, on_fft_dec_change, NULL);
+
+    subject_add_observer(cfg_cur.fft_dec, update_fft_width, NULL);
+    subject_add_observer(cfg.fft_zoom_cw.val, update_fft_width, NULL);
 
     /* Load values from table */
     cfg_item_t *cfg_arr  = (cfg_item_t *)&cfg_mode;
@@ -544,8 +548,17 @@ static void on_freq_step_change(Subject *subj, void *user_data) {
 
 static void on_fft_dec_change(Subject *subj, void *user_data) {
     uint8_t fft_dec = subject_get_int(subj);
-    subject_set_int(cfg_cur.fft_width, FFT_FULL_WIDTH / (1 << fft_dec));
     subject_set_int(cfg_cur.fft_dec, fft_dec);
+}
+
+static void update_fft_width(Subject *subj, void *user_data) {
+    uint32_t width = FFT_FULL_WIDTH;
+    width /= 1 << subject_get_int(cfg_cur.fft_dec);
+    x6200_mode_t mode = subject_get_int(cfg_cur.mode);
+    if ((mode == x6200_mode_cw) || (mode == x6200_mode_cwr)) {
+        width /= 1 << subject_get_int(cfg.fft_zoom_cw.val);
+    }
+    subject_set_int(cfg_cur.fft_width, width);
 }
 
 /**

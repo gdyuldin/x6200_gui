@@ -35,6 +35,7 @@ typedef enum {
     MFK_KEY_TRAIN,
     MFK_QSK_TIME,
     MFK_KEY_RATIO,
+    MFK_CW_ZOOM,
 
     MFK_DNF,
     MFK_DNF_CENTER,
