@@ -173,6 +173,9 @@ bool ftx_worker_generate_tx_samples(const char *text, const uint16_t signal_freq
         ft4_encode(msg.payload, tones);
         symbol_bt = FT4_SYMBOL_BT;
         break;
+    default:
+        LV_LOG_ERROR("Unsupported protocol for TX: %d", (int)wf.protocol);
+        return false;
     }
 
     *samples = gfsk_synth(tones, n_tones, signal_freq, symbol_bt, symbol_period, sample_rate, n_samples);
