@@ -12,6 +12,9 @@
 #include <stdint.h>
 
 void qth_str_to_pos(const char * qth, double *lat_deg, double *lon_deg);
+/// Size of the buffer required by `qth_pos_to_str` (8 locator characters + NUL)
+#define QTH_STR_SIZE 9
+
 void qth_pos_to_str(double lat_deg, double lon_deg, char * qth);
 
 bool qth_grid_check(const char *grid);

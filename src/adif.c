@@ -202,8 +202,8 @@ static void write_str(FILE *fd, const char * key, const char * val) {
 }
 
 static void write_int(FILE *fd, const char * key, int val) {
-    char str_val[8];
-    sprintf(str_val, "%i", val);
+    char str_val[16];
+    snprintf(str_val, sizeof(str_val), "%i", val);
     write_str(fd, key, str_val);
 }
 
@@ -216,8 +216,8 @@ static void write_date_time(FILE *fd, time_t time) {
 }
 
 static void write_freq(FILE *fd, float freq_mhz) {
-    char str_freq[8];
-    sprintf(str_freq, "%0.4f", freq_mhz);
+    char str_freq[16];
+    snprintf(str_freq, sizeof(str_freq), "%0.4f", freq_mhz);
     write_str(fd, "FREQ", str_freq);
 }
 
@@ -226,7 +226,7 @@ static void write_band(FILE *fd, qso_log_band_t band) {
         write_str(fd, "BAND", "");
     } else {
         char str_band[8];
-        sprintf(str_band, "%dM", band);
+        snprintf(str_band, sizeof(str_band), "%dM", band);
         write_str(fd, "BAND", str_band);
     }
 }

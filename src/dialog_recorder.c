@@ -172,9 +172,7 @@ static void play_item() {
 
     char filename[64];
 
-    strcpy(filename, recorder_path);
-    strcat(filename, "/");
-    strcat(filename, item);
+    snprintf(filename, sizeof(filename), "%s/%s", recorder_path, item);
 
     SF_INFO sfinfo;
 
@@ -408,9 +406,7 @@ static void dialog_recorder_delete_cb(button_item_t *item) {
     if (name) {
         char filename[64];
 
-        strcpy(filename, recorder_path);
-        strcat(filename, "/");
-        strcat(filename, name);
+        snprintf(filename, sizeof(filename), "%s/%s", recorder_path, name);
 
         unlink(filename);
         load_table();

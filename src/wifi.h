@@ -11,6 +11,7 @@
 #include <NetworkManager.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 
@@ -81,7 +82,13 @@ void wifi_connect(const char *id);
 
 void wifi_disconnect();
 
-bool wifi_get_ipaddr(char **ip_addr, char **gateway);
+/// @brief Get IPv4 address and gateway of the active connection
+/// @param[out] ip_addr buffer for the IP address string
+/// @param[in] ip_addr_size size of `ip_addr` in bytes
+/// @param[out] gateway buffer for the gateway string
+/// @param[in] gateway_size size of `gateway` in bytes
+/// @return true if the gateway is known
+bool wifi_get_ipaddr(char *ip_addr, size_t ip_addr_size, char *gateway, size_t gateway_size);
 
 #ifdef __cplusplus
 }

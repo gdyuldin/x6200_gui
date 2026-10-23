@@ -127,6 +127,16 @@ cw_characters_t cw_characters[] = {
 void cw_decoder_init() {
 }
 
+/* Append a Dot or Dash to the element string, ignoring it if the buffer is full */
+static void elements_append(char element) {
+    size_t len = strlen(elements);
+
+    if (len + 1 < sizeof(elements)) {
+        elements[len] = element;
+        elements[len + 1] = '\0';
+    }
+}
+
 static void cw_decoder_ans(const char *ans) {
     pannel_add_text(ans);
 }
@@ -225,7 +235,7 @@ static void cw_decoder_inner_space() {
 
         if (character_step) {
             cw_decoder_dict();
-            strcpy(elements, "");
+            elements[0] = '\0';
 
             character_step = false;
         }
@@ -288,9 +298,9 @@ void cw_decoder_signal(bool on, float ms) {
             /* Classify and add most likely Dots or Dashes to a string for eventual character decoding */
 
             if (key_line_event_new <= thr_mean) {
-                strcat(elements, ".");
+                elements_append('.');
             } else {
-                strcat(elements, "-");
+                elements_append('-');
             }
 
             character_step = true;

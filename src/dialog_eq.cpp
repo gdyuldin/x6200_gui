@@ -9,6 +9,7 @@
 #include "dialog_eq.h"
 
 #include <array>
+#include <cstdio>
 #include <vector>
 
 extern "C" {
@@ -297,17 +298,17 @@ static void key_cb(lv_event_t * e) {
 static const char* rx_eq_en_label_getter() {
     static char buf[22];
     if (subject_get_int(cfg_cur.mode) == x6200_mode_wfm) {
-        sprintf(buf, "RX EQ:\n%s", subject_get_int(cfg.eq.rx_wfm.en.val) ? "On": "Off");
+        snprintf(buf, sizeof(buf), "RX EQ:\n%s", subject_get_int(cfg.eq.rx_wfm.en.val) ? "On": "Off");
 
     } else {
-        sprintf(buf, "RX EQ:\n%s", subject_get_int(cfg.eq.rx.en.val) ? "On": "Off");
+        snprintf(buf, sizeof(buf), "RX EQ:\n%s", subject_get_int(cfg.eq.rx.en.val) ? "On": "Off");
     }
     return buf;
 }
 
 static const char* mic_eq_en_label_getter() {
     static char buf[22];
-    sprintf(buf, "MIC EQ:\n%s", subject_get_int(cfg.eq.mic.en.val) ? "On": "Off");
+    snprintf(buf, sizeof(buf), "MIC EQ:\n%s", subject_get_int(cfg.eq.mic.en.val) ? "On": "Off");
     return buf;
 }
 

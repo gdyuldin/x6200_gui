@@ -1,6 +1,8 @@
 
 #include "qso.h"
 
+#include <cstdio>
+
 #define DEFAULT_SNR 100
 
 extern "C" {
@@ -11,6 +13,11 @@ extern "C" {
 
 static std::string make_answer_text(ftx_msg_type_t last_rx_type, std::string remote_callsign,
                                     std::string local_callsign, const int local_snr, std::string grid);
+
+// Copy `src` into a fixed-size buffer, truncating if it does not fit. Always NUL-terminates.
+static void copy_str(char *dst, size_t dst_size, const std::string &src) {
+    snprintf(dst, dst_size, "%s", src.c_str());
+}
 
 std::vector<std::string> split_text(std::string text) {
     std::vector<std::string> tokens;
@@ -147,8 +154,8 @@ void FTxQsoProcessor::process_grid(ftx_msg_meta_t *meta, std::vector<std::string
     auto call_de = tokens[1];
     auto grid = tokens[2];
     meta->type = FTX_MSG_TYPE_GRID;
-    strcpy(meta->grid, grid.c_str());
-    strcpy(meta->call_de, call_de.c_str());
+    copy_str(meta->grid, sizeof(meta->grid), grid);
+    copy_str(meta->call_de, sizeof(meta->call_de), call_de);
     if (call_to == _local_callsign) {
         meta->to_me = true;
         auto candidate_to_update = get_candidate_to_update(call_de);
@@ -158,7 +165,7 @@ void FTxQsoProcessor::process_grid(ftx_msg_meta_t *meta, std::vector<std::string
             (*candidate_to_update)->set_grid(grid);
             if ((*candidate_to_update == _cur_candidate) && _auto) {
                 tx_msg.repeats = -1;
-                strcpy(tx_msg.msg, _cur_candidate->get_tx_text(_local_callsign, _local_qth).c_str());
+                copy_str(tx_msg.msg, sizeof(tx_msg.msg), _cur_candidate->get_tx_text(_local_callsign, _local_qth));
             }
         }
     }
@@ -171,7 +178,7 @@ void FTxQsoProcessor::process_report(ftx_msg_meta_t *meta, std::vector<std::stri
     auto rcvd_snr = std::stoi(tokens[2]);
     meta->type = FTX_MSG_TYPE_REPORT;
     meta->remote_snr = rcvd_snr;
-    strcpy(meta->call_de, call_de.c_str());
+    copy_str(meta->call_de, sizeof(meta->call_de), call_de);
     if (call_to == _local_callsign) {
         meta->to_me = true;
         auto candidate_to_update = get_candidate_to_update(call_de);
@@ -181,7 +188,7 @@ void FTxQsoProcessor::process_report(ftx_msg_meta_t *meta, std::vector<std::stri
             (*candidate_to_update)->set_rcvd_snr(rcvd_snr);
             if ((*candidate_to_update == _cur_candidate) && _auto) {
                 tx_msg.repeats = -1;
-                strcpy(tx_msg.msg, _cur_candidate->get_tx_text(_local_callsign, _local_qth).c_str());
+                copy_str(tx_msg.msg, sizeof(tx_msg.msg), _cur_candidate->get_tx_text(_local_callsign, _local_qth));
             }
         }
     }
@@ -194,7 +201,7 @@ void FTxQsoProcessor::process_r_report(ftx_msg_meta_t *meta, std::vector<std::st
     auto rcvd_snr = std::stoi(tokens[2].substr(1, tokens[2].npos));
     meta->type = FTX_MSG_TYPE_R_REPORT;
     meta->remote_snr = rcvd_snr;
-    strcpy(meta->call_de, call_de.c_str());
+    copy_str(meta->call_de, sizeof(meta->call_de), call_de);
     if (call_to == _local_callsign) {
         meta->to_me = true;
         if ((_cur_candidate != NULL) && (_cur_candidate->match_callsign(call_de))) {
@@ -204,7 +211,7 @@ void FTxQsoProcessor::process_r_report(ftx_msg_meta_t *meta, std::vector<std::st
             _cur_candidate->save_qso(_save_qso_cb);
             if (_auto) {
                 tx_msg.repeats = 1;
-                strcpy(tx_msg.msg, _cur_candidate->get_tx_text(_local_callsign, _local_qth).c_str());
+                copy_str(tx_msg.msg, sizeof(tx_msg.msg), _cur_candidate->get_tx_text(_local_callsign, _local_qth));
             }
         }
     }
@@ -215,7 +222,7 @@ void FTxQsoProcessor::process_rr73(ftx_msg_meta_t *meta, std::vector<std::string
     auto call_to = tokens[0];
     auto call_de = tokens[1];
     meta->type = FTX_MSG_TYPE_RR73;
-    strcpy(meta->call_de, call_de.c_str());
+    copy_str(meta->call_de, sizeof(meta->call_de), call_de);
     if (call_to == _local_callsign) {
         meta->to_me = true;
         if ((_cur_candidate != NULL) && (_cur_candidate->match_callsign(call_de))) {
@@ -224,7 +231,7 @@ void FTxQsoProcessor::process_rr73(ftx_msg_meta_t *meta, std::vector<std::string
             _cur_candidate->save_qso(_save_qso_cb);
             if (_auto) {
                 tx_msg.repeats = 1;
-                strcpy(tx_msg.msg, _cur_candidate->get_tx_text(_local_callsign, _local_qth).c_str());
+                copy_str(tx_msg.msg, sizeof(tx_msg.msg), _cur_candidate->get_tx_text(_local_callsign, _local_qth));
             }
         }
     }
@@ -235,7 +242,7 @@ void FTxQsoProcessor::process_73(ftx_msg_meta_t *meta, std::vector<std::string> 
     auto call_to = tokens[0];
     auto call_de = tokens[1];
     meta->type = FTX_MSG_TYPE_73;
-    strcpy(meta->call_de, call_de.c_str());
+    copy_str(meta->call_de, sizeof(meta->call_de), call_de);
     if (call_to == _local_callsign) {
         meta->to_me = true;
         if ((_cur_candidate != NULL) && (_cur_candidate->match_callsign(call_de))) {
@@ -245,7 +252,7 @@ void FTxQsoProcessor::process_73(ftx_msg_meta_t *meta, std::vector<std::string> 
                 _next_candidate = NULL;
                 if (_auto) {
                     tx_msg.repeats = 1;
-                    strcpy(tx_msg.msg, _cur_candidate->get_tx_text(_local_callsign, _local_qth).c_str());
+                    copy_str(tx_msg.msg, sizeof(tx_msg.msg), _cur_candidate->get_tx_text(_local_callsign, _local_qth));
                 }
             } else {
                 _cur_candidate = NULL;
@@ -262,9 +269,9 @@ void FTxQsoProcessor::process_cq(ftx_msg_meta_t *meta, std::vector<std::string> 
     } else {
         call_de_pos = 1;
     }
-    strcpy(meta->call_de, tokens[call_de_pos].c_str());
+    copy_str(meta->call_de, sizeof(meta->call_de), tokens[call_de_pos]);
     if (tokens.size() > call_de_pos + 1) {
-        strcpy(meta->grid, tokens[call_de_pos + 1].c_str());
+        copy_str(meta->grid, sizeof(meta->grid), tokens[call_de_pos + 1]);
     }
 }
 
@@ -319,7 +326,7 @@ void FTxQsoProcessor::start_qso(ftx_msg_meta_t *meta, ftx_tx_msg_t *tx_msg) {
     default:
         break;
     }
-    strcpy(tx_msg->msg, _cur_candidate->get_tx_text(_local_callsign, _local_qth).c_str());
+    copy_str(tx_msg->msg, sizeof(tx_msg->msg), _cur_candidate->get_tx_text(_local_callsign, _local_qth));
 }
 
 Candidate **FTxQsoProcessor::get_candidate_to_update(std::string call_de) {

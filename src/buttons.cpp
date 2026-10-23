@@ -808,251 +808,251 @@ buttons_page_t *buttons_get_cur_page() {
 
 static const char * vol_label_getter() {
     static char buf[16];
-    sprintf(buf, "Volume:\n%zi", subject_get_int(cfg.vol.val));
+    snprintf(buf, sizeof(buf), "Volume:\n%zi", subject_get_int(cfg.vol.val));
     return buf;
 }
 
 static const char * sql_label_getter() {
     static char buf[16];
-    sprintf(buf, "Squelch:\n%zu", subject_get_int(cfg_cur.sql_level));
+    snprintf(buf, sizeof(buf), "Squelch:\n%zu", subject_get_int(cfg_cur.sql_level));
     return buf;
 }
 
 static const char * rfg_label_getter() {
     static char buf[16];
-    sprintf(buf, "RF gain:\n%zu", subject_get_int(cfg_cur.band->rfg.val));
+    snprintf(buf, sizeof(buf), "RF gain:\n%zu", subject_get_int(cfg_cur.band->rfg.val));
     return buf;
 }
 
 static const char * tx_power_label_getter() {
     static char buf[20];
-    sprintf(buf, "TX power:\n%0.1f W", subject_get_float(cfg.pwr.val));
+    snprintf(buf, sizeof(buf), "TX power:\n%0.1f W", subject_get_float(cfg.pwr.val));
     return buf;
 }
 
 static const char * filter_low_label_getter() {
     static char buf[22];
-    sprintf(buf, "Filter low:\n%d Hz", subject_get_int(cfg_cur.filter.low));
+    snprintf(buf, sizeof(buf), "Filter low:\n%d Hz", subject_get_int(cfg_cur.filter.low));
     return buf;
 }
 static const char * filter_high_label_getter() {
     static char buf[22];
-    sprintf(buf, "Filter high:\n%d Hz", subject_get_int(cfg_cur.filter.high));
+    snprintf(buf, sizeof(buf), "Filter high:\n%d Hz", subject_get_int(cfg_cur.filter.high));
     return buf;
 }
 
 static const char * filter_bw_label_getter() {
     static char buf[22];
-    sprintf(buf, "Filter BW:\n%i Hz", subject_get_int(cfg_cur.filter.bw));
+    snprintf(buf, sizeof(buf), "Filter BW:\n%i Hz", subject_get_int(cfg_cur.filter.bw));
     return buf;
 }
 
 
 static const char * mic_sel_label_getter() {
     static char buf[22];
-    sprintf(buf, "MIC Sel:\n%s", params_mic_str_get(params.mic));
+    snprintf(buf, sizeof(buf), "MIC Sel:\n%s", params_mic_str_get(params.mic));
     return buf;
 }
 
 
 static const char * h_mic_gain_label_getter() {
     static char buf[22];
-    sprintf(buf, "H-Mic gain:\n%zu", params.hmic);
+    snprintf(buf, sizeof(buf), "H-Mic gain:\n%zu", params.hmic);
     return buf;
 }
 
 static const char * i_mic_gain_label_getter() {
     static char buf[22];
-    sprintf(buf, "I-Mic gain:\n%zu", params.imic);
+    snprintf(buf, sizeof(buf), "I-Mic gain:\n%zu", params.imic);
     return buf;
 }
 
 static const char * moni_level_label_getter() {
     static char buf[22];
-    sprintf(buf, "Moni level:\n%zu", params.moni);
+    snprintf(buf, sizeof(buf), "Moni level:\n%zu", params.moni);
     return buf;
 }
 
 static const char * charger_label_getter() {
     static char buf[22];
-    sprintf(buf, "Charger:\n%s", params_charger_str_get(params.charger));
+    snprintf(buf, sizeof(buf), "Charger:\n%s", params_charger_str_get(params.charger));
     return buf;
 }
 
 static const char * fft_dec_label_getter() {
     static char buf[22];
-    sprintf(buf, "Span:\n%d kHz", subject_get_int(cfg_cur.fft_width) / 1000);
+    snprintf(buf, sizeof(buf), "Span:\n%d kHz", subject_get_int(cfg_cur.fft_width) / 1000);
     return buf;
 }
 
 
 static const char * rit_label_getter() {
     static char buf[22];
-    sprintf(buf, "RIT:\n%+zi", params.rit);
+    snprintf(buf, sizeof(buf), "RIT:\n%+zi", params.rit);
     return buf;
 }
 
 static const char * xit_label_getter() {
     static char buf[22];
-    sprintf(buf, "XIT:\n%+zi", params.xit);
+    snprintf(buf, sizeof(buf), "XIT:\n%+zi", params.xit);
     return buf;
 }
 
 static const char * agc_label_getter() {
     const char * agc_str = cfg_mode_agc_label((x6200_agc_t)subject_get_int(cfg_cur.agc));
     static char buf[22];
-    sprintf(buf, "AGC:\n%s", agc_str);
+    snprintf(buf, sizeof(buf), "AGC:\n%s", agc_str);
     return buf;
 }
 
 static const char * att_label_getter() {
     static char buf[22];
-    sprintf(buf, "ATT:\n%s", subject_get_int(cfg_cur.att) ? "On": "Off");
+    snprintf(buf, sizeof(buf), "ATT:\n%s", subject_get_int(cfg_cur.att) ? "On": "Off");
     return buf;
 }
 
 static const char * pre_label_getter() {
     static char buf[22];
-    sprintf(buf, "PRE:\n%s", subject_get_int(cfg_cur.pre) ? "On": "Off");
+    snprintf(buf, sizeof(buf), "PRE:\n%s", subject_get_int(cfg_cur.pre) ? "On": "Off");
     return buf;
 }
 
 static const char * comp_label_getter() {
     static char buf[22];
-    sprintf(buf, "Comp:\n%s", subject_get_int(cfg.comp.val) ? "On": "Off");
+    snprintf(buf, sizeof(buf), "Comp:\n%s", subject_get_int(cfg.comp.val) ? "On": "Off");
     return buf;
 }
 
 static const char * key_speed_label_getter() {
     static char buf[22];
-    sprintf(buf, "Speed:\n%zu wpm", subject_get_int(cfg.key_speed.val));
+    snprintf(buf, sizeof(buf), "Speed:\n%zu wpm", subject_get_int(cfg.key_speed.val));
     return buf;
 }
 
 static const char * key_volume_label_getter() {
     static char buf[22];
-    sprintf(buf, "Volume:\n%zu", subject_get_int(cfg.key_vol.val));
+    snprintf(buf, sizeof(buf), "Volume:\n%zu", subject_get_int(cfg.key_vol.val));
     return buf;
 }
 
 static const char * key_train_label_getter() {
     static char buf[22];
-    sprintf(buf, "Train:\n%s", subject_get_int(cfg.key_train.val) ? "On": "Off");
+    snprintf(buf, sizeof(buf), "Train:\n%s", subject_get_int(cfg.key_train.val) ? "On": "Off");
     return buf;
 }
 
 static const char * key_tone_label_getter() {
     static char buf[22];
-    sprintf(buf, "Tone:\n%zu Hz", subject_get_int(cfg.key_tone.val));
+    snprintf(buf, sizeof(buf), "Tone:\n%zu Hz", subject_get_int(cfg.key_tone.val));
     return buf;
 }
 
 static const char * key_mode_label_getter() {
     static char buf[22];
-    sprintf(buf, "Mode:\n%s", params_key_mode_str_get((x6200_key_mode_t)subject_get_int(cfg.key_mode.val)));
+    snprintf(buf, sizeof(buf), "Mode:\n%s", params_key_mode_str_get((x6200_key_mode_t)subject_get_int(cfg.key_mode.val)));
     return buf;
 }
 
 static const char * iambic_mode_label_getter() {
     static char buf[22];
-    sprintf(buf, "Iambic:\n%s mode", params_iambic_mode_str_ger((x6200_iambic_mode_t)subject_get_int(cfg.iambic_mode.val)));
+    snprintf(buf, sizeof(buf), "Iambic:\n%s mode", params_iambic_mode_str_ger((x6200_iambic_mode_t)subject_get_int(cfg.iambic_mode.val)));
     return buf;
 }
 
 static const char * qsk_time_label_getter() {
     static char buf[22];
-    sprintf(buf, "QSK time:\n%zu ms", subject_get_int(cfg.qsk_time.val));
+    snprintf(buf, sizeof(buf), "QSK time:\n%zu ms", subject_get_int(cfg.qsk_time.val));
     return buf;
 }
 
 static const char * key_ratio_label_getter() {
     static char buf[22];
-    sprintf(buf, "Ratio:\n%0.1f", subject_get_float(cfg.key_ratio.val));
+    snprintf(buf, sizeof(buf), "Ratio:\n%0.1f", subject_get_float(cfg.key_ratio.val));
     return buf;
 }
 
 static const char * cw_decoder_label_getter() {
     static char buf[22];
-    sprintf(buf, "Decoder:\n%s", subject_get_int(cfg.cw_decoder.val) ? "On": "Off");
+    snprintf(buf, sizeof(buf), "Decoder:\n%s", subject_get_int(cfg.cw_decoder.val) ? "On": "Off");
     return buf;
 }
 
 static const char * cw_tuner_label_getter() {
     static char buf[22];
-    sprintf(buf, "Tuner:\n%s", subject_get_int(cfg.cw_tune.val) ? "On": "Off");
+    snprintf(buf, sizeof(buf), "Tuner:\n%s", subject_get_int(cfg.cw_tune.val) ? "On": "Off");
     return buf;
 }
 
 static const char * cw_snr_label_getter() {
     static char buf[22];
-    sprintf(buf, "Dec SNR:\n%0.1f dB", subject_get_float(cfg.cw_decoder_snr.val));
+    snprintf(buf, sizeof(buf), "Dec SNR:\n%0.1f dB", subject_get_float(cfg.cw_decoder_snr.val));
     return buf;
 }
 
 static const char * cw_zoom_label_getter() {
     static char buf[22];
-    sprintf(buf, "CW zoom:\n%d", 1 << subject_get_int(cfg.fft_zoom_cw.val));
+    snprintf(buf, sizeof(buf), "CW zoom:\n%d", 1 << subject_get_int(cfg.fft_zoom_cw.val));
     return buf;
 }
 
 static const char * cw_peak_beta_label_getter() {
     static char buf[22];
-    sprintf(buf, "Peak beta:\n%0.2f", subject_get_float(cfg.cw_decoder_peak_beta.val));
+    snprintf(buf, sizeof(buf), "Peak beta:\n%0.2f", subject_get_float(cfg.cw_decoder_peak_beta.val));
     return buf;
 }
 
 static const char * cw_noise_beta_label_getter() {
     static char buf[22];
-    sprintf(buf, "Noise beta:\n%0.2f", subject_get_float(cfg.cw_decoder_noise_beta.val));
+    snprintf(buf, sizeof(buf), "Noise beta:\n%0.2f", subject_get_float(cfg.cw_decoder_noise_beta.val));
     return buf;
 }
 
 static const char * dnf_label_getter() {
     static char buf[22];
-    sprintf(buf, "DNF:\n%s", cfg_dnf_label_get());
+    snprintf(buf, sizeof(buf), "DNF:\n%s", cfg_dnf_label_get());
     return buf;
 }
 
 static const char * dnf_center_label_getter() {
     static char buf[22];
-    sprintf(buf, "DNF freq:\n%zu Hz", subject_get_int(cfg.dnf_center.val));
+    snprintf(buf, sizeof(buf), "DNF freq:\n%zu Hz", subject_get_int(cfg.dnf_center.val));
     return buf;
 }
 
 static const char * dnf_width_label_getter() {
     static char buf[22];
-    sprintf(buf, "DNF width:\n%zu Hz", subject_get_int(cfg.dnf_width.val));
+    snprintf(buf, sizeof(buf), "DNF width:\n%zu Hz", subject_get_int(cfg.dnf_width.val));
     return buf;
 }
 
 
 static const char * nb_label_getter() {
     static char buf[22];
-    sprintf(buf, "NB:\n%s", subject_get_int(cfg.nb.val) ? "On": "Off");
+    snprintf(buf, sizeof(buf), "NB:\n%s", subject_get_int(cfg.nb.val) ? "On": "Off");
     return buf;
 }
 
 static const char * nb_level_label_getter() {
     static char buf[22];
-    sprintf(buf, "NB level:\n%zu", subject_get_int(cfg.nb_level.val));
+    snprintf(buf, sizeof(buf), "NB level:\n%zu", subject_get_int(cfg.nb_level.val));
     return buf;
 }
 
 static const char * nb_width_label_getter() {
     static char buf[22];
-    sprintf(buf, "NB width:\n%zu Hz", subject_get_int(cfg.nb_width.val));
+    snprintf(buf, sizeof(buf), "NB width:\n%zu Hz", subject_get_int(cfg.nb_width.val));
     return buf;
 }
 
 static const char * nr_label_getter() {
     static char buf[22];
-    sprintf(buf, "NR:\n%s", subject_get_int(cfg.nr.val) ? "On": "Off");
+    snprintf(buf, sizeof(buf), "NR:\n%s", subject_get_int(cfg.nr.val) ? "On": "Off");
     return buf;
 }
 
 static const char * nr_level_label_getter() {
     static char buf[22];
-    sprintf(buf, "NR level:\n%zu", subject_get_int(cfg.nr_level.val));
+    snprintf(buf, sizeof(buf), "NR level:\n%zu", subject_get_int(cfg.nr_level.val));
     return buf;
 }
 

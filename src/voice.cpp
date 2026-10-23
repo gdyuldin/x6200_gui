@@ -12,6 +12,7 @@
 #include "cfg/cfg.h"
 
 extern "C" {
+#include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <aether_radio/x6200_control/control.h>
@@ -124,7 +125,7 @@ static void * say_thread(void *arg) {
         repeated = 0;
         ptr = buf;
     }
-    strcpy(prev, buf);
+    snprintf(prev, sizeof(prev), "%s", buf);
 
     audio_player                    player;
     std::istringstream              text{ptr};

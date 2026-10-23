@@ -8,6 +8,8 @@
 
 #include "info.h"
 
+#include <stdio.h>
+
 #include "cfg/transverter.h"
 #include "cfg/mode.h"
 #include "styles.h"
@@ -221,7 +223,7 @@ static void atu_label_update(Subject *subj, void * user_data) {
 
 static void agc_label_update(Subject *subj, void *user_data) {
     char label[8];
-    strcpy(label, cfg_mode_agc_label(subject_get_int(cfg_cur.agc)));
+    snprintf(label, sizeof(label), "%s", cfg_mode_agc_label(subject_get_int(cfg_cur.agc)));
     for (size_t i = 0; i < strlen(label); i++) {
         label[i] = toupper(label[i]);
     }

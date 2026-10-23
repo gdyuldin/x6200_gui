@@ -153,19 +153,29 @@ struct Frame {
 
     void log(const char *prefix=nullptr) const {
         char buf[512];
-        char *buf_ptr = buf;
-        buf_ptr += sprintf(buf_ptr, "[%02X:%02X:", FRAME_PRE, FRAME_PRE);
-        buf_ptr += sprintf(buf_ptr, "%02X:", dst_addr);
-        buf_ptr += sprintf(buf_ptr, "%02X]-", src_addr);
-        buf_ptr += sprintf(buf_ptr, "[%02X:", command);
+        size_t len = 0;
+        // Append formatted text to buf, truncating if it does not fit
+        auto append = [&](const char *fmt, auto... args) {
+            int n = snprintf(buf + len, sizeof(buf) - len, fmt, args...);
+            size_t room = sizeof(buf) - len - 1;
+            if (n > 0) {
+                len += (size_t)n < room ? (size_t)n : room;
+            }
+        };
+        append("[%02X:%02X:", FRAME_PRE, FRAME_PRE);
+        append("%02X:", dst_addr);
+        append("%02X]-", src_addr);
+        append("[%02X:", command);
         uint16_t remain_len = data.size();
         size_t i = 0;
         while (remain_len) {
-            buf_ptr += sprintf(buf_ptr, "%02X:", data[i++]);
+            append("%02X:", data[i++]);
             remain_len--;
         }
-        buf_ptr += sprintf(buf_ptr - 1, "]-[%02X]", FRAME_END);
-        *(buf_ptr - 1) = '\0';
+        // Overwrite the trailing ':'
+        len--;
+        append("]-[%02X]", FRAME_END);
+        buf[len - 1] = '\0';
         if (prefix) {
             LV_LOG_USER("%s\t: %s\t(Len %i)", prefix, buf, data.size() + FRAME_ADD_LEN + 1);
         } else {

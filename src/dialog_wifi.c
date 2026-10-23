@@ -542,12 +542,10 @@ static bool keyboard_ok_cb() {
 }
 
 static void update_status_cb(lv_timer_t *t) {
-    char  ip_address[16];
-    char  gateway[16];
-    char *ip_addr_p = ip_address;
-    char *gateway_p = gateway;
+    char  ip_address[16] = "";
+    char  gateway[16] = "";
     bool  res;
-    res = wifi_get_ipaddr(&ip_addr_p, &gateway_p);
+    res = wifi_get_ipaddr(ip_address, sizeof(ip_address), gateway, sizeof(gateway));
     if (res == (wifi_get_status() == WIFI_CONNECTED)) {
         if (res) {
             lv_label_set_text(label_ip_addr, ip_address);

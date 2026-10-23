@@ -6,6 +6,7 @@
  *  Copyright (c) 2022-2023 Belousov Oleg aka R1CBU
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <png.h>
@@ -26,9 +27,7 @@ static uint8_t      *buf;
 static void * screenshot_thread(void *arg) {
     get_time_str(time_str, sizeof(time_str));
 
-    strcpy(file_str, "/mnt/");
-    strcat(file_str, time_str);
-    strcat(file_str, ".png");
+    snprintf(file_str, sizeof(file_str), "/mnt/%s.png", time_str);
 
     FILE *fp = fopen(file_str, "wb");
 

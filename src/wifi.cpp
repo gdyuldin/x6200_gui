@@ -339,18 +339,18 @@ void wifi_disconnect() {
     }
 }
 
-bool wifi_get_ipaddr(char **ip_addr, char **gateway) {
+bool wifi_get_ipaddr(char *ip_addr, size_t ip_addr_size, char *gateway, size_t gateway_size) {
     NMIPConfig *ip_cfg;
     if (device) {
         ip_cfg = nm_device_get_ip4_config(device);
         if (ip_cfg) {
             const char * gw = nm_ip_config_get_gateway(ip_cfg);
             if(gw) {
-                strcpy(*gateway, gw);
+                snprintf(gateway, gateway_size, "%s", gw);
                 GPtrArray *addresses = nm_ip_config_get_addresses(ip_cfg);
                 if (addresses->len > 0) {
                     NMIPAddress *address = (NMIPAddress *)g_ptr_array_index(addresses, 0);
-                    strcpy(*ip_addr, nm_ip_address_get_address(address));
+                    snprintf(ip_addr, ip_addr_size, "%s", nm_ip_address_get_address(address));
                 }
                 return true;
             }
@@ -441,8 +441,8 @@ static void fill_access_point_info(GBytes *active_ssid, NMAccessPoint *ap, wifi_
         ssid_str = nm_utils_ssid_to_utf8((const guint8 *)g_bytes_get_data(ssid, NULL), g_bytes_get_size(ssid));
     else
         ssid_str = g_strdup(EMPTY_SSID_STR);
-    strcpy(ap_info->bssid, hwaddr);
-    strcpy(ap_info->ssid, ssid_str);
+    snprintf(ap_info->bssid, sizeof(ap_info->bssid), "%s", hwaddr);
+    snprintf(ap_info->ssid, sizeof(ap_info->ssid), "%s", ssid_str);
     ap_info->strength = strength;
     ap_info->mode = mode;
     ap_info->is_connected = active_ssid && (g_bytes_compare(ssid, active_ssid) == 0);

@@ -9,6 +9,7 @@
 #include "qth.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -61,7 +62,7 @@ void qth_pos_to_str(double lat, double lon, char* buf) {
 
     if (180.001 < fabs(lon) ||
         90.001 < fabs(lat)) {
-            strcpy(buf, "    n/a ");
+            snprintf(buf, QTH_STR_SIZE, "    n/a ");
     }
 
     if (179.99999 < lon) {

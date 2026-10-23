@@ -23,6 +23,13 @@ static char         *last_line;
 
 static void update_visibility(Subject *subj, void *user_data);
 
+/* Append text to the last line of the buffer, truncating if the buffer is full */
+static void last_line_append(const char *text) {
+    size_t used = (size_t)(last_line - buf) + strlen(last_line);
+
+    strncat(last_line, text, sizeof(buf) - used - 1);
+}
+
 static void check_lines() {
     char        *second_line = NULL;
     char        *ptr = (char *) &buf;
@@ -40,8 +47,8 @@ static void check_lines() {
     }
 
     if (count > 4) {
-        strcpy(tmp_buf, second_line);
-        strcpy(buf, tmp_buf);
+        snprintf(tmp_buf, sizeof(tmp_buf), "%s", second_line);
+        snprintf(buf, sizeof(buf), "%s", tmp_buf);
     }
 
     ptr = (char *) &buf;
@@ -66,7 +73,7 @@ static void pannel_update_cb(const char *text) {
 
     if (strcmp(text, "\n") == 0) {
         if (last_line[strlen(last_line) - 1] != '\n') {
-            strcat(last_line, text);
+            last_line_append(text);
             check_lines();
         }
     } else {
@@ -74,11 +81,11 @@ static void pannel_update_cb(const char *text) {
         lv_txt_get_size(&text_size, text, &sony_38, 0, 0, LV_COORD_MAX, 0);
 
         if (line_size.x + text_size.x > (lv_obj_get_width(obj) - 40)) {
-            strcat(last_line, "\n");
+            last_line_append("\n");
             check_lines();
         }
 
-        strcat(last_line, text);
+        last_line_append(text);
     }
 
     lv_label_set_text_static(obj, buf);
@@ -122,7 +129,7 @@ void pannel_visible() {
     }
 
     if (on) {
-        strcpy(buf, "");
+        buf[0] = '\0';
         last_line = (char *) &buf;
         lv_label_set_text_static(obj, buf);
         lv_obj_clear_flag(obj, LV_OBJ_FLAG_HIDDEN);

@@ -387,7 +387,7 @@ const char *span_label_fn() {
     static char buf[20];
     const char * fmt = "Span:\n%u kHz";
     int32_t val = subject_get_int(cfg.swrscan_span.val);
-    sprintf(buf, fmt, val / 1000);
+    snprintf(buf, sizeof(buf), fmt, val / 1000);
     return buf;
 }
 
