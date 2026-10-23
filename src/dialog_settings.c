@@ -21,6 +21,8 @@
 #include "voice.h"
 #include "audio.h"
 #include "main.h"
+#include "spectrum.h"
+#include "waterfall.h"
 
 #include <sys/time.h>
 #include <time.h>
@@ -79,6 +81,19 @@ static void bool_update_cb(lv_event_t * e) {
     params_bool_set(var, lv_obj_has_state(obj, LV_STATE_CHECKED));
 }
 
+/* Apply the manual min/max immediately when an "auto" switch of the spectrum or the waterfall changes */
+static void grid_auto_update_cb(lv_event_t * e) {
+    params_bool_t   *var = lv_event_get_user_data(e);
+
+    bool_update_cb(e);
+
+    if ((var == &params.spectrum_auto_min) || (var == &params.spectrum_auto_max)) {
+        spectrum_min_max_reset();
+    } else {
+        waterfall_min_max_reset();
+    }
+}
+
 static void uint8_spinbox_update_cb(lv_event_t * e) {
     lv_obj_t        *obj = lv_event_get_target(e);
     params_uint8_t  *var = lv_event_get_user_data(e);
@@ -103,19 +118,23 @@ static void theme_update_cb(lv_event_t * e) {
 
 /* Shared create */
 
-static lv_obj_t * switch_bool(lv_obj_t *parent, params_bool_t *var) {
+static lv_obj_t * switch_bool_cb(lv_obj_t *parent, params_bool_t *var, lv_event_cb_t cb) {
     lv_obj_t *obj = lv_switch_create(parent);
 
     dialog_item(&dialog, obj);
 
     lv_obj_center(obj);
-    lv_obj_add_event_cb(obj, bool_update_cb, LV_EVENT_VALUE_CHANGED, var);
+    lv_obj_add_event_cb(obj, cb, LV_EVENT_VALUE_CHANGED, var);
 
     if (var->x) {
         lv_obj_add_state(obj, LV_STATE_CHECKED);
     }
 
     return obj;
+}
+
+static lv_obj_t * switch_bool(lv_obj_t *parent, params_bool_t *var) {
+    return switch_bool_cb(parent, var, bool_update_cb);
 }
 
 static lv_obj_t * spinbox_uint8(lv_obj_t *parent, params_uint8_t *var) {
@@ -1128,7 +1147,7 @@ static uint8_t make_auto(uint8_t row) {
     lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(obj);
 
-    obj = switch_bool(obj, &params.spectrum_auto_min);
+    obj = switch_bool_cb(obj, &params.spectrum_auto_min, grid_auto_update_cb);
 
     lv_obj_set_width(obj, SMALL_3 - 30);
 
@@ -1140,7 +1159,7 @@ static uint8_t make_auto(uint8_t row) {
     lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(obj);
 
-    obj = switch_bool(obj, &params.spectrum_auto_max);
+    obj = switch_bool_cb(obj, &params.spectrum_auto_max, grid_auto_update_cb);
 
     lv_obj_set_width(obj, SMALL_3 - 30);
 
@@ -1162,7 +1181,7 @@ static uint8_t make_auto(uint8_t row) {
     lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(obj);
 
-    obj = switch_bool(obj, &params.waterfall_auto_min);
+    obj = switch_bool_cb(obj, &params.waterfall_auto_min, grid_auto_update_cb);
 
     lv_obj_set_width(obj, SMALL_3 - 30);
 
@@ -1174,7 +1193,7 @@ static uint8_t make_auto(uint8_t row) {
     lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_center(obj);
 
-    obj = switch_bool(obj, &params.waterfall_auto_max);
+    obj = switch_bool_cb(obj, &params.waterfall_auto_max, grid_auto_update_cb);
 
     lv_obj_set_width(obj, SMALL_3 - 30);
 

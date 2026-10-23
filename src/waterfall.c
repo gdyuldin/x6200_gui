@@ -201,20 +201,19 @@ void waterfall_min_max_reset() {
     }
 }
 
+/*
+ * Only auto mode is updated here. In manual mode the range is applied when it changes (see on_grid_min_change,
+ * on_grid_max_change) and when the auto flag is switched off (see waterfall_min_max_reset).
+ */
 void waterfall_update_max(float db) {
     if (params.waterfall_auto_max.x) {
         lpf(&grid_max, db + 3.0f, 0.85f, DEFAULT_MAX);
-    } else {
-        // TODO: set min/max at param change
-        grid_max = subject_get_int(cfg_cur.band->grid.max.val);
     }
 }
 
 void waterfall_update_min(float db) {
     if (params.waterfall_auto_min.x) {
         lpf(&grid_min, db + 3.0f, 0.95f, DEFAULT_MIN);
-    } else {
-        grid_min = subject_get_int(cfg_cur.band->grid.min.val);
     }
 }
 

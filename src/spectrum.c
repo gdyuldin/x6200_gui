@@ -349,20 +349,19 @@ float spectrum_get_min() {
     return grid_min;
 }
 
+/*
+ * Only auto mode is updated here. In manual mode the range is applied when it changes (see on_grid_min_change,
+ * on_grid_max_change) and when the auto flag is switched off (see spectrum_min_max_reset).
+ */
 void spectrum_update_max(float db) {
     if (params.spectrum_auto_max.x) {
         lpf(&grid_max, db + 10.0f, 0.55f, DEFAULT_MAX);
-    } else {
-        // TODO: set min/max at param change
-        grid_max = subject_get_int(cfg_cur.band->grid.max.val);
     }
 }
 
 void spectrum_update_min(float db) {
     if (params.spectrum_auto_min.x) {
         lpf(&grid_min, db + 3.0f, 0.75f, DEFAULT_MIN);
-    } else {
-        grid_min = subject_get_int(cfg_cur.band->grid.min.val);
     }
 }
 
