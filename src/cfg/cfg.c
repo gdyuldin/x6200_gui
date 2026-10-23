@@ -329,6 +329,9 @@ static int init_params_cfg(sqlite3 *db) {
     // FT8
     fill_cfg_item(&cfg.ft8_hold_freq, subject_create_int(true), "ft8_hold_freq");
 
+    // Calibration
+    fill_cfg_item(&cfg.smeter_offset, subject_create_int(0), "smeter_offset");
+
     // EQ
     fill_cfg_item(&cfg.eq.rx.en, subject_create_int(false), "eq_rx_en");
     fill_cfg_item(&cfg.eq.rx.p1, subject_create_int(0), "eq_rx_p1");

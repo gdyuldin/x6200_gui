@@ -33,6 +33,11 @@
 #define IDLE_TIMEOUT (1000)
 #define POWER_KEY_LONG_TIME 2000
 
+/* Baseline subtracted from the raw spectrum samples reported by the radio */
+#define SAMPLE_BASELINE 126.0f
+/* Fixed calibration offset (dB) applied to the level reported by the radio */
+#define DBM_BASE_OFFSET 4
+
 static radio_state_change_t notify_tx;
 static radio_state_change_t notify_rx;
 
@@ -122,10 +127,11 @@ bool radio_tick() {
         float samples[RADIO_SAMPLES];
         for (size_t i = 0; i < RADIO_SAMPLES; i++)
         {
-            samples[i] = pack->samples[i] - 126.0f;
+            samples[i] = pack->samples[i] - SAMPLE_BASELINE;
         }
-        // TODO: add adjustment
-        int16_t dbm = -(int16_t)pack->dbm + 4;
+        /* A positive user offset raises the level shown on the S-meter */
+        int32_t smeter_offset = limit(subject_get_int(cfg.smeter_offset.val), CFG_SMETER_OFFSET_MIN, CFG_SMETER_OFFSET_MAX);
+        int16_t dbm = -(int16_t)pack->dbm + DBM_BASE_OFFSET + smeter_offset;
 
         x6200_mode_t mode = subject_get_int(cfg_cur.mode);
 

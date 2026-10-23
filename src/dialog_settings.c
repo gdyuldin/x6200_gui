@@ -970,6 +970,42 @@ static uint8_t make_audio_gain(uint8_t row) {
     return row + 1;
 }
 
+/* S-meter offset */
+
+static void smeter_offset_update_cb(lv_event_t * e) {
+    lv_obj_t *obj = lv_event_get_target(e);
+    lv_obj_t *slider_label = (lv_obj_t *)lv_event_get_user_data(e);
+    char *fmt = (char *)lv_obj_get_user_data(slider_label);
+    int32_t val = lv_slider_get_value(obj);
+
+    subject_set_int(cfg.smeter_offset.val, val);
+    lv_label_set_text_fmt(slider_label, fmt, val);
+}
+
+static uint8_t make_smeter_offset(uint8_t row) {
+    lv_obj_t    *cell;
+
+    row_dsc[row] = 54;
+
+    cell = lv_label_create(grid);
+
+    lv_label_set_text(cell, "S-meter offset, dB");
+    lv_obj_set_grid_cell(cell, LV_GRID_ALIGN_START, 0, 1, LV_GRID_ALIGN_CENTER, row, 1);
+
+    cell = lv_obj_create(grid);
+
+    lv_obj_set_size(cell, SMALL_3, 56);
+    lv_obj_set_grid_cell(cell, LV_GRID_ALIGN_START, 1, 3, LV_GRID_ALIGN_CENTER, row, 1);
+    lv_obj_set_style_bg_opa(cell, LV_OPA_TRANSP, LV_PART_MAIN);
+    lv_obj_clear_flag(cell, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_center(cell);
+
+    slider_with_text(cell, subject_get_int(cfg.smeter_offset.val), CFG_SMETER_OFFSET_MIN, CFG_SMETER_OFFSET_MAX,
+                     SMALL_3 - 30 - 65, "%+d", smeter_offset_update_cb);
+
+    return row + 1;
+}
+
 /* Transverter */
 
 static void transverter_from_update_cb(lv_event_t * e) {
@@ -1384,6 +1420,9 @@ static void construct_cb(lv_obj_t *parent) {
 
     row = make_delimiter(row);
     row = make_audio_gain(row);
+
+    row = make_delimiter(row);
+    row = make_smeter_offset(row);
 
     row = make_delimiter(row);
     row = make_voice(row);
