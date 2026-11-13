@@ -22,6 +22,10 @@ else()
         add_subdirectory(lv_drivers)
         add_subdirectory(sql)
         install(TARGETS ${PROJECT_NAME} DESTINATION sbin)
+        # The X6200's base firmware writer (tools/base_update): Xiegu's UPGRADE procedure from the radio's Linux. It
+        # refuses to run on any radio whose device tree is not an X6200's
+        add_executable(x6200-base-flash tools/base_update/base_flash.c)
+        install(TARGETS x6200-base-flash DESTINATION sbin)
         install(DIRECTORY rootfs/
                 DESTINATION /
                 USE_SOURCE_PERMISSIONS
