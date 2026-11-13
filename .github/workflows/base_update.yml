@@ -1,0 +1,44 @@
+# The X6200's base firmware updater, tested without a radio or any of Xiegu's files (tools/base_update/test/run.sh):
+#   - the writer's unit tests: SHA-256 against FIPS 180-2's vectors, the XMODEM-1K packet and its CRC against
+#     CRC-16/XMODEM and against Xiegu's own CRC routine, the list of known files against base_releases.txt, which
+#     files it takes and which it refuses (another radio's included);
+#   - the writer itself against a simulated base (test/sim.py): /dev/ttyS1 is a pseudo-terminal, and the base
+#     answers as Xiegu's bootloader does, or fails in each way a real one could (silent, still streaming, dead, no
+#     erase, no XMODEM start, NAK, CAN, garbage, no ACK for the EOT); the bytes the base receives are checked against
+#     the file, packet by packet;
+#   - the fetcher (base_fetch.py) on small update zips built as Xiegu's are (test/synth.py), through Python's zlib
+#     and through libz; its deduplication by SHA-256.
+# The transfers use a stand-in of a base file's size. A few minutes.
+name: Base firmware updater tests
+
+on:
+  push:
+    paths:
+      - 'tools/base_update/**'
+      - '.github/workflows/base_update.yml'
+  pull_request:
+    paths:
+      - 'tools/base_update/**'
+      - '.github/workflows/base_update.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unit tests, the simulated base, the fetcher
+        run: tools/base_update/test/run.sh
+
+      - name: Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: base-update-test-logs
+          path: build/base_update/test/
+          retention-days: 7

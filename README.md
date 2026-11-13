@@ -21,6 +21,24 @@ Application will import records to own log on the next boot and will rename `inc
 Application stores FT8/FT4 QSOs to the `ft_log.adi` file on the `DATA` partition of SD card. This file might be used to load QSOs to online log.
 
 
+## Updating the base firmware
+
+The radio board's own firmware (Xiegu's **base**: DSP, RF, power, keyer) can be updated without Xiegu's system and
+its card swaps, while the radio runs this image: from a computer over SSH, with
+[tools/base_update](tools/base_update/README.md). It does what Xiegu's own app 1.0.8 does from MENU > SYSTEM > UPGRADE,
+step for step, and writes any release Xiegu has published (1.0.3 to 1.0.8), older ones too. It writes only an X6200's
+base, only with an X6200 file.
+
+```
+tools/base_update/fetch.sh                   # the latest release from xiegu.eu (Python 3)
+tools/base_update/build.sh                   # the writer, with an ARM cross compiler
+tools/base_update/flash.sh root@RADIO --check
+tools/base_update/flash.sh root@RADIO --flash
+```
+
+As Xiegu asks: a 13.8 V supply of 3 A or more and the battery out while it writes. About three minutes after the
+write the base switches the radio off by itself; switch it on again and it runs the new base.
+
 ## Building
 
 

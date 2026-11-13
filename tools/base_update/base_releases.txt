@@ -1,0 +1,19 @@
+# Xiegu's X6200 base firmware files known to tools/base_update: fetch.sh (base_fetch.py), flash.sh, and base_flash (its
+# own copy of the sums, checked against this file by tools/base_update/test). Newest first; the first line with a URL
+# is the latest on xiegu.eu.
+#
+#   VERSION  BUILT       XGF_NAME                      XGF_SIZE XGF_SHA256  ZIP_SIZE  ZIP_SHA256  ZIP_URL
+#
+# The file is Xiegu's base firmware (.xgf, encrypted, decrypted by the base's own bootloader) as it is in /usr/firmware
+# of the system in Xiegu's update zip (zip -> sdcard.img -> its FAT partition -> rootfs.tar -> ./usr/firmware). BUILT:
+# the date in Xiegu's own file name (x6200_mcu_YYYYMMDDhhmmss.xgf). Files are told apart by XGF_SHA256, never by name or
+# date: the two 1.0.7 files are two builds. A file not on xiegu.eu has "-" for the zip's three: 1.0.7 of Jan 2026 is
+# Xiegu's factory build, found on an X6200's internal memory (/usr/firmware of Xiegu's own system, written at the
+# factory on 16 Jan 2026) and in its base (it reports 1.0.7, Jan 15 2026), never in an update on xiegu.eu.
+# A new release: tools/base_update/fetch.sh --discover (or --url URL) downloads it, checks what it can and prints its
+# line for here; base_flash.c's known[] gets the same name, size and sum.
+1.0.8 2026-08-20 x6200_mcu_20260820141208.xgf 524288 9a19f97a5ad9e141a3663d222f984073bf0b18b38d4662604372a0036f9daa23 371310845 ca0226c7ffbfa38a5655bd9fc4bbe4e7995055cb3e2b35433a2ad5d39b4100a1 https://xiegu.eu/wp-content/uploads/sites/4/2026/10/x6200udimg-260820001.zip
+1.0.7 2026-01-16 x6200_mcu_20260116092100.xgf 401024 9baa46b824d9b20ddb41c6c3b64dde4a3dfbc3bdcd0a0cbc600506cb7a1e2690 - - -
+1.0.7 2025-09-16 x6200_mcu_20250916150221.xgf 524288 d58382c210738fee5261e58819aef9f3829030bf0997d53511dab3355a8fb4e2 373436200 808d3a344c7ef8511993c0b2ace7e0d94eb58c06a9973d39173501de42212b83 https://xiegu.eu/wp-content/uploads/sites/4/2025/10/x6200%20FW%201.0.7%20(251012).zip
+1.0.6 2025-01-11 x6200_mcu_20250111134652.xgf 524288 dca90387b70d9550448006310a69ea65625bec87f402c10df789deeb13ff12f3 373430924 3886a41d3e55b1b3d1ae13b015e5bfdb5e94b3f24746f94ba285dce3fcbf93d1 https://xiegu.eu/wp-content/uploads/sites/4/2025/01/Xiegu%20X6200%20update%20V1.0.6%20(240115).zip
+1.0.3 2024-09-24 x6200_mcu_20240924203603.xgf 524288 61e59a52e7c007c427d31f9de3b296e5568225efb93a1fd8df46028d48ffc3f1 373118711 06f7a8f78fd725bb66cf0e363e41bf417464af4fb3f51292f7a6db615221a3e6 https://xiegu.eu/wp-content/uploads/sites/4/2024/10/X6200_UD_Image_1.0.3.zip
